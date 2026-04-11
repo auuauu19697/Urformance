@@ -1,0 +1,23 @@
+# Backend .gitignore
+
+# Environment secrets — NEVER commit this
+.env
+
+# Dependencies
+node_modules/
+
+# Uploaded files (if switching to disk storage later)
+uploads/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Logs
+*.log
+npm-debug.log*
