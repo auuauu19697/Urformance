@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Urformance | Official Store</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .step-content {
+            display: none;
+        }
+
+        .active {
+            display: block;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 antialiased text-slate-900">
+
+    <nav class="bg-white border-b border-slate-200 p-4 flex justify-between items-center sticky top-0 z-50">
+        <h1 onclick="goToStep(1)" class="font-black text-xl tracking-tighter cursor-pointer italic">URFORMANCE</h1>
+        <button onclick="goToStep(3)" class="relative p-2 bg-slate-50 rounded-full border border-slate-200">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+            </svg>
+            <div id="cart-count"
+                class="absolute -top-1 -right-1 bg-black text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-bold">
+                0</div>
+        </button>
+    </nav>
+
+    <main class="max-w-md mx-auto p-4 pb-32">
+
+        <section id="step1" class="step-content active">
+            <div class="mb-6">
+                <h2 class="text-3xl font-black italic uppercase leading-none">Gear Up</h2>
+                <p class="text-slate-500 text-sm mt-1 font-medium">Engineered for the Bangkok heat.</p>
+            </div>
+
+            <div class="grid grid-cols-1 gap-6">
+                <div onclick="selectModel('M-PRO', 890, 'Performance Pro T-Shirt')"
+                    class="group bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm hover:border-black transition-all cursor-pointer">
+                    <div
+                        class="bg-slate-200 aspect-[4/5] flex items-center justify-center text-slate-400 group-hover:bg-slate-300 transition italic font-bold">
+                        MODEL A IMAGE</div>
+                    <div class="p-5 flex justify-between items-center">
+                        <div>
+                            <h3 class="font-bold text-lg">Performance Pro</h3>
+                            <p class="text-slate-500 text-sm">Ultra-breathable Mesh</p>
+                        </div>
+                        <p class="font-black text-lg text-right">890.-</p>
+                    </div>
+                </div>
+
+                <div onclick="selectModel('M-DAILY', 790, 'Daily Runner T-Shirt')"
+                    class="group bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm hover:border-black transition-all cursor-pointer">
+                    <div
+                        class="bg-slate-200 aspect-[4/5] flex items-center justify-center text-slate-400 group-hover:bg-slate-300 transition italic font-bold">
+                        MODEL B IMAGE</div>
+                    <div class="p-5 flex justify-between items-center">
+                        <div>
+                            <h3 class="font-bold text-lg">Daily Runner</h3>
+                            <p class="text-slate-500 text-sm">Soft-touch Cotton Blend</p>
+                        </div>
+                        <p class="font-black text-lg text-right">790.-</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="step2" class="step-content">
+            <button onclick="goToStep(1)"
+                class="text-xs font-black text-slate-400 mb-6 flex items-center uppercase tracking-widest">
+                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-width="3" d="M15 19l-7-7 7-7" />
+                </svg> Back to Catalog
+            </button>
+
+            <h2 id="selected-model-title" class="text-3xl font-black mb-1 uppercase italic leading-none">Model Name</h2>
+            <p id="selected-model-price" class="text-xl text-slate-500 mb-8 font-bold">0 THB</p>
+
+            <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3">1. Select
+                Size</label>
+            <div class="grid grid-cols-4 gap-2 mb-8">
+                <button onclick="setSize('S')"
+                    class="size-btn border-2 border-slate-200 py-4 rounded-2xl font-bold hover:border-black transition">S</button>
+                <button onclick="setSize('M')"
+                    class="size-btn border-2 border-slate-200 py-4 rounded-2xl font-bold hover:border-black transition">M</button>
+                <button onclick="setSize('L')"
+                    class="size-btn border-2 border-slate-200 py-4 rounded-2xl font-bold hover:border-black transition">L</button>
+                <button onclick="setSize('XL')"
+                    class="size-btn border-2 border-slate-200 py-4 rounded-2xl font-bold hover:border-black transition">XL</button>
+            </div>
+
+            <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3">2.
+                Quantity</label>
+            <div class="flex items-center border-2 border-slate-200 rounded-2xl w-max bg-white mb-12">
+                <button onclick="updateQty(-1)"
+                    class="px-6 py-3 font-bold text-xl hover:bg-slate-50 rounded-l-2xl transition">-</button>
+                <span id="qty-display" class="px-8 py-3 font-black border-x-2 text-lg">1</span>
+                <button onclick="updateQty(1)"
+                    class="px-6 py-3 font-bold text-xl hover:bg-slate-50 rounded-r-2xl transition">+</button>
+            </div>
+
+            <button onclick="addToCart()"
+                class="w-full bg-black text-white py-5 rounded-3xl font-black text-lg shadow-2xl active:scale-95 transition-transform uppercase italic tracking-wider">
+                Add to Order
+            </button>
+        </section>
+
+        <section id="step3" class="step-content">
+            <div class="flex justify-between items-end mb-6">
+                <h2 class="text-3xl font-black italic uppercase leading-none">Cart</h2>
+                <button onclick="goToStep(1)"
+                    class="text-xs font-black text-blue-600 uppercase border-b-2 border-blue-600 pb-1">+ Add
+                    More</button>
+            </div>
+
+            <div id="cart-items" class="space-y-3 mb-8"></div>
+            <div id="empty-cart-msg"
+                class="hidden text-center py-16 text-slate-400 font-bold uppercase italic tracking-widest">Cart is empty
+            </div>
+
+            <div class="bg-white border border-slate-200 rounded-3xl p-6 space-y-3 shadow-sm">
+                <div class="flex justify-between text-slate-500 font-bold text-sm"><span>Subtotal</span><span
+                        id="subtotal">0.-</span></div>
+                <div class="flex justify-between text-slate-500 font-bold text-sm"><span>Shipping</span><span
+                        class="text-green-600 font-black uppercase text-xs">Free</span></div>
+                <hr class="border-slate-100">
+                <div class="flex justify-between text-2xl font-black italic"><span>TOTAL</span><span
+                        id="total">0.-</span></div>
+            </div>
+
+            <button id="checkout-btn" onclick="goToStep(4)"
+                class="mt-8 w-full bg-black text-white py-5 rounded-3xl font-black text-lg shadow-2xl disabled:bg-slate-300 uppercase italic tracking-wider">
+                Continue to Payment
+            </button>
+        </section>
+
+        <section id="step4" class="step-content">
+            <button onclick="goToStep(3)"
+                class="text-xs font-black text-slate-400 mb-6 flex items-center uppercase tracking-widest">
+                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-width="3" d="M15 19l-7-7 7-7" />
+                </svg> Back to Cart
+            </button>
+
+            <h2 class="text-3xl font-black italic uppercase leading-none mb-8">Checkout</h2>
+
+            <div class="space-y-4 mb-10">
+                <h3 class="text-[10px] font-black uppercase text-slate-400 tracking-widest border-b pb-2">Shipping
+                    Information</h3>
+                <div>
+                    <label class="block text-[10px] font-black uppercase text-slate-500 mb-1 ml-1">Full Name</label>
+                    <input type="text" id="cust-name"
+                        class="w-full p-4 rounded-2xl border-2 border-slate-200 focus:border-black outline-none transition">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black uppercase text-slate-500 mb-1 ml-1">Phone Number</label>
+                    <input type="tel" id="cust-phone"
+                        class="w-full p-4 rounded-2xl border-2 border-slate-200 focus:border-black outline-none transition">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black uppercase text-slate-500 mb-1 ml-1">Full Address</label>
+                    <textarea id="cust-address" rows="3"
+                        class="w-full p-4 rounded-2xl border-2 border-slate-200 focus:border-black outline-none transition"></textarea>
+                </div>
+            </div>
+
+            <div class="space-y-4 mb-8">
+                <h3 class="text-[10px] font-black uppercase text-slate-400 tracking-widest border-b pb-2">Payment (QR
+                    PromptPay)</h3>
+                <div class="bg-white border-2 border-slate-200 rounded-3xl p-6 text-center">
+                    <p class="text-[10px] font-black text-slate-400 uppercase mb-4 tracking-tighter">Scan to Pay: <span
+                            id="final-amount-display" class="text-black">0.-</span></p>
+                    <div
+                        class="w-48 h-48 bg-slate-100 mx-auto rounded-2xl flex items-center justify-center font-bold text-slate-300">
+                        QR CODE HERE</div>
+                </div>
+
+                <div class="relative">
+                    <label class="block text-[10px] font-black uppercase text-slate-500 mb-1 ml-1">Upload Payment
+                        Slip</label>
+                    <label for="slip-upload"
+                        class="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-slate-300 rounded-3xl bg-white cursor-pointer hover:border-black transition-all">
+                        <div id="upload-placeholder" class="flex flex-col items-center justify-center pt-5 pb-6">
+                            <svg class="w-8 h-8 mb-4 text-slate-500" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 4v16m8-8H4" />
+                            </svg>
+                            <p class="text-sm text-slate-500 font-bold uppercase tracking-widest">Select Image</p>
+                        </div>
+                        <img id="slip-preview" class="hidden h-full w-full object-contain p-2 rounded-3xl" />
+                        <input id="slip-upload" type="file" class="hidden" accept="image/*"
+                            onchange="previewSlip(this)" />
+                    </label>
+                </div>
+            </div>
+
+            <!-- Submit state feedback -->
+            <div id="submit-error"
+                class="hidden mb-4 p-4 bg-red-50 border border-red-200 rounded-2xl text-red-700 text-sm font-bold">
+            </div>
+
+            <button id="submit-btn" onclick="finalSubmit()"
+                class="w-full bg-blue-600 text-white py-5 rounded-3xl font-black text-lg shadow-2xl active:scale-95 transition-transform uppercase italic tracking-wider">
+                Submit Order
+            </button>
+        </section>
+
+    </main>
+
+    <script>
+        // ─── Config ─────────────────────────────────────────────────────────────────
+        const API_URL = 'http://localhost:3000'; // Change to your deployed backend URL
+
+        // ─── State ──────────────────────────────────────────────────────────────────
+        let cart = [];
+        let currentSelection = { id: '', model: '', price: 0, size: '', qty: 1 };
+        let slipFile = null;
+
+        // ─── Navigation ─────────────────────────────────────────────────────────────
+        function goToStep(step) {
+            document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+            document.getElementById('step' + step).classList.add('active');
+            window.scrollTo(0, 0);
+            if (step === 3) updateCartUI();
+            if (step === 4) {
+                const total = cart.reduce((acc, curr) => acc + (curr.price * curr.qty), 0);
+                document.getElementById('final-amount-display').innerText = total.toLocaleString() + ' THB';
+            }
+        }
+
+        // ─── Product Selection ───────────────────────────────────────────────────────
+        function selectModel(id, price, fullName) {
+            currentSelection = { id, model: fullName, price, qty: 1, size: '' };
+            document.getElementById('qty-display').innerText = 1;
+            document.getElementById('selected-model-title').innerText = fullName;
+            document.getElementById('selected-model-price').innerText = price.toLocaleString() + ' THB';
+            document.querySelectorAll('.size-btn').forEach(btn => btn.classList.remove('bg-black', 'text-white', 'border-black'));
+            goToStep(2);
+        }
+
+        function setSize(size) {
+            currentSelection.size = size;
+            document.querySelectorAll('.size-btn').forEach(btn => btn.classList.remove('bg-black', 'text-white', 'border-black'));
+            event.target.classList.add('bg-black', 'text-white', 'border-black');
+        }
+
+        function updateQty(val) {
+            currentSelection.qty = Math.max(1, currentSelection.qty + val);
+            document.getElementById('qty-display').innerText = currentSelection.qty;
+        }
+
+        // ─── Cart ────────────────────────────────────────────────────────────────────
+        function addToCart() {
+            if (!currentSelection.size) return alert('Please choose a size.');
+            const existingItem = cart.find(item => item.id === currentSelection.id && item.size === currentSelection.size);
+            if (existingItem) existingItem.qty += currentSelection.qty;
+            else cart.push({ ...currentSelection });
+            goToStep(3);
+        }
+
+        function updateCartUI() {
+            const container = document.getElementById('cart-items');
+            container.innerHTML = '';
+            let total = 0, totalItems = 0;
+
+            if (cart.length === 0) document.getElementById('empty-cart-msg').classList.remove('hidden');
+            else document.getElementById('empty-cart-msg').classList.add('hidden');
+
+            cart.forEach((item, index) => {
+                const itemTotal = item.price * item.qty;
+                total += itemTotal;
+                totalItems += item.qty;
+
+                container.innerHTML += `
+                    <div class="flex justify-between items-center bg-white border border-slate-200 p-5 rounded-3xl shadow-sm">
+                        <div class="flex-1">
+                            <p class="font-black text-[10px] uppercase italic tracking-tight">${item.model}</p>
+                            <p class="text-[10px] font-black text-slate-400 mt-0.5 uppercase">
+                                ${item.price.toLocaleString()}.- / UNIT | SIZE: ${item.size}
+                            </p>
+                            <p class="text-xs font-black mt-1 uppercase italic tracking-widest">Qty: ${item.qty}</p>
+                        </div>
+                        <div class="text-right pl-4">
+                            <p class="font-black text-sm mb-1 whitespace-nowrap">${itemTotal.toLocaleString()}.-</p>
+                            <button onclick="removeItem(${index})" class="text-[9px] uppercase font-black text-red-500 tracking-tighter">Remove</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('subtotal').innerText = total.toLocaleString() + '.-';
+            document.getElementById('total').innerText = total.toLocaleString() + '.-';
+            document.getElementById('cart-count').innerText = totalItems;
+            document.getElementById('checkout-btn').disabled = (cart.length === 0);
+        }
+
+        function removeItem(index) {
+            cart.splice(index, 1);
+            updateCartUI();
+        }
+
+        // ─── Slip Preview ─────────────────────────────────────────────────────────────
+        function previewSlip(input) {
+            if (input.files && input.files[0]) {
+                slipFile = input.files[0];
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    document.getElementById('slip-preview').src = e.target.result;
+                    document.getElementById('slip-preview').classList.remove('hidden');
+                    document.getElementById('upload-placeholder').classList.add('hidden');
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // ─── Submit ───────────────────────────────────────────────────────────────────
+        async function finalSubmit() {
+            const name = document.getElementById('cust-name').value.trim();
+            const phone = document.getElementById('cust-phone').value.trim();
+            const address = document.getElementById('cust-address').value.trim();
+            const errorEl = document.getElementById('submit-error');
+            const submitBtn = document.getElementById('submit-btn');
+
+            if (!name || !phone || !address || !slipFile) {
+                errorEl.innerText = 'Please complete all shipping info and upload your payment slip.';
+                errorEl.classList.remove('hidden');
+                return;
+            }
+
+            errorEl.classList.add('hidden');
+            submitBtn.disabled = true;
+            submitBtn.innerText = 'Submitting…';
+
+            const formData = new FormData();
+            formData.append('slip', slipFile);
+            formData.append('order', JSON.stringify({
+                customer: { name, phone, address },
+                items: cart,
+                total: cart.reduce((acc, curr) => acc + (curr.price * curr.qty), 0)
+            }));
+
+            try {
+                const res = await fetch(`${API_URL}/api/orders`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await res.json();
+
+                if (!res.ok) throw new Error(data.message || 'Something went wrong.');
+
+                // Success — clear state and show confirmation
+                cart = [];
+                slipFile = null;
+                updateCartUI();
+                alert('🎉 Order submitted successfully! We will contact you shortly.');
+                goToStep(1);
+            } catch (err) {
+                errorEl.innerText = err.message || 'Failed to submit order. Please try again.';
+                errorEl.classList.remove('hidden');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'Submit Order';
+            }
+        }
+    </script>
+</body>
+
+</html>
