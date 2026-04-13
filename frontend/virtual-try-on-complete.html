@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Urformance | Virtual Try-On — Full Demo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a; color: #fff;
+            min-height: 100vh; overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ─── Ambient glow ──────────────────────────────────────────── */
+        .bg-glow {
+            position: fixed; inset: 0; z-index: 0; pointer-events: none;
+            background:
+                radial-gradient(ellipse 600px 400px at 15% 15%, rgba(99,102,241,0.07), transparent),
+                radial-gradient(ellipse 500px 500px at 85% 80%, rgba(168,85,247,0.05), transparent);
+        }
+
+        /* ─── Nav ───────────────────────────────────────────────────── */
+        nav {
+            position: sticky; top: 0; z-index: 100;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 16px 20px;
+            background: rgba(10,10,10,0.85); backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .logo { font-weight: 900; font-size: 18px; font-style: italic; letter-spacing: -0.04em; cursor: pointer; }
+        .nav-right { display: flex; align-items: center; gap: 12px; }
+        .nav-badge {
+            font-size: 10px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.12em; color: rgba(255,255,255,0.4);
+            border: 1px solid rgba(255,255,255,0.1); padding: 6px 14px; border-radius: 100px;
+        }
+
+        /* ─── Container ─────────────────────────────────────────────── */
+        .container { position: relative; z-index: 1; max-width: 480px; margin: 0 auto; padding: 0 20px 100px; }
+
+        /* ─── Steps ─────────────────────────────────────────────────── */
+        .step { display: none; animation: fadeUp 0.45s ease; }
+        .step.active { display: block; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ─── Progress bar ──────────────────────────────────────────── */
+        .progress-bar {
+            display: flex; gap: 6px; padding: 16px 0 0;
+        }
+        .progress-seg {
+            flex: 1; height: 3px; border-radius: 2px;
+            background: rgba(255,255,255,0.08); overflow: hidden;
+        }
+        .progress-seg .fill {
+            width: 0; height: 100%; border-radius: 2px;
+            background: linear-gradient(90deg, #7c3aed, #a855f7);
+            transition: width 0.5s ease;
+        }
+        .progress-seg.done .fill { width: 100%; }
+        .progress-seg.active .fill { width: 50%; animation: progressPulse 1.5s ease infinite; }
+        @keyframes progressPulse { 0%,100% { width: 40%; } 50% { width: 60%; } }
+
+        /* ─── Section titles ────────────────────────────────────────── */
+        .step-label {
+            font-size: 10px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.18em; color: rgba(168,85,247,0.8);
+            margin: 32px 0 8px;
+        }
+        .step-title {
+            font-size: 28px; font-weight: 900; font-style: italic;
+            text-transform: uppercase; line-height: 1.1; letter-spacing: -0.02em;
+            margin-bottom: 8px;
+        }
+        .step-desc {
+            font-size: 14px; color: rgba(255,255,255,0.45); line-height: 1.6; margin-bottom: 28px;
+        }
+
+        /* ─── Photo frame ───────────────────────────────────────────── */
+        .photo-frame {
+            position: relative; width: 100%; aspect-ratio: 3/4;
+            border-radius: 24px; overflow: hidden;
+            background: #141419; border: 1px solid rgba(255,255,255,0.06);
+        }
+        .photo-frame img {
+            width: 100%; height: 100%; object-fit: cover;
+            transition: opacity 0.4s ease;
+        }
+
+        /* ─── Upload zone ───────────────────────────────────────────── */
+        .upload-zone {
+            width: 100%; aspect-ratio: 3/4;
+            border-radius: 24px; overflow: hidden;
+            border: 2px dashed rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.02);
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center; gap: 16px;
+            cursor: pointer; transition: all 0.3s ease;
+            margin-bottom: 16px;
+        }
+        .upload-zone:hover { border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.04); }
+        .upload-zone svg { width: 48px; height: 48px; color: rgba(255,255,255,0.15); }
+        .upload-zone .upload-title {
+            font-size: 14px; font-weight: 700; color: rgba(255,255,255,0.4);
+        }
+        .upload-zone .upload-sub {
+            font-size: 12px; color: rgba(255,255,255,0.2);
+        }
+        .upload-zone.has-photo { border-style: solid; border-color: rgba(168,85,247,0.3); }
+
+        /* ─── Preview photo in upload ───────────────────────────────── */
+        .upload-preview {
+            position: relative; width: 100%; aspect-ratio: 3/4;
+            border-radius: 24px; overflow: hidden;
+            border: 2px solid rgba(168,85,247,0.3);
+            display: none; margin-bottom: 16px;
+        }
+        .upload-preview img { width: 100%; height: 100%; object-fit: cover; }
+        .upload-preview .re-upload {
+            position: absolute; bottom: 12px; right: 12px;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 100px; padding: 8px 16px;
+            font-size: 11px; font-weight: 700; color: #fff;
+            cursor: pointer; text-transform: uppercase; letter-spacing: 0.08em;
+        }
+
+        /* ─── Demo button ───────────────────────────────────────────── */
+        .demo-link {
+            text-align: center; margin-bottom: 24px;
+        }
+        .demo-link button {
+            background: none; border: none; color: rgba(168,85,247,0.8);
+            font-family: inherit; font-size: 13px; font-weight: 700;
+            cursor: pointer; text-decoration: underline; text-underline-offset: 3px;
+        }
+
+        /* ─── Product cards ─────────────────────────────────────────── */
+        .product-grid { display: flex; gap: 12px; margin-bottom: 28px; }
+        .product-card {
+            flex: 1; background: rgba(255,255,255,0.03);
+            border: 2px solid rgba(255,255,255,0.06);
+            border-radius: 20px; padding: 16px; cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex; flex-direction: column; align-items: center; gap: 10px;
+        }
+        .product-card:hover { border-color: rgba(255,255,255,0.12); }
+        .product-card.selected { border-color: rgba(168,85,247,0.6); background: rgba(168,85,247,0.05); }
+        .product-card img { width: 72px; height: 72px; object-fit: contain; border-radius: 12px; }
+        .product-card .p-name { font-size: 13px; font-weight: 700; text-align: center; }
+        .product-card .p-price { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.4); }
+
+        /* ─── Color & Size selectors ────────────────────────────────── */
+        .selector-label {
+            font-size: 10px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.15em; color: rgba(255,255,255,0.3); margin-bottom: 10px;
+        }
+        .color-row { display: flex; gap: 14px; margin-bottom: 24px; }
+        .c-dot {
+            width: 36px; height: 36px; border-radius: 50%;
+            border: 2px solid transparent; cursor: pointer;
+            transition: all 0.2s ease; position: relative;
+        }
+        .c-dot::after {
+            content: ''; position: absolute; inset: -5px;
+            border: 2px solid transparent; border-radius: 50%;
+            transition: border-color 0.2s ease;
+        }
+        .c-dot.active::after { border-color: #a855f7; }
+        .c-black { background: #1a1a1a; border-color: rgba(255,255,255,0.15); }
+        .c-white { background: #f0f0f0; border-color: rgba(255,255,255,0.15); }
+        .c-navy  { background: #1e3a5f; border-color: rgba(255,255,255,0.15); }
+        .c-olive { background: #4a5d3a; border-color: rgba(255,255,255,0.15); }
+
+        .size-row { display: flex; gap: 8px; margin-bottom: 28px; }
+        .s-pill {
+            flex: 1; padding: 12px 0; text-align: center;
+            border: 2px solid rgba(255,255,255,0.08); border-radius: 14px;
+            font-weight: 700; font-size: 14px; cursor: pointer;
+            background: transparent; color: #fff; transition: all 0.2s ease;
+        }
+        .s-pill:hover { border-color: rgba(255,255,255,0.2); }
+        .s-pill.active { border-color: #a855f7; background: rgba(168,85,247,0.1); }
+
+        /* ─── Processing screen ─────────────────────────────────────── */
+        .processing-container {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 24px; padding: 32px 24px;
+            text-align: center; margin-bottom: 28px;
+        }
+        .proc-phase {
+            display: flex; align-items: center; gap: 14px;
+            padding: 14px 0; text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+        .proc-phase:last-child { border: none; }
+        .proc-icon {
+            width: 36px; height: 36px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; flex-shrink: 0;
+            background: rgba(255,255,255,0.04); transition: all 0.4s ease;
+        }
+        .proc-icon.done { background: rgba(34,197,94,0.15); }
+        .proc-icon.active { background: rgba(168,85,247,0.15); }
+        .proc-text { flex: 1; }
+        .proc-title { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+        .proc-sub { font-size: 12px; color: rgba(255,255,255,0.35); }
+        .proc-check {
+            font-size: 12px; font-weight: 700; color: rgba(34,197,94,0.7);
+            opacity: 0; transition: opacity 0.3s ease;
+        }
+        .proc-check.show { opacity: 1; }
+        .proc-spinner {
+            width: 18px; height: 18px; border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.08);
+            border-top-color: #a855f7; animation: spin 0.7s linear infinite;
+            opacity: 0; transition: opacity 0.3s ease;
+        }
+        .proc-spinner.show { opacity: 1; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ─── Compare Slider ────────────────────────────────────────── */
+        .compare-container {
+            position: relative; width: 100%; aspect-ratio: 3/4;
+            border-radius: 24px; overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.06);
+            margin-bottom: 24px; cursor: ew-resize; touch-action: none;
+        }
+        .compare-after, .compare-before {
+            position: absolute; inset: 0;
+            width: 100%; height: 100%;
+        }
+        .compare-after img, .compare-before img {
+            width: 100%; height: 100%; object-fit: cover;
+        }
+        .compare-before {
+            clip-path: inset(0 50% 0 0);
+            transition: none;
+        }
+        .compare-divider {
+            position: absolute; top: 0; bottom: 0; left: 50%;
+            width: 3px; background: #fff;
+            transform: translateX(-50%);
+            z-index: 10; pointer-events: none;
+        }
+        .compare-handle {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px; height: 40px; border-radius: 50%;
+            background: rgba(255,255,255,0.95);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 11; pointer-events: none;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+        }
+        .compare-handle svg { width: 20px; height: 20px; color: #1a1a1a; }
+        .compare-tag {
+            position: absolute; top: 14px; z-index: 5;
+            background: rgba(0,0,0,0.5); backdrop-filter: blur(8px);
+            padding: 5px 12px; border-radius: 100px;
+            font-size: 10px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        .tag-before { left: 14px; }
+        .tag-after  { right: 14px; }
+
+        /* ─── Fit details panel ─────────────────────────────────────── */
+        .fit-panel {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 20px; padding: 20px; margin-bottom: 24px;
+        }
+        .fit-header {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        .fit-title {
+            font-size: 13px; font-weight: 800; text-transform: uppercase;
+            letter-spacing: 0.06em;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .fit-title svg { width: 16px; height: 16px; color: #a855f7; }
+        .fit-score {
+            display: flex; align-items: center; gap: 6px;
+            background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.2);
+            padding: 5px 14px; border-radius: 100px;
+            font-size: 12px; font-weight: 700; color: rgba(34,197,94,0.9);
+        }
+        .fit-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+        .fit-row:last-child { border: none; }
+        .fit-label { font-size: 13px; color: rgba(255,255,255,0.45); }
+        .fit-value { font-size: 13px; font-weight: 700; }
+        .confidence-bar {
+            width: 100%; height: 4px; border-radius: 2px;
+            background: rgba(255,255,255,0.06); overflow: hidden; margin-top: 6px;
+        }
+        .confidence-fill {
+            height: 100%; border-radius: 2px;
+            background: linear-gradient(90deg, #a855f7, #6366f1);
+        }
+
+        /* ─── Buttons ───────────────────────────────────────────────── */
+        .btn-primary {
+            width: 100%; padding: 18px; border: none; border-radius: 20px;
+            font-family: inherit; font-size: 15px; font-weight: 800;
+            text-transform: uppercase; font-style: italic; letter-spacing: 0.06em;
+            cursor: pointer; color: #fff; transition: all 0.2s ease;
+            background: linear-gradient(135deg, #7c3aed, #a855f7);
+            box-shadow: 0 8px 32px rgba(168,85,247,0.25);
+        }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 12px 40px rgba(168,85,247,0.35); }
+        .btn-primary:active { transform: scale(0.98); }
+        .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+
+        .btn-secondary {
+            width: 100%; padding: 16px; border: 2px solid rgba(255,255,255,0.08);
+            border-radius: 20px; font-family: inherit; background: transparent;
+            font-size: 14px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.06em; cursor: pointer; color: #fff;
+            transition: all 0.2s ease; margin-top: 12px;
+        }
+        .btn-secondary:hover { border-color: rgba(255,255,255,0.2); }
+
+        .btn-row { display: flex; gap: 12px; margin-top: 16px; }
+        .btn-row .btn-half {
+            flex: 1; padding: 16px; border: 2px solid rgba(255,255,255,0.08);
+            border-radius: 20px; background: transparent;
+            font-family: inherit; font-size: 13px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.06em;
+            color: #fff; cursor: pointer; transition: all 0.2s ease;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn-row .btn-half:hover { border-color: rgba(255,255,255,0.2); }
+        .btn-row .btn-half svg { width: 18px; height: 18px; }
+
+        /* ─── Back link ─────────────────────────────────────────────── */
+        .back-link {
+            display: inline-flex; align-items: center; gap: 6px;
+            font-size: 11px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.12em; color: rgba(255,255,255,0.3);
+            cursor: pointer; margin-bottom: 24px; background: none; border: none;
+        }
+        .back-link:hover { color: rgba(255,255,255,0.5); }
+        .back-link svg { width: 14px; height: 14px; }
+
+        /* ─── Result actions grid ───────────────────────────────────── */
+        .result-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+            margin-top: 20px;
+        }
+        .result-action {
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
+            padding: 18px 12px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 18px; cursor: pointer; transition: all 0.2s ease;
+        }
+        .result-action:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); }
+        .result-action svg { width: 22px; height: 22px; color: rgba(255,255,255,0.45); }
+        .result-action span {
+            font-size: 11px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.08em; color: rgba(255,255,255,0.5);
+        }
+
+        /* ─── How it works explainer ────────────────────────────────── */
+        .how-it-works {
+            margin-top: 40px; padding-top: 32px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        .hiw-step {
+            display: flex; gap: 16px; margin-bottom: 28px;
+        }
+        .hiw-num {
+            width: 36px; height: 36px; border-radius: 10px;
+            background: rgba(168,85,247,0.1); border: 1px solid rgba(168,85,247,0.2);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px; font-weight: 800; color: #a855f7;
+            flex-shrink: 0;
+        }
+        .hiw-content { flex: 1; }
+        .hiw-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+        .hiw-desc { font-size: 13px; color: rgba(255,255,255,0.4); line-height: 1.5; }
+    </style>
+</head>
+
+<body>
+    <div class="bg-glow"></div>
+
+    <nav>
+        <div class="logo" onclick="window.location.href='index.html'">URFORMANCE</div>
+        <div class="nav-right">
+            <div class="nav-badge">Virtual Try-On</div>
+        </div>
+    </nav>
+
+    <div class="container">
+
+        <!-- Progress bar -->
+        <div class="progress-bar" id="progress-bar">
+            <div class="progress-seg done" id="prog-1"><div class="fill"></div></div>
+            <div class="progress-seg" id="prog-2"><div class="fill"></div></div>
+            <div class="progress-seg" id="prog-3"><div class="fill"></div></div>
+            <div class="progress-seg" id="prog-4"><div class="fill"></div></div>
+            <div class="progress-seg" id="prog-5"><div class="fill"></div></div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════
+             STEP 1 — UPLOAD PHOTO
+             ═══════════════════════════════════════════════════════════ -->
+        <div id="step-upload" class="step active">
+            <div class="step-label">Step 1 of 5</div>
+            <div class="step-title">Upload Your Photo</div>
+            <div class="step-desc">Take a front-facing photo in a well-lit area for the best result. Arms slightly away from your body works best.</div>
+
+            <!-- Upload zone (before photo) -->
+            <div class="upload-zone" id="upload-zone" onclick="document.getElementById('photo-input').click()">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+                <div class="upload-title">Tap to upload a photo</div>
+                <div class="upload-sub">JPG, PNG — front-facing recommended</div>
+            </div>
+            <input type="file" id="photo-input" accept="image/*" style="display:none" onchange="onPhotoSelected(this)">
+
+            <!-- Preview (after photo selected) -->
+            <div class="upload-preview" id="upload-preview">
+                <img id="preview-img" src="">
+                <button class="re-upload" onclick="document.getElementById('photo-input').click()">Change Photo</button>
+            </div>
+
+            <div class="demo-link">
+                <button onclick="useDemoPhoto()">or use our demo model</button>
+            </div>
+
+            <button class="btn-primary" id="btn-to-select" disabled onclick="goTo('select')">
+                Continue
+            </button>
+
+            <!-- How it works explainer -->
+            <div class="how-it-works">
+                <div class="step-label" style="margin-top:0;">How It Works</div>
+                <div class="hiw-step">
+                    <div class="hiw-num">1</div>
+                    <div class="hiw-content">
+                        <div class="hiw-title">Upload a Photo</div>
+                        <div class="hiw-desc">Take or upload a front-facing photo. Our AI works best with a clear, well-lit image.</div>
+                    </div>
+                </div>
+                <div class="hiw-step">
+                    <div class="hiw-num">2</div>
+                    <div class="hiw-content">
+                        <div class="hiw-title">Choose Your Gear</div>
+                        <div class="hiw-desc">Pick from our collection, choose a color, and select your size.</div>
+                    </div>
+                </div>
+                <div class="hiw-step">
+                    <div class="hiw-num">3</div>
+                    <div class="hiw-content">
+                        <div class="hiw-title">AI Processes Your Image</div>
+                        <div class="hiw-desc">Our AI detects your body shape, maps measurements, and generates a realistic try-on result.</div>
+                    </div>
+                </div>
+                <div class="hiw-step">
+                    <div class="hiw-num">4</div>
+                    <div class="hiw-content">
+                        <div class="hiw-title">Compare Before & After</div>
+                        <div class="hiw-desc">Use the interactive slider to compare your original photo with the AI-generated try-on.</div>
+                    </div>
+                </div>
+                <div class="hiw-step">
+                    <div class="hiw-num">5</div>
+                    <div class="hiw-content">
+                        <div class="hiw-title">Save, Share, or Buy</div>
+                        <div class="hiw-desc">Happy with the look? Save the image, share it with friends, or head straight to checkout.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════
+             STEP 2 — SELECT PRODUCT / COLOR / SIZE
+             ═══════════════════════════════════════════════════════════ -->
+        <div id="step-select" class="step">
+            <button class="back-link" onclick="goTo('upload')">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="3" d="M15 19l-7-7 7-7"/></svg>
+                Back
+            </button>
+
+            <div class="step-label">Step 2 of 5</div>
+            <div class="step-title">Choose Your Gear</div>
+            <div class="step-desc">Pick a product, color, and size to try on.</div>
+
+            <!-- Product cards -->
+            <div class="selector-label">Product</div>
+            <div class="product-grid">
+                <div class="product-card selected" id="card-pro" onclick="pickProduct('pro')">
+                    <img src="assets/shirt_black.png" alt="">
+                    <div class="p-name">Performance Pro</div>
+                    <div class="p-price">890.-</div>
+                </div>
+                <div class="product-card" id="card-daily" onclick="pickProduct('daily')">
+                    <img src="assets/shirt_white.png" alt="">
+                    <div class="p-name">Daily Runner</div>
+                    <div class="p-price">790.-</div>
+                </div>
+            </div>
+
+            <!-- Color -->
+            <div class="selector-label">Color</div>
+            <div class="color-row">
+                <div class="c-dot c-black active" id="cd-black" onclick="pickColor('black')"></div>
+                <div class="c-dot c-white" id="cd-white" onclick="pickColor('white')"></div>
+                <div class="c-dot c-navy" id="cd-navy" onclick="pickColor('navy')"></div>
+                <div class="c-dot c-olive" id="cd-olive" onclick="pickColor('olive')"></div>
+            </div>
+
+            <!-- Size -->
+            <div class="selector-label">Size</div>
+            <div class="size-row">
+                <div class="s-pill" onclick="pickSize(this,'S')">S</div>
+                <div class="s-pill active" onclick="pickSize(this,'M')">M</div>
+                <div class="s-pill" onclick="pickSize(this,'L')">L</div>
+                <div class="s-pill" onclick="pickSize(this,'XL')">XL</div>
+            </div>
+
+            <button class="btn-primary" onclick="goTo('processing')">
+                Generate Try-On
+            </button>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════
+             STEP 3 — AI PROCESSING
+             ═══════════════════════════════════════════════════════════ -->
+        <div id="step-processing" class="step">
+            <div class="step-label">Step 3 of 5</div>
+            <div class="step-title">AI is Working...</div>
+            <div class="step-desc">Our model is generating your personalized try-on. This usually takes a few seconds.</div>
+
+            <!-- Small preview of their photo -->
+            <div class="photo-frame" style="aspect-ratio: 4/3; margin-bottom: 28px;">
+                <img id="proc-photo" src="assets/demo_before.png" style="filter: brightness(0.7);">
+                <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+                    <div class="proc-spinner show" style="width:40px;height:40px;border-width:3px;"></div>
+                </div>
+            </div>
+
+            <div class="processing-container">
+                <div class="proc-phase" id="phase-1">
+                    <div class="proc-icon" id="icon-1">🔍</div>
+                    <div class="proc-text">
+                        <div class="proc-title">Body Detection</div>
+                        <div class="proc-sub">Finding pose keypoints…</div>
+                    </div>
+                    <div class="proc-spinner" id="spin-1"></div>
+                    <div class="proc-check" id="check-1">✓</div>
+                </div>
+                <div class="proc-phase" id="phase-2">
+                    <div class="proc-icon" id="icon-2">📐</div>
+                    <div class="proc-text">
+                        <div class="proc-title">Measurement Mapping</div>
+                        <div class="proc-sub">Estimating chest, shoulder, length…</div>
+                    </div>
+                    <div class="proc-spinner" id="spin-2"></div>
+                    <div class="proc-check" id="check-2">✓</div>
+                </div>
+                <div class="proc-phase" id="phase-3">
+                    <div class="proc-icon" id="icon-3">👕</div>
+                    <div class="proc-text">
+                        <div class="proc-title">Garment Warping</div>
+                        <div class="proc-sub">Fitting garment to body shape…</div>
+                    </div>
+                    <div class="proc-spinner" id="spin-3"></div>
+                    <div class="proc-check" id="check-3">✓</div>
+                </div>
+                <div class="proc-phase" id="phase-4">
+                    <div class="proc-icon" id="icon-4">✨</div>
+                    <div class="proc-text">
+                        <div class="proc-title">Rendering</div>
+                        <div class="proc-sub">Generating photorealistic output…</div>
+                    </div>
+                    <div class="proc-spinner" id="spin-4"></div>
+                    <div class="proc-check" id="check-4">✓</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════
+             STEP 4 — COMPARE (BEFORE / AFTER SLIDER)
+             ═══════════════════════════════════════════════════════════ -->
+        <div id="step-compare" class="step">
+            <button class="back-link" onclick="goTo('select')">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="3" d="M15 19l-7-7 7-7"/></svg>
+                Back to Customize
+            </button>
+
+            <div class="step-label">Step 4 of 5</div>
+            <div class="step-title">Compare Result</div>
+            <div class="step-desc">Drag the slider left and right to compare before and after.</div>
+
+            <div class="compare-container" id="compare-container">
+                <!-- After (full image behind) -->
+                <div class="compare-after">
+                    <img id="after-img" src="assets/demo_black.png" alt="After">
+                </div>
+                <!-- Before (clipped) -->
+                <div class="compare-before" id="compare-before">
+                    <img id="before-img" src="assets/demo_before.png" alt="Before">
+                </div>
+                <!-- Divider + handle -->
+                <div class="compare-divider" id="compare-divider"></div>
+                <div class="compare-handle" id="compare-handle">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-width="2.5" stroke-linecap="round" d="M8 5l-5 7 5 7M16 5l5 7-5 7"/>
+                    </svg>
+                </div>
+                <!-- Tags -->
+                <div class="compare-tag tag-before">Before</div>
+                <div class="compare-tag tag-after">After</div>
+            </div>
+
+            <!-- Fit details -->
+            <div class="fit-panel">
+                <div class="fit-header">
+                    <div class="fit-title">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                        </svg>
+                        AI Fit Analysis
+                    </div>
+                    <div class="fit-score">★ 4.8 / 5</div>
+                </div>
+                <div class="fit-row">
+                    <span class="fit-label">Recommended Size</span>
+                    <span class="fit-value" id="result-size">M</span>
+                </div>
+                <div class="fit-row">
+                    <span class="fit-label">Fit Confidence</span>
+                    <span class="fit-value">94%</span>
+                </div>
+                <div class="confidence-bar"><div class="confidence-fill" style="width:94%"></div></div>
+                <div class="fit-row">
+                    <span class="fit-label">Est. Chest</span>
+                    <span class="fit-value">96 cm</span>
+                </div>
+                <div class="fit-row">
+                    <span class="fit-label">Est. Shoulder</span>
+                    <span class="fit-value">44 cm</span>
+                </div>
+                <div class="fit-row">
+                    <span class="fit-label">Est. Length</span>
+                    <span class="fit-value">70 cm</span>
+                </div>
+            </div>
+
+            <button class="btn-primary" onclick="goTo('result')">
+                Looks Great!
+            </button>
+            <button class="btn-secondary" onclick="goTo('select')">
+                Try Different Options
+            </button>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════
+             STEP 5 — FINAL RESULT
+             ═══════════════════════════════════════════════════════════ -->
+        <div id="step-result" class="step">
+            <div class="step-label">Step 5 of 5</div>
+            <div class="step-title" style="text-align:center;">Looking Great 🔥</div>
+            <div class="step-desc" style="text-align:center;">Your virtual try-on is ready. Save it, share it, or head to the store.</div>
+
+            <div class="photo-frame" style="margin-bottom: 16px;">
+                <img id="final-result-img" src="assets/demo_black.png">
+                <!-- Watermark -->
+                <div style="position:absolute;bottom:14px;left:50%;transform:translateX(-50%);
+                    background:rgba(0,0,0,0.5);backdrop-filter:blur(8px);padding:6px 16px;
+                    border-radius:100px;font-size:10px;font-weight:700;text-transform:uppercase;
+                    letter-spacing:0.1em;color:rgba(255,255,255,0.6);white-space:nowrap;">
+                    Urformance Virtual Try-On
+                </div>
+            </div>
+
+            <div style="text-align:center;margin-bottom:20px;">
+                <span style="font-size:14px;font-weight:800;font-style:italic;text-transform:uppercase;" id="result-product-name">Performance Pro</span>
+                <span style="font-size:13px;color:rgba(255,255,255,0.4);margin-left:8px;" id="result-product-meta">Black · Size M</span>
+            </div>
+
+            <div class="result-grid">
+                <div class="result-action" onclick="alert('📸 Image saved! (Demo)')">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                    </svg>
+                    <span>Save</span>
+                </div>
+                <div class="result-action" onclick="alert('🔗 Link copied! (Demo)')">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                            d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+                    </svg>
+                    <span>Share</span>
+                </div>
+                <div class="result-action" onclick="goTo('compare')">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                    </svg>
+                    <span>Compare</span>
+                </div>
+                <div class="result-action" onclick="goTo('select')">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                            d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
+                    </svg>
+                    <span>Customize</span>
+                </div>
+            </div>
+
+            <button class="btn-primary" style="margin-top:28px;" onclick="window.location.href='index.html'">
+                Shop Now — Add to Cart
+            </button>
+            <button class="btn-secondary" onclick="goTo('upload')">
+                Start Over
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        // ─── State ──────────────────────────────────────────────────
+        let state = {
+            hasPhoto: false,
+            photoSrc: '',
+            product: 'pro',  // 'pro' | 'daily'
+            color: 'black',
+            size: 'M',
+        };
+
+        const products = {
+            pro:   { name: 'Performance Pro', price: '890.-' },
+            daily: { name: 'Daily Runner',    price: '790.-' },
+        };
+
+        // Map product+color to result images (pre-generated demo)
+        const resultImages = {
+            'pro-black':  'assets/demo_black.png',
+            'pro-white':  'assets/demo_white.png',
+            'pro-navy':   'assets/demo_black.png',
+            'pro-olive':  'assets/demo_black.png',
+            'daily-black':'assets/demo_black.png',
+            'daily-white':'assets/demo_white.png',
+            'daily-navy': 'assets/demo_black.png',
+            'daily-olive':'assets/demo_black.png',
+        };
+
+        // ─── Navigation ─────────────────────────────────────────────
+        const stepOrder = ['upload', 'select', 'processing', 'compare', 'result'];
+
+        function goTo(name) {
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+            document.getElementById('step-' + name).classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Update progress bar
+            const idx = stepOrder.indexOf(name);
+            stepOrder.forEach((s, i) => {
+                const seg = document.getElementById('prog-' + (i + 1));
+                seg.className = 'progress-seg';
+                if (i < idx) seg.classList.add('done');
+                else if (i === idx) seg.classList.add('active');
+            });
+
+            // Start processing animation
+            if (name === 'processing') runProcessing();
+
+            // Update result content
+            if (name === 'compare' || name === 'result') {
+                const key = state.product + '-' + state.color;
+                const resultSrc = resultImages[key] || 'assets/demo_black.png';
+                document.getElementById('after-img').src = resultSrc;
+                document.getElementById('final-result-img').src = resultSrc;
+                document.getElementById('result-size').textContent = state.size;
+                document.getElementById('result-product-name').textContent = products[state.product].name;
+                document.getElementById('result-product-meta').textContent =
+                    state.color.charAt(0).toUpperCase() + state.color.slice(1) + ' · Size ' + state.size;
+            }
+        }
+
+        // ─── Photo Upload ────────────────────────────────────────────
+        function onPhotoSelected(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    state.hasPhoto = true;
+                    state.photoSrc = e.target.result;
+                    document.getElementById('upload-zone').style.display = 'none';
+                    document.getElementById('upload-preview').style.display = 'block';
+                    document.getElementById('preview-img').src = e.target.result;
+                    document.getElementById('btn-to-select').disabled = false;
+                    // Use uploaded photo as "before" in compare
+                    document.getElementById('before-img').src = e.target.result;
+                    document.getElementById('proc-photo').src = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function useDemoPhoto() {
+            state.hasPhoto = true;
+            state.photoSrc = 'assets/demo_before.png';
+            document.getElementById('upload-zone').style.display = 'none';
+            document.getElementById('upload-preview').style.display = 'block';
+            document.getElementById('preview-img').src = 'assets/demo_before.png';
+            document.getElementById('btn-to-select').disabled = false;
+            document.getElementById('before-img').src = 'assets/demo_before.png';
+            document.getElementById('proc-photo').src = 'assets/demo_before.png';
+        }
+
+        // ─── Product / Color / Size ──────────────────────────────────
+        function pickProduct(id) {
+            state.product = id;
+            document.querySelectorAll('.product-card').forEach(c => c.classList.remove('selected'));
+            document.getElementById('card-' + id).classList.add('selected');
+        }
+
+        function pickColor(c) {
+            state.color = c;
+            document.querySelectorAll('.c-dot').forEach(d => d.classList.remove('active'));
+            document.getElementById('cd-' + c).classList.add('active');
+        }
+
+        function pickSize(el, s) {
+            state.size = s;
+            document.querySelectorAll('.s-pill').forEach(p => p.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        // ─── Processing Animation ────────────────────────────────────
+        function runProcessing() {
+            // Reset
+            for (let i = 1; i <= 4; i++) {
+                document.getElementById('icon-' + i).className = 'proc-icon';
+                document.getElementById('spin-' + i).className = 'proc-spinner';
+                document.getElementById('check-' + i).className = 'proc-check';
+            }
+
+            const timings = [
+                { phase: 1, start: 300,  done: 1200 },
+                { phase: 2, start: 1200, done: 2400 },
+                { phase: 3, start: 2400, done: 3800 },
+                { phase: 4, start: 3800, done: 5000 },
+            ];
+
+            timings.forEach(t => {
+                setTimeout(() => {
+                    document.getElementById('icon-' + t.phase).classList.add('active');
+                    document.getElementById('spin-' + t.phase).classList.add('show');
+                }, t.start);
+
+                setTimeout(() => {
+                    document.getElementById('icon-' + t.phase).classList.remove('active');
+                    document.getElementById('icon-' + t.phase).classList.add('done');
+                    document.getElementById('spin-' + t.phase).classList.remove('show');
+                    document.getElementById('check-' + t.phase).classList.add('show');
+                }, t.done);
+            });
+
+            // Auto-advance to compare
+            setTimeout(() => goTo('compare'), 5600);
+        }
+
+        // ─── Compare Slider ──────────────────────────────────────────
+        (function initCompareSlider() {
+            const container = document.getElementById('compare-container');
+            const before    = document.getElementById('compare-before');
+            const divider   = document.getElementById('compare-divider');
+            const handle    = document.getElementById('compare-handle');
+            let dragging = false;
+
+            function setPosition(x) {
+                const rect = container.getBoundingClientRect();
+                let pct = ((x - rect.left) / rect.width) * 100;
+                pct = Math.max(2, Math.min(98, pct));
+                before.style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
+                divider.style.left = pct + '%';
+                handle.style.left  = pct + '%';
+            }
+
+            container.addEventListener('mousedown',  () => dragging = true);
+            container.addEventListener('touchstart', () => dragging = true);
+            window.addEventListener('mouseup',  () => dragging = false);
+            window.addEventListener('touchend', () => dragging = false);
+
+            container.addEventListener('mousemove', (e) => { if (dragging) setPosition(e.clientX); });
+            container.addEventListener('touchmove', (e) => {
+                if (dragging) setPosition(e.touches[0].clientX);
+            });
+            container.addEventListener('click', (e) => setPosition(e.clientX));
+        })();
+    </script>
+</body>
+
+</html>

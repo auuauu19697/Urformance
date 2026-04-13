@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Urformance | AR Try-On Experience</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #000; color: #fff;
+            height: 100dvh; overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+            user-select: none;
+        }
+
+        /* ─── Screens ──────────────────────────────────────────────── */
+        .screen { display: none; position: fixed; inset: 0; }
+        .screen.active { display: flex; }
+
+        /* ═══════════════════════════════════════════════════════════
+           SCREEN 0 — START / ONBOARDING
+           ═══════════════════════════════════════════════════════════ */
+        .start-screen {
+            flex-direction: column; align-items: center;
+            justify-content: center; gap: 0;
+            background: #0a0a0a; z-index: 300;
+        }
+        .start-top {
+            position: absolute; top: 0; left: 0; right: 0;
+            padding: 16px 20px; display: flex;
+            align-items: center; justify-content: space-between;
+        }
+        .start-logo { font-weight: 900; font-size: 16px; font-style: italic; letter-spacing: -0.04em; }
+        .start-skip {
+            font-size: 11px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.1em; color: rgba(255,255,255,0.3);
+            background: none; border: none; cursor: pointer;
+        }
+
+        /* Onboarding slides */
+        .onboard-slides { width: 100%; max-width: 360px; text-align: center; }
+        .onboard-slide { display: none; animation: fadeUp 0.4s ease; }
+        .onboard-slide.active { display: block; }
+        @keyframes fadeUp { from { opacity:0; transform: translateY(12px); } to { opacity:1; transform: translateY(0); } }
+
+        .slide-icon {
+            width: 88px; height: 88px; margin: 0 auto 28px;
+            border-radius: 50%; border: 2px solid rgba(255,255,255,0.06);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 36px;
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+        .slide-title {
+            font-size: 22px; font-weight: 900; font-style: italic;
+            text-transform: uppercase; margin-bottom: 10px; line-height: 1.1;
+        }
+        .slide-desc {
+            font-size: 14px; color: rgba(255,255,255,0.4);
+            line-height: 1.6; max-width: 300px; margin: 0 auto 32px;
+        }
+
+        /* Dots */
+        .slide-dots {
+            display: flex; justify-content: center; gap: 8px;
+            margin-bottom: 32px;
+        }
+        .dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: rgba(255,255,255,0.12); transition: all 0.3s ease;
+        }
+        .dot.active { background: #a855f7; width: 24px; border-radius: 4px; }
+
+        .start-btn {
+            padding: 16px 56px; border-radius: 100px; border: none;
+            background: #fff; color: #000;
+            font-family: inherit; font-size: 15px; font-weight: 800;
+            text-transform: uppercase; font-style: italic;
+            letter-spacing: 0.04em; cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .start-btn:active { transform: scale(0.96); }
+        .start-btn-outline {
+            padding: 14px 48px; border-radius: 100px;
+            border: 2px solid rgba(255,255,255,0.12);
+            background: none; color: #fff;
+            font-family: inherit; font-size: 13px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.06em;
+            cursor: pointer; margin-top: 14px;
+            transition: all 0.2s ease;
+        }
+        .start-btn-outline:active { transform: scale(0.96); }
+
+        /* ═══════════════════════════════════════════════════════════
+           SCREEN 1 — CAMERA / LIVE VIEW
+           ═══════════════════════════════════════════════════════════ */
+        .camera-screen {
+            flex-direction: column; background: #000; z-index: 50;
+        }
+        .camera-viewport {
+            position: absolute; inset: 0;
+        }
+        #camera-feed {
+            width: 100%; height: 100%; object-fit: cover;
+            transform: scaleX(-1);
+        }
+        /* Fallback simulated camera (demo model photo) */
+        .sim-camera {
+            width: 100%; height: 100%; object-fit: cover;
+            animation: subtleZoom 12s ease-in-out infinite alternate;
+        }
+        @keyframes subtleZoom {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.04); }
+        }
+
+        /* Shirt overlay */
+        .shirt-layer {
+            position: fixed; top: 30%; left: 50%;
+            transform: translateX(-50%);
+            width: 44vw; max-width: 280px;
+            pointer-events: none; z-index: 10;
+            opacity: 0; transition: all 0.5s cubic-bezier(0.22,1,0.36,1);
+            mix-blend-mode: multiply; filter: contrast(1.05);
+        }
+        .shirt-layer.visible { opacity: 0.88; }
+
+        /* AR corner brackets */
+        .ar-corners {
+            position: fixed; z-index: 30; pointer-events: none;
+            top: 12%; left: 50%; width: 52vw; max-width: 280px;
+            height: 52vh; max-height: 460px;
+            transform: translateX(-50%);
+            opacity: 0; transition: opacity 0.6s ease;
+        }
+        .ar-corners.visible { opacity: 0.3; }
+        .corner {
+            position: absolute; width: 20px; height: 20px;
+            border-color: #22c55e; border-style: solid;
+        }
+        .corner-tl { top: 0; left: 0; border-width: 2px 0 0 2px; }
+        .corner-tr { top: 0; right: 0; border-width: 2px 2px 0 0; }
+        .corner-bl { bottom: 0; left: 0; border-width: 0 0 2px 2px; }
+        .corner-br { bottom: 0; right: 0; border-width: 0 2px 2px 0; }
+
+        /* Scan line */
+        .scan-line {
+            position: fixed; left: 0; right: 0; height: 2px; z-index: 40;
+            background: linear-gradient(90deg, transparent, rgba(34,197,94,0.5), transparent);
+            box-shadow: 0 0 16px rgba(34,197,94,0.25);
+            opacity: 0; pointer-events: none;
+        }
+        .scan-line.active { opacity: 1; animation: scanDown 2s ease-in-out; }
+        @keyframes scanDown { 0% { top: 10%; } 100% { top: 80%; opacity: 0; } }
+
+        /* Scanning overlay with phases */
+        .scan-overlay {
+            position: fixed; inset: 0; z-index: 55;
+            display: none; align-items: center; justify-content: center;
+            background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
+        }
+        .scan-overlay.active { display: flex; }
+        .scan-box {
+            background: rgba(10,10,10,0.85); backdrop-filter: blur(16px);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 24px; padding: 28px 32px;
+            width: 85vw; max-width: 340px;
+        }
+        .scan-phase {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+        .scan-phase:last-child { border: none; }
+        .scan-emoji { font-size: 20px; flex-shrink: 0; }
+        .scan-text { flex: 1; }
+        .scan-label { font-size: 13px; font-weight: 700; }
+        .scan-sub { font-size: 11px; color: rgba(255,255,255,0.3); }
+        .scan-status {
+            font-size: 11px; font-weight: 700;
+            color: rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+        }
+        .scan-status.done { color: rgba(34,197,94,0.8); }
+        .scan-status.active { color: rgba(168,85,247,0.8); }
+        .scan-spinner {
+            width: 16px; height: 16px; border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.08);
+            border-top-color: #a855f7;
+            animation: spin 0.7s linear infinite;
+            display: none;
+        }
+        .scan-spinner.show { display: block; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ─── Top bar ──────────────────────────────────────────────── */
+        .top-bar {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 60;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 18px; padding-top: max(14px, env(safe-area-inset-top));
+            background: linear-gradient(180deg, rgba(0,0,0,0.65) 0%, transparent 100%);
+        }
+        .top-logo { font-weight: 900; font-size: 15px; font-style: italic; letter-spacing: -0.04em; }
+        .top-close {
+            width: 34px; height: 34px; border-radius: 50%;
+            background: rgba(255,255,255,0.1); border: none;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; backdrop-filter: blur(8px);
+        }
+        .top-close svg { width: 16px; height: 16px; color: #fff; }
+
+        /* AI status pill */
+        .ai-pill {
+            position: fixed; top: 64px; left: 50%; transform: translateX(-50%);
+            z-index: 60; display: flex; align-items: center; gap: 8px;
+            background: rgba(0,0,0,0.45); backdrop-filter: blur(14px);
+            border: 1px solid rgba(255,255,255,0.08);
+            padding: 7px 16px; border-radius: 100px;
+            opacity: 0; transition: opacity 0.4s ease;
+        }
+        .ai-pill.visible { opacity: 1; }
+        .ai-pill .pulse-dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: #22c55e; animation: blink 1.5s infinite;
+        }
+        @keyframes blink { 0%,100% { opacity:1; } 50% { opacity: 0.3; } }
+        .ai-pill span {
+            font-size: 10px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.08em; color: rgba(255,255,255,0.7);
+        }
+
+        /* Size badge on viewport */
+        .size-badge {
+            position: fixed; bottom: 280px; right: 20px; z-index: 15;
+            background: rgba(0,0,0,0.5); backdrop-filter: blur(10px);
+            padding: 6px 14px; border-radius: 100px;
+            border: 1px solid rgba(255,255,255,0.08);
+            font-size: 11px; font-weight: 800; letter-spacing: 0.04em;
+            opacity: 0; transition: opacity 0.3s ease;
+        }
+        .size-badge.visible { opacity: 1; }
+
+        /* Fit rating badge */
+        .fit-badge {
+            position: fixed; bottom: 280px; left: 20px; z-index: 15;
+            background: rgba(0,0,0,0.5); backdrop-filter: blur(10px);
+            padding: 6px 14px; border-radius: 100px;
+            border: 1px solid rgba(255,255,255,0.08);
+            font-size: 11px; font-weight: 700;
+            display: flex; align-items: center; gap: 5px;
+            opacity: 0; transition: opacity 0.3s ease;
+        }
+        .fit-badge.visible { opacity: 1; }
+        .fit-badge .stars { color: #facc15; }
+
+        /* ─── Bottom panel ─────────────────────────────────────────── */
+        .bottom-panel {
+            position: fixed; bottom: 0; left: 0; right: 0; z-index: 60;
+            padding: 0 16px;
+            padding-bottom: max(16px, env(safe-area-inset-bottom));
+            background: linear-gradient(0deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 60%, transparent 100%);
+        }
+
+        /* Product info */
+        .product-info {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 10px; padding: 0 2px;
+        }
+        .prod-name { font-size: 15px; font-weight: 800; font-style: italic; text-transform: uppercase; }
+        .prod-price { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.5); }
+
+        /* Product thumbnails */
+        .thumb-row {
+            display: flex; justify-content: center; gap: 10px; margin-bottom: 14px;
+        }
+        .thumb {
+            width: 52px; height: 52px; border-radius: 14px;
+            overflow: hidden; cursor: pointer;
+            border: 2px solid transparent; transition: all 0.2s ease;
+            background: rgba(255,255,255,0.06);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .thumb.active { border-color: #fff; }
+        .thumb img { width: 40px; height: 40px; object-fit: contain; }
+
+        /* Color dots */
+        .color-strip {
+            display: flex; justify-content: center; gap: 14px; margin-bottom: 14px;
+        }
+        .cdot {
+            width: 28px; height: 28px; border-radius: 50%;
+            border: 2px solid transparent; cursor: pointer;
+            transition: all 0.2s ease; position: relative;
+        }
+        .cdot::after {
+            content: ''; position: absolute; inset: -4px;
+            border: 2px solid transparent; border-radius: 50%;
+            transition: border-color 0.2s ease;
+        }
+        .cdot.active::after { border-color: #fff; }
+        .cdot-black { background: #1a1a1a; border-color: rgba(255,255,255,0.2); }
+        .cdot-white { background: #f0f0f0; border-color: rgba(255,255,255,0.2); }
+        .cdot-navy  { background: #1e3a5f; border-color: rgba(255,255,255,0.2); }
+        .cdot-olive { background: #4a5d3a; border-color: rgba(255,255,255,0.2); }
+
+        /* Size chips */
+        .size-strip {
+            display: flex; justify-content: center; gap: 6px; margin-bottom: 16px;
+        }
+        .schip {
+            padding: 7px 16px; border-radius: 100px;
+            background: rgba(255,255,255,0.06);
+            border: 1.5px solid rgba(255,255,255,0.08);
+            font-size: 12px; font-weight: 700; cursor: pointer;
+            transition: all 0.2s ease; color: #fff;
+        }
+        .schip:active { transform: scale(0.95); }
+        .schip.active {
+            background: rgba(255,255,255,0.18);
+            border-color: rgba(255,255,255,0.4);
+        }
+
+        /* Action row */
+        .action-row {
+            display: flex; align-items: center; justify-content: space-evenly;
+            padding: 6px 0 2px;
+        }
+        .action-side {
+            width: 46px; height: 46px; border-radius: 50%;
+            background: rgba(255,255,255,0.08); border: none;
+            backdrop-filter: blur(6px); cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s ease;
+        }
+        .action-side:active { transform: scale(0.9); background: rgba(255,255,255,0.15); }
+        .action-side svg { width: 20px; height: 20px; color: #fff; }
+
+        .shutter {
+            width: 68px; height: 68px; border-radius: 50%;
+            background: #fff; border: 4px solid rgba(255,255,255,0.3);
+            cursor: pointer; transition: all 0.12s ease;
+            position: relative;
+        }
+        .shutter::after {
+            content: ''; position: absolute; inset: 4px;
+            border-radius: 50%; background: #fff;
+            transition: all 0.12s ease;
+        }
+        .shutter:active { transform: scale(0.92); }
+        .shutter:active::after { background: rgba(255,255,255,0.7); }
+
+        /* Flash */
+        .flash-overlay {
+            position: fixed; inset: 0; z-index: 200;
+            background: #fff; pointer-events: none;
+            opacity: 0; transition: opacity 0.08s ease;
+        }
+        .flash-overlay.flash { opacity: 0.85; }
+
+        /* ═══════════════════════════════════════════════════════════
+           SCREEN 2 — CAPTURE REVIEW
+           ═══════════════════════════════════════════════════════════ */
+        .review-screen {
+            flex-direction: column; background: #0a0a0a; z-index: 100;
+        }
+
+        .review-header {
+            padding: 14px 18px; display: flex;
+            align-items: center; justify-content: space-between;
+        }
+        .review-title { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; }
+        .review-close {
+            font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.4);
+            text-transform: uppercase; letter-spacing: 0.08em;
+            background: none; border: none; cursor: pointer;
+        }
+
+        /* Compare slider in review */
+        .review-compare {
+            position: relative; flex: 1; overflow: hidden;
+            margin: 0 16px; border-radius: 20px;
+        }
+        .review-compare .r-after,
+        .review-compare .r-before {
+            position: absolute; inset: 0;
+        }
+        .review-compare img {
+            width: 100%; height: 100%; object-fit: cover;
+        }
+        .review-compare .r-before {
+            clip-path: inset(0 50% 0 0);
+        }
+        .review-divider {
+            position: absolute; top: 0; bottom: 0; left: 50%;
+            width: 3px; background: #fff;
+            transform: translateX(-50%); z-index: 10; pointer-events: none;
+        }
+        .review-handle {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 36px; height: 36px; border-radius: 50%;
+            background: rgba(255,255,255,0.9);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 11; pointer-events: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        .review-handle svg { width: 18px; height: 18px; color: #1a1a1a; }
+        .review-tag {
+            position: absolute; top: 12px; z-index: 5;
+            background: rgba(0,0,0,0.5); backdrop-filter: blur(8px);
+            padding: 4px 12px; border-radius: 100px;
+            font-size: 9px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        .r-tag-before { left: 12px; }
+        .r-tag-after  { right: 12px; }
+
+        /* Watermark on result */
+        .review-watermark {
+            position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%);
+            background: rgba(0,0,0,0.45); backdrop-filter: blur(6px);
+            padding: 5px 14px; border-radius: 100px; z-index: 12;
+            font-size: 9px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.1em; color: rgba(255,255,255,0.5);
+            white-space: nowrap;
+        }
+
+        /* Fit summary bar */
+        .review-fit {
+            display: flex; justify-content: space-around;
+            padding: 14px 16px; margin: 12px 16px 0;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px;
+        }
+        .review-fit-item { text-align: center; }
+        .review-fit-val { font-size: 16px; font-weight: 800; }
+        .review-fit-label { font-size: 10px; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 0.08em; }
+
+        /* Review actions */
+        .review-actions {
+            display: flex; justify-content: space-around;
+            align-items: center; padding: 18px 16px;
+            padding-bottom: max(18px, env(safe-area-inset-bottom));
+        }
+        .review-action {
+            display: flex; flex-direction: column;
+            align-items: center; gap: 6px;
+            background: none; border: none; cursor: pointer; color: #fff;
+        }
+        .review-action svg { width: 26px; height: 26px; }
+        .review-action span {
+            font-size: 10px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.08em; color: rgba(255,255,255,0.6);
+        }
+        .review-action.primary svg { color: #a855f7; }
+        .review-action.primary span { color: #a855f7; }
+
+        /* ═══════════════════════════════════════════════════════════
+           RESPONSIVE
+           ═══════════════════════════════════════════════════════════ */
+        @media (min-width: 600px) {
+            .shirt-layer { width: 28vw; max-width: 240px; top: 14%; }
+            .ar-corners { width: 32vw; max-width: 240px; }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Flash -->
+    <div class="flash-overlay" id="flash"></div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         SCREEN 0 — ONBOARDING
+         ═══════════════════════════════════════════════════════════ -->
+    <div class="screen start-screen active" id="screen-start">
+        <div class="start-top">
+            <div class="start-logo">URFORMANCE</div>
+            <button class="start-skip" onclick="launchCamera('sim')">Skip</button>
+        </div>
+
+        <div class="onboard-slides">
+            <!-- Slide 1 -->
+            <div class="onboard-slide active" id="slide-0">
+                <div class="slide-icon">📷</div>
+                <div class="slide-title">AR Try-On</div>
+                <div class="slide-desc">See how Urformance gear looks on you — in real time, like a camera filter.</div>
+            </div>
+            <!-- Slide 2 -->
+            <div class="onboard-slide" id="slide-1">
+                <div class="slide-icon">🔍</div>
+                <div class="slide-title">AI Body Scan</div>
+                <div class="slide-desc">Our AI detects your body shape, maps measurements, and recommends the perfect size.</div>
+            </div>
+            <!-- Slide 3 -->
+            <div class="onboard-slide" id="slide-2">
+                <div class="slide-icon">👕</div>
+                <div class="slide-title">Try, Switch, Capture</div>
+                <div class="slide-desc">Swap products, colors, and sizes live. Capture a photo to save or share.</div>
+            </div>
+        </div>
+
+        <div class="slide-dots">
+            <div class="dot active" id="dot-0"></div>
+            <div class="dot" id="dot-1"></div>
+            <div class="dot" id="dot-2"></div>
+        </div>
+
+        <button class="start-btn" id="start-btn" onclick="nextSlide()">Next</button>
+        <button class="start-btn-outline" onclick="launchCamera('sim')">Use Demo Mode</button>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         SCREEN 1 — CAMERA
+         ═══════════════════════════════════════════════════════════ -->
+    <div class="screen camera-screen" id="screen-camera">
+        <!-- Camera or simulated view -->
+        <div class="camera-viewport" id="camera-viewport">
+            <video id="camera-feed" autoplay playsinline muted style="display:none;"></video>
+            <img id="sim-feed" class="sim-camera" src="assets/demo_before.png" style="display:none;" alt="">
+        </div>
+
+        <!-- Shirt overlay -->
+        <img src="assets/shirt_black.png" class="shirt-layer" id="shirt-overlay">
+
+        <!-- AR corners -->
+        <div class="ar-corners" id="ar-corners">
+            <div class="corner corner-tl"></div>
+            <div class="corner corner-tr"></div>
+            <div class="corner corner-bl"></div>
+            <div class="corner corner-br"></div>
+        </div>
+
+        <!-- Scan line -->
+        <div class="scan-line" id="scan-line"></div>
+
+        <!-- Scanning overlay -->
+        <div class="scan-overlay" id="scan-overlay">
+            <div class="scan-box">
+                <div style="font-size:14px;font-weight:800;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:16px;text-align:center;">Analyzing…</div>
+                <div class="scan-phase">
+                    <div class="scan-emoji">👤</div>
+                    <div class="scan-text">
+                        <div class="scan-label">Body Detection</div>
+                        <div class="scan-sub">Finding pose keypoints</div>
+                    </div>
+                    <div class="scan-spinner" id="ss-1"></div>
+                    <div class="scan-status" id="st-1">Waiting</div>
+                </div>
+                <div class="scan-phase">
+                    <div class="scan-emoji">📐</div>
+                    <div class="scan-text">
+                        <div class="scan-label">Measurements</div>
+                        <div class="scan-sub">Chest, shoulder, length</div>
+                    </div>
+                    <div class="scan-spinner" id="ss-2"></div>
+                    <div class="scan-status" id="st-2">Waiting</div>
+                </div>
+                <div class="scan-phase">
+                    <div class="scan-emoji">👕</div>
+                    <div class="scan-text">
+                        <div class="scan-label">Garment Mapping</div>
+                        <div class="scan-sub">Fitting to body shape</div>
+                    </div>
+                    <div class="scan-spinner" id="ss-3"></div>
+                    <div class="scan-status" id="st-3">Waiting</div>
+                </div>
+                <div class="scan-phase">
+                    <div class="scan-emoji">✨</div>
+                    <div class="scan-text">
+                        <div class="scan-label">Rendering</div>
+                        <div class="scan-sub">Generating AR overlay</div>
+                    </div>
+                    <div class="scan-spinner" id="ss-4"></div>
+                    <div class="scan-status" id="st-4">Waiting</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top bar -->
+        <div class="top-bar">
+            <div class="top-logo">URFORMANCE</div>
+            <button class="top-close" onclick="showScreen('start')">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- AI pill -->
+        <div class="ai-pill" id="ai-pill">
+            <div class="pulse-dot"></div>
+            <span>Tracking Active</span>
+        </div>
+
+        <!-- Badges -->
+        <div class="fit-badge" id="fit-badge">
+            <span class="stars">★★★★★</span>
+            <span>Great Fit</span>
+        </div>
+        <div class="size-badge" id="size-badge">Size M</div>
+
+        <!-- Bottom panel -->
+        <div class="bottom-panel">
+            <div class="product-info">
+                <div class="prod-name" id="prod-name">Performance Pro</div>
+                <div class="prod-price" id="prod-price">890.-</div>
+            </div>
+
+            <div class="thumb-row">
+                <div class="thumb active" id="th-pro" onclick="pickProduct('pro')">
+                    <img src="assets/shirt_black.png" alt="">
+                </div>
+                <div class="thumb" id="th-daily" onclick="pickProduct('daily')">
+                    <img src="assets/shirt_white.png" alt="">
+                </div>
+            </div>
+
+            <div class="color-strip">
+                <div class="cdot cdot-black active" id="cd-black" onclick="pickColor('black')"></div>
+                <div class="cdot cdot-white" id="cd-white" onclick="pickColor('white')"></div>
+                <div class="cdot cdot-navy" id="cd-navy" onclick="pickColor('navy')"></div>
+                <div class="cdot cdot-olive" id="cd-olive" onclick="pickColor('olive')"></div>
+            </div>
+
+            <div class="size-strip">
+                <div class="schip" onclick="pickSize(this,'S')">S</div>
+                <div class="schip active" onclick="pickSize(this,'M')">M</div>
+                <div class="schip" onclick="pickSize(this,'L')">L</div>
+                <div class="schip" onclick="pickSize(this,'XL')">XL</div>
+            </div>
+
+            <div class="action-row">
+                <button class="action-side" onclick="flipCamera()" title="Flip Camera" id="btn-flip">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                    </svg>
+                </button>
+                <div class="shutter" onclick="capture()"></div>
+                <button class="action-side" onclick="toggleFitPanel()" title="Fit Info" id="btn-info">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         SCREEN 2 — REVIEW
+         ═══════════════════════════════════════════════════════════ -->
+    <div class="screen review-screen" id="screen-review">
+        <div class="review-header">
+            <div class="review-title">Your AR Try-On</div>
+            <button class="review-close" onclick="showScreen('camera')">✕ Close</button>
+        </div>
+
+        <div class="review-compare" id="review-compare">
+            <div class="r-after">
+                <img id="rev-after" src="assets/demo_black.png" alt="">
+            </div>
+            <div class="r-before" id="rev-before">
+                <img id="rev-before-img" src="assets/demo_before.png" alt="">
+            </div>
+            <div class="review-divider" id="rev-divider"></div>
+            <div class="review-handle" id="rev-handle">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path stroke-width="2.5" stroke-linecap="round" d="M8 5l-5 7 5 7M16 5l5 7-5 7"/>
+                </svg>
+            </div>
+            <div class="review-tag r-tag-before">Before</div>
+            <div class="review-tag r-tag-after">After</div>
+            <div class="review-watermark">Urformance AR Try-On</div>
+        </div>
+
+        <div class="review-fit">
+            <div class="review-fit-item">
+                <div class="review-fit-val" id="rev-size">M</div>
+                <div class="review-fit-label">Size</div>
+            </div>
+            <div class="review-fit-item">
+                <div class="review-fit-val">94%</div>
+                <div class="review-fit-label">Confidence</div>
+            </div>
+            <div class="review-fit-item">
+                <div class="review-fit-val">★ 4.8</div>
+                <div class="review-fit-label">Fit Score</div>
+            </div>
+        </div>
+
+        <div class="review-actions">
+            <button class="review-action" onclick="showScreen('camera')">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                </svg>
+                <span>Retake</span>
+            </button>
+            <button class="review-action" onclick="alert('📸 Image saved! (Demo)')">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                </svg>
+                <span>Save</span>
+            </button>
+            <button class="review-action primary" onclick="window.location.href='index.html'">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                        d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                </svg>
+                <span>Shop Now</span>
+            </button>
+            <button class="review-action" onclick="alert('🔗 Link copied! (Demo)')">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                        d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+                </svg>
+                <span>Share</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // ─── State ──────────────────────────────────────────────────
+        let state = {
+            product: 'pro',
+            color: 'black',
+            size: 'M',
+            mode: 'sim',        // 'cam' | 'sim'
+            facingMode: 'user',
+            stream: null,
+            slideIdx: 0,
+        };
+
+        const products = {
+            pro:   { name: 'Performance Pro', price: '890.-' },
+            daily: { name: 'Daily Runner',    price: '790.-' },
+        };
+
+        const shirtSrc = {
+            black: 'assets/shirt_black.png',
+            white: 'assets/shirt_white.png',
+            navy:  'assets/shirt_black.png',
+            olive: 'assets/shirt_black.png',
+        };
+        const colorFilters = {
+            black: 'contrast(1.05)',
+            white: 'contrast(1.05)',
+            navy:  'contrast(1.05) sepia(1) saturate(3) hue-rotate(190deg) brightness(0.5)',
+            olive: 'contrast(1.05) sepia(1) saturate(2) hue-rotate(60deg) brightness(0.6)',
+        };
+        const resultImages = {
+            'pro-black':   'assets/demo_black.png',
+            'pro-white':   'assets/demo_white.png',
+            'pro-navy':    'assets/demo_black.png',
+            'pro-olive':   'assets/demo_black.png',
+            'daily-black': 'assets/demo_black.png',
+            'daily-white': 'assets/demo_white.png',
+            'daily-navy':  'assets/demo_black.png',
+            'daily-olive': 'assets/demo_black.png',
+        };
+
+        // ─── Screens ────────────────────────────────────────────────
+        function showScreen(name) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('screen-' + name).classList.add('active');
+        }
+
+        // ─── Onboarding slides ──────────────────────────────────────
+        function nextSlide() {
+            state.slideIdx++;
+            if (state.slideIdx >= 3) {
+                launchCamera('cam');
+                return;
+            }
+            document.querySelectorAll('.onboard-slide').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.dot').forEach(d => d.classList.remove('active'));
+            document.getElementById('slide-' + state.slideIdx).classList.add('active');
+            document.getElementById('dot-' + state.slideIdx).classList.add('active');
+
+            if (state.slideIdx === 2) {
+                document.getElementById('start-btn').textContent = 'Open Camera';
+            }
+        }
+
+        // ─── Launch camera ──────────────────────────────────────────
+        async function launchCamera(mode) {
+            state.mode = mode;
+            showScreen('camera');
+
+            if (mode === 'cam') {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({
+                        video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 1920 } },
+                        audio: false
+                    });
+                    state.stream = stream;
+                    const video = document.getElementById('camera-feed');
+                    video.srcObject = stream;
+                    video.style.display = 'block';
+                    document.getElementById('sim-feed').style.display = 'none';
+                } catch {
+                    // Fallback to simulated
+                    state.mode = 'sim';
+                    document.getElementById('sim-feed').style.display = 'block';
+                    document.getElementById('camera-feed').style.display = 'none';
+                    document.getElementById('btn-flip').style.display = 'none';
+                }
+            } else {
+                document.getElementById('sim-feed').style.display = 'block';
+                document.getElementById('camera-feed').style.display = 'none';
+                document.getElementById('btn-flip').style.display = 'none';
+            }
+
+            // Run scan animation
+            runScanSequence();
+        }
+
+        // ─── Scan sequence ──────────────────────────────────────────
+        function runScanSequence() {
+            const overlay = document.getElementById('scan-overlay');
+            overlay.classList.add('active');
+
+            // Show scan line
+            setTimeout(() => {
+                document.getElementById('scan-line').classList.add('active');
+                document.getElementById('ar-corners').classList.add('visible');
+            }, 300);
+
+            const phases = [
+                { id: 1, start: 400,  done: 1400 },
+                { id: 2, start: 1400, done: 2600 },
+                { id: 3, start: 2600, done: 3800 },
+                { id: 4, start: 3800, done: 4800 },
+            ];
+
+            phases.forEach(p => {
+                setTimeout(() => {
+                    document.getElementById('ss-' + p.id).classList.add('show');
+                    document.getElementById('st-' + p.id).textContent = '…';
+                    document.getElementById('st-' + p.id).className = 'scan-status active';
+                }, p.start);
+
+                setTimeout(() => {
+                    document.getElementById('ss-' + p.id).classList.remove('show');
+                    document.getElementById('st-' + p.id).textContent = '✓ Done';
+                    document.getElementById('st-' + p.id).className = 'scan-status done';
+                }, p.done);
+            });
+
+            // Complete
+            setTimeout(() => {
+                overlay.classList.remove('active');
+                document.getElementById('shirt-overlay').classList.add('visible');
+                document.getElementById('ai-pill').classList.add('visible');
+                document.getElementById('fit-badge').classList.add('visible');
+                document.getElementById('size-badge').classList.add('visible');
+            }, 5200);
+        }
+
+        // ─── Product selection ──────────────────────────────────────
+        function pickProduct(id) {
+            state.product = id;
+            document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+            document.getElementById('th-' + id).classList.add('active');
+            document.getElementById('prod-name').textContent = products[id].name;
+            document.getElementById('prod-price').textContent = products[id].price;
+            pickColor(id === 'daily' ? 'white' : 'black');
+            updateShirt();
+        }
+
+        function pickColor(c) {
+            state.color = c;
+            document.querySelectorAll('.cdot').forEach(d => d.classList.remove('active'));
+            document.getElementById('cd-' + c).classList.add('active');
+            updateShirt();
+        }
+
+        function pickSize(el, s) {
+            state.size = s;
+            document.querySelectorAll('.schip').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+            document.getElementById('size-badge').textContent = 'Size ' + s;
+
+            const w = { S: '38vw', M: '44vw', L: '50vw', XL: '56vw' };
+            const mw = { S: '230px', M: '280px', L: '320px', XL: '360px' };
+            const t = { S: '33%', M: '30%', L: '27%', XL: '24%' };
+            const shirt = document.getElementById('shirt-overlay');
+            shirt.style.width = w[s];
+            shirt.style.maxWidth = mw[s];
+            shirt.style.top = t[s];
+
+            const fitLabels = { S: 'Snug Fit', M: 'Great Fit', L: 'Relaxed Fit', XL: 'Loose Fit' };
+            const starCounts = { S: '★★★★☆', M: '★★★★★', L: '★★★★☆', XL: '★★★☆☆' };
+            document.querySelector('.fit-badge span:last-child').textContent = fitLabels[s];
+            document.querySelector('.fit-badge .stars').textContent = starCounts[s];
+        }
+
+        function updateShirt() {
+            const shirt = document.getElementById('shirt-overlay');
+            shirt.src = shirtSrc[state.color];
+            shirt.style.filter = colorFilters[state.color];
+        }
+
+        // ─── Flip camera ────────────────────────────────────────────
+        async function flipCamera() {
+            if (state.mode !== 'cam') return;
+            state.facingMode = state.facingMode === 'user' ? 'environment' : 'user';
+            if (state.stream) state.stream.getTracks().forEach(t => t.stop());
+
+            const video = document.getElementById('camera-feed');
+            video.style.transform = state.facingMode === 'user' ? 'scaleX(-1)' : 'scaleX(1)';
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: state.facingMode, width: { ideal: 1280 }, height: { ideal: 1920 } },
+                    audio: false
+                });
+                state.stream = stream;
+                video.srcObject = stream;
+            } catch { /* ignore */ }
+        }
+
+        // ─── Capture ────────────────────────────────────────────────
+        function capture() {
+            // Flash
+            const flash = document.getElementById('flash');
+            flash.classList.add('flash');
+            setTimeout(() => flash.classList.remove('flash'), 150);
+
+            // Set review images
+            const key = state.product + '-' + state.color;
+            document.getElementById('rev-after').src = resultImages[key] || 'assets/demo_black.png';
+            document.getElementById('rev-before-img').src = 'assets/demo_before.png';
+            document.getElementById('rev-size').textContent = state.size;
+
+            // Reset slider to 50%
+            const before = document.getElementById('rev-before');
+            const divider = document.getElementById('rev-divider');
+            const handle = document.getElementById('rev-handle');
+            before.style.clipPath = 'inset(0 50% 0 0)';
+            divider.style.left = '50%';
+            handle.style.left = '50%';
+
+            setTimeout(() => showScreen('review'), 200);
+        }
+
+        // ─── Fit panel toggle (info button) ─────────────────────────
+        function toggleFitPanel() {
+            const msg = `AI Fit Analysis\n\n` +
+                `Recommended Size: ${state.size}\n` +
+                `Fit Confidence: 94%\n` +
+                `Est. Chest: 96 cm\n` +
+                `Est. Shoulder: 44 cm\n` +
+                `Est. Length: 70 cm\n\n` +
+                `Fit Score: ★ 4.8 / 5`;
+            alert(msg);
+        }
+
+        // ─── Review compare slider ──────────────────────────────────
+        (function() {
+            const container = document.getElementById('review-compare');
+            const before = document.getElementById('rev-before');
+            const divider = document.getElementById('rev-divider');
+            const handle = document.getElementById('rev-handle');
+            let dragging = false;
+
+            function setPos(x) {
+                const rect = container.getBoundingClientRect();
+                let pct = ((x - rect.left) / rect.width) * 100;
+                pct = Math.max(2, Math.min(98, pct));
+                before.style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
+                divider.style.left = pct + '%';
+                handle.style.left = pct + '%';
+            }
+
+            container.addEventListener('mousedown', () => dragging = true);
+            container.addEventListener('touchstart', () => dragging = true);
+            window.addEventListener('mouseup', () => dragging = false);
+            window.addEventListener('touchend', () => dragging = false);
+            container.addEventListener('mousemove', e => { if (dragging) setPos(e.clientX); });
+            container.addEventListener('touchmove', e => { if (dragging) setPos(e.touches[0].clientX); });
+            container.addEventListener('click', e => setPos(e.clientX));
+        })();
+    </script>
+</body>
+
+</html>

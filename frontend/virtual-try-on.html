@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Urformance | Virtual Try-On</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* ─── Reset & Base ─────────────────────────────────────────── */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ─── Animated gradient background ─────────────────────────── */
+        .bg-glow {
+            position: fixed; inset: 0; z-index: 0; pointer-events: none;
+            background:
+                radial-gradient(ellipse 600px 400px at 20% 20%, rgba(99, 102, 241, 0.08), transparent),
+                radial-gradient(ellipse 500px 500px at 80% 80%, rgba(168, 85, 247, 0.06), transparent);
+        }
+
+        /* ─── Nav ──────────────────────────────────────────────────── */
+        nav {
+            position: sticky; top: 0; z-index: 100;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 16px 20px;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .logo {
+            font-weight: 900; font-size: 18px; letter-spacing: -0.04em;
+            font-style: italic; cursor: pointer;
+        }
+        .nav-badge {
+            font-size: 10px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.12em; color: rgba(255,255,255,0.4);
+            border: 1px solid rgba(255,255,255,0.1); padding: 6px 14px;
+            border-radius: 100px;
+        }
+
+        /* ─── Main Container ───────────────────────────────────────── */
+        .container {
+            position: relative; z-index: 1;
+            max-width: 440px; margin: 0 auto; padding: 0 20px 120px;
+        }
+
+        /* ─── Hero / Intro ─────────────────────────────────────────── */
+        .hero {
+            text-align: center; padding: 48px 0 32px;
+        }
+        .hero-label {
+            display: inline-block;
+            font-size: 10px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.2em; color: rgba(168, 85, 247, 0.9);
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px solid rgba(168, 85, 247, 0.2);
+            padding: 6px 16px; border-radius: 100px;
+            margin-bottom: 20px;
+        }
+        .hero h1 {
+            font-size: 32px; font-weight: 900; font-style: italic;
+            text-transform: uppercase; line-height: 1;
+            letter-spacing: -0.03em; margin-bottom: 12px;
+        }
+        .hero p {
+            font-size: 14px; color: rgba(255,255,255,0.5);
+            line-height: 1.6; max-width: 300px; margin: 0 auto;
+        }
+
+        /* ─── Sections (steps) ─────────────────────────────────────── */
+        .step { display: none; animation: fadeUp 0.4s ease; }
+        .step.active { display: block; }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ─── Try-On Canvas ────────────────────────────────────────── */
+        .tryon-canvas {
+            position: relative;
+            width: 100%; aspect-ratio: 3 / 4;
+            background: linear-gradient(180deg, #141419 0%, #1a1a22 100%);
+            border-radius: 28px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.06);
+            margin-bottom: 24px;
+        }
+        .tryon-canvas .model-photo {
+            position: absolute; inset: 0;
+            width: 100%; height: 100%;
+            object-fit: cover;
+            opacity: 0.85;
+        }
+        .tryon-canvas .shirt-overlay {
+            position: absolute;
+            top: 13%; left: 50%;
+            transform: translateX(-50%);
+            width: 62%;
+            object-fit: contain;
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+            mix-blend-mode: multiply;
+            filter: contrast(1.1);
+        }
+        .tryon-canvas .shirt-overlay.visible {
+            opacity: 0.88;
+        }
+        .tryon-canvas .upload-hint {
+            position: absolute; inset: 0;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center; gap: 12px;
+            cursor: pointer; z-index: 5;
+            transition: opacity 0.3s ease;
+        }
+        .tryon-canvas .upload-hint.hidden { opacity: 0; pointer-events: none; }
+        .upload-hint svg { width: 36px; height: 36px; color: rgba(255,255,255,0.25); }
+        .upload-hint span {
+            font-size: 11px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.15em; color: rgba(255,255,255,0.3);
+        }
+
+        /* ─── AI Indicator ─────────────────────────────────────────── */
+        .ai-indicator {
+            position: absolute; top: 16px; left: 16px; z-index: 10;
+            display: flex; align-items: center; gap: 8px;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(12px);
+            padding: 8px 14px; border-radius: 100px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        .ai-dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: #a855f7;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(168,85,247,0.4); }
+            50% { opacity: 0.7; box-shadow: 0 0 0 6px rgba(168,85,247,0); }
+        }
+        .ai-indicator span {
+            font-size: 10px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.1em; color: rgba(255,255,255,0.6);
+        }
+
+        /* ─── Size badge on canvas ─────────────────────────────────── */
+        .size-badge {
+            position: absolute; bottom: 16px; right: 16px; z-index: 10;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(12px);
+            padding: 8px 16px; border-radius: 100px;
+            border: 1px solid rgba(255,255,255,0.08);
+            font-size: 11px; font-weight: 800; letter-spacing: 0.05em;
+            opacity: 0; transition: opacity 0.3s ease;
+        }
+        .size-badge.visible { opacity: 1; }
+
+        /* ─── Fit rating on canvas ─────────────────────────────────── */
+        .fit-rating {
+            position: absolute; bottom: 16px; left: 16px; z-index: 10;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(12px);
+            padding: 8px 16px; border-radius: 100px;
+            border: 1px solid rgba(255,255,255,0.08);
+            font-size: 11px; font-weight: 700; letter-spacing: 0.02em;
+            opacity: 0; transition: opacity 0.3s ease;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .fit-rating.visible { opacity: 1; }
+        .fit-rating .stars { color: #facc15; }
+
+        /* ─── Section Label ────────────────────────────────────────── */
+        .section-label {
+            font-size: 10px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.15em; color: rgba(255,255,255,0.3);
+            margin-bottom: 12px;
+        }
+
+        /* ─── Product Selector Cards ───────────────────────────────── */
+        .product-row {
+            display: flex; gap: 12px; margin-bottom: 28px;
+            overflow-x: auto; scroll-snap-type: x mandatory;
+            -ms-overflow-style: none; scrollbar-width: none;
+        }
+        .product-row::-webkit-scrollbar { display: none; }
+        .product-card {
+            flex: 0 0 calc(50% - 6px);
+            scroll-snap-align: start;
+            background: rgba(255,255,255,0.04);
+            border: 2px solid rgba(255,255,255,0.06);
+            border-radius: 20px; padding: 16px;
+            cursor: pointer; transition: all 0.3s ease;
+            display: flex; flex-direction: column; align-items: center; gap: 10px;
+        }
+        .product-card:hover { border-color: rgba(255,255,255,0.12); }
+        .product-card.selected {
+            border-color: rgba(168, 85, 247, 0.6);
+            background: rgba(168, 85, 247, 0.06);
+        }
+        .product-card img {
+            width: 80px; height: 80px; object-fit: contain;
+            border-radius: 12px;
+        }
+        .product-card .product-name {
+            font-size: 12px; font-weight: 700; text-align: center;
+        }
+        .product-card .product-price {
+            font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.4);
+        }
+
+        /* ─── Color Selector ───────────────────────────────────────── */
+        .color-row {
+            display: flex; gap: 12px; margin-bottom: 28px;
+        }
+        .color-swatch {
+            width: 44px; height: 44px; border-radius: 50%;
+            border: 3px solid transparent; cursor: pointer;
+            transition: all 0.25s ease; position: relative;
+        }
+        .color-swatch::after {
+            content: ''; position: absolute; inset: -5px;
+            border: 2px solid transparent; border-radius: 50%;
+            transition: border-color 0.25s ease;
+        }
+        .color-swatch.selected::after {
+            border-color: #a855f7;
+        }
+        .color-swatch:hover { transform: scale(1.1); }
+        .color-black { background: #1a1a1a; border-color: rgba(255,255,255,0.15); }
+        .color-white { background: #f0f0f0; border-color: rgba(255,255,255,0.15); }
+        .color-navy { background: #1e3a5f; border-color: rgba(255,255,255,0.15); }
+        .color-olive { background: #4a5d3a; border-color: rgba(255,255,255,0.15); }
+
+        /* ─── Size Selector ────────────────────────────────────────── */
+        .size-row {
+            display: flex; gap: 8px; margin-bottom: 28px;
+        }
+        .size-pill {
+            flex: 1; padding: 14px 0; text-align: center;
+            border: 2px solid rgba(255,255,255,0.08);
+            border-radius: 16px; font-weight: 700; font-size: 14px;
+            cursor: pointer; transition: all 0.25s ease;
+            background: transparent; color: #fff;
+        }
+        .size-pill:hover { border-color: rgba(255,255,255,0.2); }
+        .size-pill.selected {
+            border-color: #a855f7;
+            background: rgba(168, 85, 247, 0.1);
+        }
+
+        /* ─── Measurements Panel ──────────────────────────────────── */
+        .measurements {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 20px; padding: 20px;
+            margin-bottom: 28px;
+        }
+        .measurements-title {
+            font-size: 12px; font-weight: 800; text-transform: uppercase;
+            letter-spacing: 0.08em; margin-bottom: 16px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .measurements-title svg { width: 16px; height: 16px; color: #a855f7; }
+        .measurement-row {
+            display: flex; justify-content: space-between;
+            align-items: center; padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+        .measurement-row:last-child { border: none; }
+        .measurement-label { font-size: 13px; color: rgba(255,255,255,0.5); font-weight: 500; }
+        .measurement-value { font-size: 13px; font-weight: 700; }
+
+        /* ─── Processing Overlay ───────────────────────────────────── */
+        .processing-overlay {
+            position: absolute; inset: 0; z-index: 20;
+            display: none; flex-direction: column;
+            align-items: center; justify-content: center; gap: 20px;
+            background: rgba(10, 10, 10, 0.85);
+            backdrop-filter: blur(8px); border-radius: 28px;
+        }
+        .processing-overlay.active { display: flex; }
+        .spinner {
+            width: 40px; height: 40px;
+            border: 3px solid rgba(255,255,255,0.08);
+            border-top-color: #a855f7;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .processing-text {
+            font-size: 12px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.15em; color: rgba(255,255,255,0.5);
+        }
+        .processing-sub {
+            font-size: 11px; color: rgba(255,255,255,0.25);
+            margin-top: -12px;
+        }
+
+        /* ─── CTA Button ───────────────────────────────────────────── */
+        .btn-primary {
+            width: 100%; padding: 18px; border: none;
+            border-radius: 20px; font-family: inherit;
+            font-size: 15px; font-weight: 800; text-transform: uppercase;
+            font-style: italic; letter-spacing: 0.06em; cursor: pointer;
+            color: #fff; transition: all 0.2s ease;
+            background: linear-gradient(135deg, #7c3aed, #a855f7);
+            box-shadow: 0 8px 32px rgba(168, 85, 247, 0.25);
+        }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 12px 40px rgba(168, 85, 247, 0.35); }
+        .btn-primary:active { transform: scale(0.98); }
+
+        .btn-secondary {
+            width: 100%; padding: 18px; border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 20px; font-family: inherit; background: transparent;
+            font-size: 15px; font-weight: 800; text-transform: uppercase;
+            font-style: italic; letter-spacing: 0.06em; cursor: pointer;
+            color: #fff; transition: all 0.2s ease; margin-top: 12px;
+        }
+        .btn-secondary:hover { border-color: rgba(255,255,255,0.25); }
+
+        /* ─── Result Screen ────────────────────────────────────────── */
+        .result-header {
+            text-align: center; margin-bottom: 24px;
+        }
+        .result-header h2 {
+            font-size: 24px; font-weight: 900; font-style: italic;
+            text-transform: uppercase; margin-bottom: 4px;
+        }
+        .result-header p {
+            font-size: 13px; color: rgba(255,255,255,0.4);
+        }
+
+        .result-actions {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+            margin-top: 20px;
+        }
+        .result-action {
+            display: flex; flex-direction: column;
+            align-items: center; gap: 8px;
+            padding: 20px 12px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 20px; cursor: pointer;
+            transition: all 0.25s ease;
+        }
+        .result-action:hover {
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(255,255,255,0.12);
+        }
+        .result-action svg { width: 24px; height: 24px; color: rgba(255,255,255,0.5); }
+        .result-action span {
+            font-size: 11px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.1em; color: rgba(255,255,255,0.6);
+        }
+
+        /* ─── Back link ────────────────────────────────────────────── */
+        .back-link {
+            display: inline-flex; align-items: center; gap: 6px;
+            font-size: 11px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.12em; color: rgba(255,255,255,0.35);
+            cursor: pointer; margin-bottom: 24px;
+            transition: color 0.2s ease; background: none; border: none;
+        }
+        .back-link:hover { color: rgba(255,255,255,0.6); }
+        .back-link svg { width: 14px; height: 14px; }
+
+        /* ─── Confidence bar ───────────────────────────────────────── */
+        .confidence-bar {
+            width: 100%; height: 4px; border-radius: 2px;
+            background: rgba(255,255,255,0.06); overflow: hidden;
+            margin-top: 4px;
+        }
+        .confidence-fill {
+            height: 100%; border-radius: 2px;
+            background: linear-gradient(90deg, #a855f7, #6366f1);
+            transition: width 0.6s ease;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-glow"></div>
+
+    <nav>
+        <div class="logo" onclick="window.location.href='index.html'">URFORMANCE</div>
+        <div class="nav-badge">Virtual Try-On</div>
+    </nav>
+
+    <div class="container">
+
+        <!-- ─── STEP 1: Intro + Upload ────────────────────────────── -->
+        <div id="step-intro" class="step active">
+            <div class="hero">
+                <div class="hero-label">✦ AI-Powered</div>
+                <h1>Virtual Try-On</h1>
+                <p>See how Urformance gear looks on you before you buy. Upload a photo or use our default model.</p>
+            </div>
+
+            <div class="tryon-canvas" id="intro-canvas" onclick="document.getElementById('photo-input').click()">
+                <img src="assets/model_silhouette.png" class="model-photo" id="intro-model" style="opacity: 0.3; object-fit: contain;">
+                <div class="upload-hint" id="upload-hint">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    <span>Tap to upload your photo</span>
+                </div>
+            </div>
+            <input type="file" id="photo-input" accept="image/*" style="display:none" onchange="handlePhotoUpload(this)">
+
+            <button class="btn-primary" onclick="startTryOn()">
+                Try On Now
+            </button>
+            <button class="btn-secondary" onclick="useDefaultModel()">
+                Use Default Model
+            </button>
+        </div>
+
+        <!-- ─── STEP 2: Customize ──────────────────────────────────── -->
+        <div id="step-customize" class="step">
+            <button class="back-link" onclick="goToStep('intro')">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="3" d="M15 19l-7-7 7-7"/></svg>
+                Back
+            </button>
+
+            <div class="tryon-canvas" id="tryon-main">
+                <div class="ai-indicator">
+                    <div class="ai-dot"></div>
+                    <span>AI Try-On Active</span>
+                </div>
+
+                <img src="assets/model_silhouette.png" class="model-photo" id="tryon-model">
+                <img src="assets/shirt_black.png" class="shirt-overlay" id="shirt-overlay">
+
+                <div class="fit-rating" id="fit-rating">
+                    <span class="stars">★★★★★</span>
+                    <span>Great Fit</span>
+                </div>
+                <div class="size-badge" id="size-badge">Size M</div>
+
+                <div class="processing-overlay" id="processing-overlay">
+                    <div class="spinner"></div>
+                    <div class="processing-text">Analyzing Fit</div>
+                    <div class="processing-sub">Mapping body dimensions…</div>
+                </div>
+            </div>
+
+            <!-- Product selector -->
+            <div class="section-label">Select Model</div>
+            <div class="product-row">
+                <div class="product-card selected" id="card-pro" onclick="selectProduct('pro')">
+                    <img src="assets/shirt_black.png" alt="Performance Pro">
+                    <div class="product-name">Performance Pro</div>
+                    <div class="product-price">890.-</div>
+                </div>
+                <div class="product-card" id="card-daily" onclick="selectProduct('daily')">
+                    <img src="assets/shirt_white.png" alt="Daily Runner">
+                    <div class="product-name">Daily Runner</div>
+                    <div class="product-price">790.-</div>
+                </div>
+            </div>
+
+            <!-- Color selector -->
+            <div class="section-label">Color</div>
+            <div class="color-row">
+                <div class="color-swatch color-black selected" id="swatch-black" onclick="selectColor('black')"></div>
+                <div class="color-swatch color-white" id="swatch-white" onclick="selectColor('white')"></div>
+                <div class="color-swatch color-navy" id="swatch-navy" onclick="selectColor('navy')"></div>
+                <div class="color-swatch color-olive" id="swatch-olive" onclick="selectColor('olive')"></div>
+            </div>
+
+            <!-- Size selector -->
+            <div class="section-label">Size</div>
+            <div class="size-row">
+                <div class="size-pill" onclick="selectSize('S')">S</div>
+                <div class="size-pill selected" onclick="selectSize('M')">M</div>
+                <div class="size-pill" onclick="selectSize('L')">L</div>
+                <div class="size-pill" onclick="selectSize('XL')">XL</div>
+            </div>
+
+            <!-- Measurements -->
+            <div class="measurements" id="measurements-panel" style="display:none;">
+                <div class="measurements-title">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                    </svg>
+                    AI Size Recommendation
+                </div>
+                <div class="measurement-row">
+                    <span class="measurement-label">Recommended Size</span>
+                    <span class="measurement-value" id="rec-size">M</span>
+                </div>
+                <div class="measurement-row">
+                    <span class="measurement-label">Confidence</span>
+                    <span class="measurement-value" id="rec-confidence">94%</span>
+                </div>
+                <div class="confidence-bar">
+                    <div class="confidence-fill" id="confidence-fill" style="width: 94%"></div>
+                </div>
+                <div class="measurement-row">
+                    <span class="measurement-label">Chest</span>
+                    <span class="measurement-value">96 cm</span>
+                </div>
+                <div class="measurement-row">
+                    <span class="measurement-label">Shoulder</span>
+                    <span class="measurement-value">44 cm</span>
+                </div>
+                <div class="measurement-row">
+                    <span class="measurement-label">Length</span>
+                    <span class="measurement-value">70 cm</span>
+                </div>
+            </div>
+
+            <button class="btn-primary" onclick="showResult()">
+                Looks Great — Add to Cart
+            </button>
+        </div>
+
+        <!-- ─── STEP 3: Result / Confirmation ──────────────────────── -->
+        <div id="step-result" class="step">
+            <div class="result-header">
+                <h2>Looking Good 🔥</h2>
+                <p>Your virtual try-on is ready to share</p>
+            </div>
+
+            <div class="tryon-canvas" id="result-canvas">
+                <div class="ai-indicator">
+                    <div class="ai-dot"></div>
+                    <span>AI Try-On</span>
+                </div>
+                <img src="assets/model_silhouette.png" class="model-photo" id="result-model">
+                <img src="assets/shirt_black.png" class="shirt-overlay visible" id="result-shirt">
+                <div class="fit-rating visible">
+                    <span class="stars">★★★★★</span>
+                    <span>Great Fit</span>
+                </div>
+                <div class="size-badge visible" id="result-size-badge">Size M</div>
+            </div>
+
+            <div class="result-actions">
+                <div class="result-action" onclick="alert('📸 Screenshot saved! (Demo)')">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                    <span>Save</span>
+                </div>
+                <div class="result-action" onclick="alert('🔗 Share link copied! (Demo)')">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+                    </svg>
+                    <span>Share</span>
+                </div>
+                <div class="result-action" onclick="goToStep('customize')">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                    </svg>
+                    <span>Try Again</span>
+                </div>
+                <div class="result-action" onclick="window.location.href='index.html'">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                    </svg>
+                    <span>Shop Now</span>
+                </div>
+            </div>
+
+            <button class="btn-primary" style="margin-top: 28px;" onclick="window.location.href='index.html'">
+                Go to Store
+            </button>
+            <button class="btn-secondary" onclick="goToStep('intro')">
+                Start Over
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        // ─── State ──────────────────────────────────────────────────────────────────
+        let state = {
+            product: 'pro',     // 'pro' | 'daily'
+            color: 'black',     // 'black' | 'white' | 'navy' | 'olive'
+            size: 'M',
+            hasPhoto: false,
+        };
+
+        const products = {
+            pro:   { name: 'Performance Pro', price: 890 },
+            daily: { name: 'Daily Runner',   price: 790 },
+        };
+
+        const shirtImages = {
+            black: 'assets/shirt_black.png',
+            white: 'assets/shirt_white.png',
+            navy:  'assets/shirt_black.png',   // reuse black with hue filter
+            olive: 'assets/shirt_black.png',   // reuse black with hue filter
+        };
+
+        const colorFilters = {
+            black: 'none',
+            white: 'none',
+            navy:  'sepia(1) saturate(3) hue-rotate(190deg) brightness(0.5)',
+            olive: 'sepia(1) saturate(2) hue-rotate(60deg) brightness(0.6)',
+        };
+
+        // ─── Navigation ─────────────────────────────────────────────────────────────
+        function goToStep(name) {
+            document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
+            document.getElementById('step-' + name).classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ─── Photo Upload ────────────────────────────────────────────────────────────
+        function handlePhotoUpload(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    document.getElementById('intro-model').src = e.target.result;
+                    document.getElementById('intro-model').style.opacity = '1';
+                    document.getElementById('intro-model').style.objectFit = 'cover';
+                    document.getElementById('upload-hint').classList.add('hidden');
+                    state.hasPhoto = true;
+
+                    // Also use this for the try-on canvas
+                    document.getElementById('tryon-model').src = e.target.result;
+                    document.getElementById('result-model').src = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function useDefaultModel() {
+            state.hasPhoto = true;
+            // Keep the silhouette as default
+            document.getElementById('intro-model').style.opacity = '0.6';
+            document.getElementById('upload-hint').classList.add('hidden');
+            startTryOn();
+        }
+
+        // ─── Start Try-On ────────────────────────────────────────────────────────────
+        function startTryOn() {
+            goToStep('customize');
+
+            // Show processing animation
+            const overlay = document.getElementById('processing-overlay');
+            overlay.classList.add('active');
+
+            setTimeout(() => {
+                overlay.querySelector('.processing-text').textContent = 'Mapping body dimensions…';
+            }, 600);
+
+            setTimeout(() => {
+                overlay.querySelector('.processing-text').textContent = 'Generating try-on…';
+                overlay.querySelector('.processing-sub').textContent = 'Applying garment overlay';
+            }, 1500);
+
+            setTimeout(() => {
+                overlay.classList.remove('active');
+
+                // Reveal the shirt overlay
+                document.getElementById('shirt-overlay').classList.add('visible');
+                document.getElementById('fit-rating').classList.add('visible');
+                document.getElementById('size-badge').classList.add('visible');
+                document.getElementById('measurements-panel').style.display = 'block';
+            }, 2600);
+        }
+
+        // ─── Product Selection ───────────────────────────────────────────────────────
+        function selectProduct(productId) {
+            state.product = productId;
+
+            // Update card selection
+            document.querySelectorAll('.product-card').forEach(c => c.classList.remove('selected'));
+            document.getElementById('card-' + productId).classList.add('selected');
+
+            // Flash processing
+            simulateQuickProcess(() => {
+                updateShirtOverlay();
+            });
+        }
+
+        // ─── Color Selection ─────────────────────────────────────────────────────────
+        function selectColor(color) {
+            state.color = color;
+
+            document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+            document.getElementById('swatch-' + color).classList.add('selected');
+
+            simulateQuickProcess(() => {
+                updateShirtOverlay();
+            });
+        }
+
+        // ─── Size Selection ──────────────────────────────────────────────────────────
+        function selectSize(size) {
+            state.size = size;
+
+            document.querySelectorAll('.size-pill').forEach(p => p.classList.remove('selected'));
+            event.target.classList.add('selected');
+
+            document.getElementById('size-badge').textContent = 'Size ' + size;
+
+            // Update shirt scale for visual feedback
+            const scales = { S: '58%', M: '62%', L: '66%', XL: '70%' };
+            document.getElementById('shirt-overlay').style.width = scales[size];
+
+            // Update recommendation
+            const confidence = { S: 78, M: 94, L: 88, XL: 72 };
+            const fitLabels  = { S: 'Snug Fit', M: 'Great Fit', L: 'Relaxed Fit', XL: 'Loose Fit' };
+            const starCounts = { S: '★★★★☆', M: '★★★★★', L: '★★★★☆', XL: '★★★☆☆' };
+
+            document.getElementById('rec-size').textContent = size;
+            document.getElementById('rec-confidence').textContent = confidence[size] + '%';
+            document.getElementById('confidence-fill').style.width = confidence[size] + '%';
+            document.querySelector('.fit-rating span:last-child').textContent = fitLabels[size];
+            document.querySelector('.fit-rating .stars').textContent = starCounts[size];
+        }
+
+        // ─── Update Shirt Overlay ────────────────────────────────────────────────────
+        function updateShirtOverlay() {
+            const shirt = document.getElementById('shirt-overlay');
+            shirt.src = shirtImages[state.color];
+            shirt.style.filter = 'contrast(1.1) ' + colorFilters[state.color];
+        }
+
+        // ─── Quick Process Animation ─────────────────────────────────────────────────
+        function simulateQuickProcess(callback) {
+            const overlay = document.getElementById('processing-overlay');
+            overlay.querySelector('.processing-text').textContent = 'Updating…';
+            overlay.querySelector('.processing-sub').textContent = '';
+            overlay.classList.add('active');
+
+            setTimeout(() => {
+                overlay.classList.remove('active');
+                if (callback) callback();
+            }, 800);
+        }
+
+        // ─── Show Result ─────────────────────────────────────────────────────────────
+        function showResult() {
+            // Copy current state to result screen
+            document.getElementById('result-shirt').src = document.getElementById('shirt-overlay').src;
+            document.getElementById('result-shirt').style.filter = document.getElementById('shirt-overlay').style.filter;
+            document.getElementById('result-shirt').style.width = document.getElementById('shirt-overlay').style.width;
+            document.getElementById('result-size-badge').textContent = 'Size ' + state.size;
+
+            goToStep('result');
+        }
+    </script>
+</body>
+
+</html>
