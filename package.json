@@ -1,11 +1,12 @@
 {
   "name": "urformance",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
-  "description": "Urformance monorepo — frontend + backend",
+  "description": "Urformance monorepo — frontend (HTML) + backend (NestJS)",
   "scripts": {
-    "dev:backend": "npm --prefix backend run dev",
-    "start:backend": "npm --prefix backend start",
+    "dev:backend": "npm --prefix backend run start:dev",
+    "build:backend": "npm --prefix backend run build",
+    "start:backend": "npm --prefix backend run start:prod",
     "install:backend": "npm --prefix backend install"
   },
   "workspaces": [
