@@ -1,7 +1,7 @@
 {
-  "name": "urformance-backend",
+  "name": "orders-backend",
   "version": "2.0.0",
-  "description": "Urformance backend — NestJS API with Google Sheets integration",
+  "description": "Orders System backend — NestJS API with Google Sheets integration",
   "scripts": {
     "build": "nest build",
     "start": "node dist/main",

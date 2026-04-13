@@ -1,8 +1,8 @@
 {
-  "name": "urformance",
+  "name": "orders-monorepo",
   "version": "2.0.0",
   "private": true,
-  "description": "Urformance monorepo — frontend (HTML) + backend (NestJS)",
+  "description": "Orders System monorepo — frontend (HTML) + backend (NestJS)",
   "scripts": {
     "dev:backend": "npm --prefix backend run start:dev",
     "build:backend": "npm --prefix backend run build",

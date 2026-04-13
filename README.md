@@ -1,4 +1,4 @@
-# Urformance — Monorepo
+# Orders System — Monorepo
 
 > **Frontend** (Vanilla HTML/CSS/JS) + **Backend** (NestJS API + Google Sheets)
 
@@ -7,8 +7,8 @@
 ## Project Structure
 
 ```
-Urformance/
-├── frontend/                  # Static HTML storefront + VTO mockups
+orders-monorepo/
+├── frontend/                  # Static HTML storefront + mockups
 │   ├── index.html
 │   ├── virtual-try-on-ar.html
 │   ├── virtual-try-on-complete.html
