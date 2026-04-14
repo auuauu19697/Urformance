@@ -55,8 +55,7 @@ export class SheetsService {
       customer.city,
       customer.province,
       customer.postalCode,
-      total,
-      items.length,
+      total ?? 'amount',
       paymentDateTime,
       slipUrl,
       note ?? '',
@@ -71,13 +70,13 @@ export class SheetsService {
       item.qty,
       item.unitPrice,
       item.qty * item.unitPrice,
-      item.screeningData ? JSON.stringify(item.screeningData) : '',
+      item.screeningData ? JSON.stringify(item.screeningData) : 'No Screen',
     ]);
 
     try {
       await sheets.spreadsheets.values.append({
         spreadsheetId,
-        range: `${ordersTab}!A:Q`,
+        range: `${ordersTab}!A:P`,
         valueInputOption: 'USER_ENTERED',
         insertDataOption: 'INSERT_ROWS',
         requestBody: { values: [orderRow] },

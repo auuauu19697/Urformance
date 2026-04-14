@@ -72,6 +72,7 @@ export default function Checkout({ onBack, onSuccess }) {
           size: item.size,
           qty: item.qty,
           unitPrice: item.unitPrice,
+          screeningData: item.screeningData,
         })),
         paymentDateTime,
         slip,
