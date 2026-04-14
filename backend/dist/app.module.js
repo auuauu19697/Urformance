@@ -10,10 +10,10 @@ exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
 const core_1 = require("@nestjs/core");
-const orders_module_1 = require("./orders/orders.module");
-const sheets_module_1 = require("./sheets/sheets.module");
 const api_key_guard_1 = require("./common/guards/api-key.guard");
 const configuration_1 = require("./config/configuration");
+const orders_module_1 = require("./orders/orders.module");
+const sheets_module_1 = require("./sheets/sheets.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
