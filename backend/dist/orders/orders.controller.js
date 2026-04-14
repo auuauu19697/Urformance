@@ -16,27 +16,49 @@ exports.OrdersController = void 0;
 const common_1 = require("@nestjs/common");
 const platform_express_1 = require("@nestjs/platform-express");
 const multer_1 = require("multer");
-const orders_service_1 = require("./orders.service");
-const create_order_dto_1 = require("./dto/create-order.dto");
 const class_transformer_1 = require("class-transformer");
 const class_validator_1 = require("class-validator");
+const orders_service_1 = require("./orders.service");
+const create_order_dto_1 = require("./dto/create-order.dto");
 let OrdersController = class OrdersController {
     constructor(ordersService) {
         this.ordersService = ordersService;
     }
-    async createOrder(slip, orderJson) {
+    async createOrder(slip, orderString) {
+        if (!slip) {
+            throw new common_1.BadRequestException('Payment slip is required');
+        }
         let parsed;
         try {
-            parsed = JSON.parse(orderJson);
+            parsed = JSON.parse(orderString);
         }
         catch {
-            throw new common_1.BadRequestException('Invalid JSON in the "order" field.');
+            throw new common_1.BadRequestException('Invalid JSON format in "order" field');
         }
-        const dto = (0, class_transformer_1.plainToInstance)(create_order_dto_1.CreateOrderDto, parsed);
-        const errors = await (0, class_validator_1.validate)(dto, { whitelist: true });
-        if (errors.length) {
-            const messages = errors.flatMap((e) => Object.values(e.constraints ?? {}));
-            throw new common_1.BadRequestException(messages);
+        const dto = (0, class_transformer_1.plainToInstance)(create_order_dto_1.CreateOrderDto, parsed, {
+            enableImplicitConversion: true,
+        });
+        const errors = await (0, class_validator_1.validate)(dto, {
+            whitelist: true,
+            forbidNonWhitelisted: true,
+        });
+        if (errors.length > 0) {
+            const flattenErrors = (errs, parent = '') => {
+                let res = [];
+                for (const err of errs) {
+                    const propertyPath = parent ? `${parent}.${err.property}` : err.property;
+                    if (err.constraints) {
+                        res.push(...Object.values(err.constraints).map(msg => `${propertyPath}: ${msg}`));
+                    }
+                    if (err.children?.length) {
+                        res.push(...flattenErrors(err.children, propertyPath));
+                    }
+                }
+                return res;
+            };
+            const formattedErrors = flattenErrors(errors);
+            console.error('Validation Errors:', JSON.stringify(formattedErrors, null, 2));
+            throw new common_1.BadRequestException(formattedErrors);
         }
         const result = await this.ordersService.createOrder(dto, slip);
         return {

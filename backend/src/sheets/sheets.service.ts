@@ -1,13 +1,14 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { google } from 'googleapis';
 import { CreateOrderDto } from '../orders/dto/create-order.dto';
 
 @Injectable()
 export class SheetsService {
-  constructor(private readonly config: ConfigService) {}
+  private readonly logger = new Logger(SheetsService.name);
 
-  // ── Auth client ────────────────────────────────────────────────────────────
+  constructor(private readonly config: ConfigService) { }
+
   private getSheetsClient() {
     const auth = new google.auth.JWT({
       email: this.config.get<string>('google.serviceAccountEmail'),
@@ -18,62 +19,70 @@ export class SheetsService {
   }
 
   /**
-   * Writes one row to the Orders tab and one row per item to the OrderItems tab.
+   * Writes to two tabs:
    *
-   * Orders tab columns (A–H):
-   *   OrderID | Timestamp | Name | Phone | Address | Total (THB) | Items Count | Slip
+   * Orders (A–Q):
+   *   OrderID | Timestamp | Full Name | Email | Phone | Instagram |
+   *   Address Line 1 | Subdistrict | District | City | Province | Postal Code |
+   *   Total (THB) | Items Count | Payment DateTime | Slip URL | Note
    *
-   * OrderItems tab columns (A–H):
-   *   OrderID | SKU | Model | Color | Size | Qty | Unit Price | Subtotal
+   * OrderItems (A–H):
+   *   OrderID | Product Name | Color | Size | Qty | Unit Price | Subtotal | Screening Data
    */
   async appendOrder(
     orderId: string,
     dto: CreateOrderDto,
     total: number,
-    slipFilename: string,
+    slipUrl: string,
   ): Promise<void> {
     const sheets = this.getSheetsClient();
     const spreadsheetId = this.config.get<string>('google.sheetId');
     const ordersTab = this.config.get<string>('google.ordersSheet');
     const itemsTab = this.config.get<string>('google.itemsSheet');
-    const now = new Date().toISOString();
+    const { customer, items, paymentDateTime, note } = dto;
 
-    // ── Orders row ─────────────────────────────────────────────────────────
+    // ── Orders row ────────────────────────────────────────────────────────────
     const orderRow = [
       orderId,
-      now,
-      dto.customer.name,
-      dto.customer.phone,
-      dto.customer.address,
+      new Date().toISOString(),
+      customer.fullName,
+      customer.email,
+      customer.phone,
+      customer.instagram ?? '',
+      customer.addressLine1,
+      customer.subdistrict,
+      customer.district,
+      customer.city,
+      customer.province,
+      customer.postalCode,
       total,
-      dto.items.length,
-      slipFilename,
-      dto.note ?? '',
+      items.length,
+      paymentDateTime,
+      slipUrl,
+      note ?? '',
     ];
 
-    // ── OrderItems rows (one per line item) ────────────────────────────────
-    const itemRows = dto.items.map((item) => [
+    // ── OrderItems rows ───────────────────────────────────────────────────────
+    const itemRows = items.map((item) => [
       orderId,
-      item.sku,
       item.model,
       item.color,
       item.size,
       item.qty,
       item.unitPrice,
-      item.qty * item.unitPrice, // subtotal
+      item.qty * item.unitPrice,
+      item.screeningData ? JSON.stringify(item.screeningData) : '',
     ]);
 
     try {
-      // Write order header
       await sheets.spreadsheets.values.append({
         spreadsheetId,
-        range: `${ordersTab}!A:I`,
+        range: `${ordersTab}!A:Q`,
         valueInputOption: 'USER_ENTERED',
         insertDataOption: 'INSERT_ROWS',
         requestBody: { values: [orderRow] },
       });
 
-      // Write item lines
       await sheets.spreadsheets.values.append({
         spreadsheetId,
         range: `${itemsTab}!A:H`,
@@ -82,7 +91,7 @@ export class SheetsService {
         requestBody: { values: itemRows },
       });
     } catch (err: any) {
-      console.error('Google Sheets error:', err?.message);
+      this.logger.error('Google Sheets error:', err?.message);
       throw new InternalServerErrorException('Failed to write to Google Sheets.');
     }
   }

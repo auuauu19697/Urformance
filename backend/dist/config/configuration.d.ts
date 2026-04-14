@@ -8,6 +8,10 @@ declare const _default: () => {
         sheetId: string;
         ordersSheet: string;
         itemsSheet: string;
+        driveFolderId: string;
+        clientId: string;
+        clientSecret: string;
+        refreshToken: string;
     };
 };
 export default _default;

@@ -12,9 +12,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.OrdersService = void 0;
 const common_1 = require("@nestjs/common");
 const sheets_service_1 = require("../sheets/sheets.service");
+const drive_service_1 = require("../drive/drive.service");
 let OrdersService = class OrdersService {
-    constructor(sheets) {
+    constructor(sheets, drive) {
         this.sheets = sheets;
+        this.drive = drive;
     }
     async createOrder(dto, slipFile) {
         if (!slipFile) {
@@ -22,13 +24,15 @@ let OrdersService = class OrdersService {
         }
         const total = dto.items.reduce((sum, item) => sum + item.qty * item.unitPrice, 0);
         const orderId = `ORD-${Date.now()}`;
-        await this.sheets.appendOrder(orderId, dto, total, slipFile.originalname);
+        const slipUrl = await this.drive.uploadSlip(slipFile, orderId);
+        await this.sheets.appendOrder(orderId, dto, total, slipUrl);
         return { orderId, total };
     }
 };
 exports.OrdersService = OrdersService;
 exports.OrdersService = OrdersService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [sheets_service_1.SheetsService])
+    __metadata("design:paramtypes", [sheets_service_1.SheetsService,
+        drive_service_1.DriveService])
 ], OrdersService);
 //# sourceMappingURL=orders.service.js.map

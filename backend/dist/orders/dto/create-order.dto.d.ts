@@ -1,7 +1,14 @@
 export declare class CustomerDto {
-    name: string;
+    fullName: string;
+    email: string;
     phone: string;
-    address: string;
+    instagram?: string;
+    addressLine1: string;
+    subdistrict: string;
+    district: string;
+    city: string;
+    province: string;
+    postalCode: string;
 }
 export declare class OrderItemDto {
     sku: string;
@@ -10,9 +17,11 @@ export declare class OrderItemDto {
     size: string;
     qty: number;
     unitPrice: number;
+    screeningData?: Record<string, string>;
 }
 export declare class CreateOrderDto {
     customer: CustomerDto;
     items: OrderItemDto[];
+    paymentDateTime: string;
     note?: string;
 }

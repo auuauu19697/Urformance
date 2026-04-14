@@ -5,7 +5,14 @@ export default function Configure({ product, onBack, onDone }) {
   const [size, setSize] = useState('')
   const [color, setColor] = useState(product.colors[0])
   const [qty, setQty] = useState(1)
+  const [screeningData, setScreeningData] = useState({})
   const { dispatch } = useCart()
+
+  const hasColor = product.colors.length > 1
+  const hasScreening = product.screeningFields?.length > 0
+  const sizeStep = hasColor ? 2 : 1
+  const screenStep = sizeStep + 1
+  const qtyStep = hasScreening ? screenStep + 1 : screenStep
 
   function handleAdd() {
     if (!size) {
@@ -22,6 +29,7 @@ export default function Configure({ product, onBack, onDone }) {
         size,
         qty,
         unitPrice: product.price,
+        screeningData: Object.keys(screeningData).length > 0 ? screeningData : undefined,
       },
     })
     onDone()
@@ -65,7 +73,7 @@ export default function Configure({ product, onBack, onDone }) {
       {/* Size */}
       <div className="mb-8">
         <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3">
-          {product.colors.length > 1 ? '2.' : '1.'} Size
+          {sizeStep}. Size
         </p>
         <div className="grid grid-cols-4 gap-2">
           {product.sizes.map((s) => (
@@ -81,10 +89,34 @@ export default function Configure({ product, onBack, onDone }) {
         </div>
       </div>
 
+      {/* Screening Data */}
+      {hasScreening && (
+        <div className="mb-8">
+          <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3">
+            {screenStep}. Personalization
+          </p>
+          <div className="space-y-4">
+            {product.screeningFields.map((field) => (
+              <div key={field.key}>
+                <label className="block text-[10px] font-black uppercase text-slate-500 mb-1 ml-1">{field.label}</label>
+                <input
+                  type={field.type || 'text'}
+                  value={screeningData[field.key] || ''}
+                  onChange={(e) => setScreeningData(prev => ({ ...prev, [field.key]: e.target.value }))}
+                  placeholder={field.placeholder}
+                  maxLength={field.maxLength}
+                  className="w-full p-4 rounded-2xl border-2 border-slate-200 focus:border-black outline-none transition bg-white"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Qty */}
       <div className="mb-12">
         <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3">
-          {product.colors.length > 1 ? '3.' : '2.'} Quantity
+          {qtyStep}. Quantity
         </p>
         <div className="flex items-center border-2 border-slate-200 rounded-2xl w-max bg-white">
           <button

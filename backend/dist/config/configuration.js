@@ -10,6 +10,10 @@ exports.default = () => ({
         sheetId: process.env.GOOGLE_SHEET_ID,
         ordersSheet: process.env.GOOGLE_ORDERS_SHEET ?? 'Orders',
         itemsSheet: process.env.GOOGLE_ITEMS_SHEET ?? 'OrderItems',
+        driveFolderId: process.env.GOOGLE_DRIVE_FOLDER_ID ?? '',
+        clientId: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
     },
 });
 //# sourceMappingURL=configuration.js.map

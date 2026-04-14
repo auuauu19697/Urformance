@@ -1,10 +1,14 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { SheetsService } from '../sheets/sheets.service';
+import { DriveService } from '../drive/drive.service';
 
 @Injectable()
 export class OrdersService {
-  constructor(private readonly sheets: SheetsService) {}
+  constructor(
+    private readonly sheets: SheetsService,
+    private readonly drive: DriveService,
+  ) {}
 
   async createOrder(
     dto: CreateOrderDto,
@@ -16,13 +20,19 @@ export class OrdersService {
     }
 
     // ── Compute total server-side ─────────────────────────────────────────────
-    const total = dto.items.reduce((sum, item) => sum + item.qty * item.unitPrice, 0);
+    const total = dto.items.reduce(
+      (sum, item) => sum + item.qty * item.unitPrice,
+      0,
+    );
 
     // ── Generate order ID ─────────────────────────────────────────────────────
     const orderId = `ORD-${Date.now()}`;
 
+    // ── Upload slip to Google Drive ────────────────────────────────────────────
+    const slipUrl = await this.drive.uploadSlip(slipFile, orderId);
+
     // ── Persist to Google Sheets ──────────────────────────────────────────────
-    await this.sheets.appendOrder(orderId, dto, total, slipFile.originalname);
+    await this.sheets.appendOrder(orderId, dto, total, slipUrl);
 
     return { orderId, total };
   }

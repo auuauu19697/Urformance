@@ -6,20 +6,16 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.OrdersModule = void 0;
+exports.DriveModule = void 0;
 const common_1 = require("@nestjs/common");
-const orders_controller_1 = require("./orders.controller");
-const orders_service_1 = require("./orders.service");
-const sheets_module_1 = require("../sheets/sheets.module");
-const drive_module_1 = require("../drive/drive.module");
-let OrdersModule = class OrdersModule {
+const drive_service_1 = require("./drive.service");
+let DriveModule = class DriveModule {
 };
-exports.OrdersModule = OrdersModule;
-exports.OrdersModule = OrdersModule = __decorate([
+exports.DriveModule = DriveModule;
+exports.DriveModule = DriveModule = __decorate([
     (0, common_1.Module)({
-        imports: [sheets_module_1.SheetsModule, drive_module_1.DriveModule],
-        controllers: [orders_controller_1.OrdersController],
-        providers: [orders_service_1.OrdersService],
+        providers: [drive_service_1.DriveService],
+        exports: [drive_service_1.DriveService],
     })
-], OrdersModule);
-//# sourceMappingURL=orders.module.js.map
+], DriveModule);
+//# sourceMappingURL=drive.module.js.map

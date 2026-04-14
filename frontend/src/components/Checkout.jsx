@@ -5,9 +5,19 @@ import { submitOrder } from '../services/orderApi'
 export default function Checkout({ onBack, onSuccess }) {
   const { cart, total } = useCart()
 
-  const [name, setName] = useState('')
+  const [fullName, setFullName] = useState('')
+  const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
-  const [address, setAddress] = useState('')
+  const [instagram, setInstagram] = useState('')
+
+  const [addressLine1, setAddressLine1] = useState('')
+  const [subdistrict, setSubdistrict] = useState('')
+  const [district, setDistrict] = useState('')
+  const [city, setCity] = useState('')
+  const [province, setProvince] = useState('')
+  const [postalCode, setPostalCode] = useState('')
+
+  const [paymentDateTime, setPaymentDateTime] = useState('')
   const [note, setNote] = useState('')
   const [slip, setSlip] = useState(null)
   const [slipPreview, setSlipPreview] = useState(null)
@@ -27,8 +37,12 @@ export default function Checkout({ onBack, onSuccess }) {
   async function handleSubmit() {
     setError('')
 
-    if (!name.trim() || !phone.trim() || !address.trim()) {
-      setError('Please complete all shipping information.')
+    if (!fullName.trim() || !email.trim() || !phone.trim() || !addressLine1.trim() || !subdistrict.trim() || !district.trim() || !city.trim() || !province.trim() || !postalCode.trim()) {
+      setError('Please complete all required shipping information.')
+      return
+    }
+    if (!paymentDateTime) {
+      setError('Please provide the date and time of payment.')
       return
     }
     if (!slip) {
@@ -39,7 +53,18 @@ export default function Checkout({ onBack, onSuccess }) {
     setLoading(true)
     try {
       const result = await submitOrder({
-        customer: { name: name.trim(), phone: phone.trim(), address: address.trim() },
+        customer: {
+          fullName: fullName.trim(),
+          email: email.trim(),
+          phone: phone.trim(),
+          instagram: instagram.trim(),
+          addressLine1: addressLine1.trim(),
+          subdistrict: subdistrict.trim(),
+          district: district.trim(),
+          city: city.trim(),
+          province: province.trim(),
+          postalCode: postalCode.trim(),
+        },
         items: cart.map((item) => ({
           sku: item.sku,
           model: item.model,
@@ -48,6 +73,7 @@ export default function Checkout({ onBack, onSuccess }) {
           qty: item.qty,
           unitPrice: item.unitPrice,
         })),
+        paymentDateTime,
         slip,
         note: note.trim(),
       })
@@ -77,12 +103,14 @@ export default function Checkout({ onBack, onSuccess }) {
       {/* Shipping Info */}
       <div className="space-y-4 mb-10">
         <h3 className="text-[10px] font-black uppercase text-slate-400 tracking-widest border-b pb-2">
-          Shipping Information
+          Contact Information
         </h3>
 
         {[
-          { label: 'Full Name', value: name, set: setName, type: 'text' },
-          { label: 'Phone Number', value: phone, set: setPhone, type: 'tel' },
+          { label: 'Full Name *', value: fullName, set: setFullName, type: 'text' },
+          { label: 'Email *', value: email, set: setEmail, type: 'email' },
+          { label: 'Phone Number *', value: phone, set: setPhone, type: 'tel' },
+          { label: 'Instagram (optional)', value: instagram, set: setInstagram, type: 'text' },
         ].map(({ label, value, set, type }) => (
           <div key={label}>
             <label className="block text-[10px] font-black uppercase text-slate-500 mb-1 ml-1">{label}</label>
@@ -95,14 +123,39 @@ export default function Checkout({ onBack, onSuccess }) {
           </div>
         ))}
 
+        <h3 className="text-[10px] font-black uppercase text-slate-400 tracking-widest border-b pb-2 mt-6">
+          Shipping Address
+        </h3>
+
         <div>
-          <label className="block text-[10px] font-black uppercase text-slate-500 mb-1 ml-1">Full Address</label>
+          <label className="block text-[10px] font-black uppercase text-slate-500 mb-1 ml-1">Address Line 1 *</label>
           <textarea
-            rows={3}
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
+            rows={2}
+            value={addressLine1}
+            onChange={(e) => setAddressLine1(e.target.value)}
+            placeholder="House No., Building, Street..."
             className="w-full p-4 rounded-2xl border-2 border-slate-200 focus:border-black outline-none transition bg-white resize-none"
           />
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          {[
+            { label: 'Subdistrict *', value: subdistrict, set: setSubdistrict },
+            { label: 'District *', value: district, set: setDistrict },
+            { label: 'City *', value: city, set: setCity },
+            { label: 'Province *', value: province, set: setProvince },
+            { label: 'Postal Code *', value: postalCode, set: setPostalCode },
+          ].map(({ label, value, set }) => (
+            <div key={label}>
+              <label className="block text-[10px] font-black uppercase text-slate-500 mb-1 ml-1">{label}</label>
+              <input
+                type="text"
+                value={value}
+                onChange={(e) => set(e.target.value)}
+                className="w-full p-4 rounded-2xl border-2 border-slate-200 focus:border-black outline-none transition bg-white"
+              />
+            </div>
+          ))}
         </div>
 
         <div>
@@ -122,6 +175,19 @@ export default function Checkout({ onBack, onSuccess }) {
         <h3 className="text-[10px] font-black uppercase text-slate-400 tracking-widest border-b pb-2">
           Payment (QR PromptPay)
         </h3>
+
+        {/* Payment Date Time */}
+        <div>
+          <label className="block text-[10px] font-black uppercase text-slate-500 mb-1 ml-1">
+            Payment Date & Time *
+          </label>
+          <input
+            type="datetime-local"
+            value={paymentDateTime}
+            onChange={(e) => setPaymentDateTime(e.target.value)}
+            className="w-full p-4 rounded-2xl border-2 border-slate-200 focus:border-black outline-none transition bg-white"
+          />
+        </div>
 
         {/* QR placeholder */}
         <div className="bg-white border-2 border-slate-200 rounded-3xl p-6 text-center">

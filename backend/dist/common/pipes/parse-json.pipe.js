@@ -6,20 +6,24 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.OrdersModule = void 0;
+exports.ParseJsonPipe = void 0;
 const common_1 = require("@nestjs/common");
-const orders_controller_1 = require("./orders.controller");
-const orders_service_1 = require("./orders.service");
-const sheets_module_1 = require("../sheets/sheets.module");
-const drive_module_1 = require("../drive/drive.module");
-let OrdersModule = class OrdersModule {
+let ParseJsonPipe = class ParseJsonPipe {
+    transform(value) {
+        try {
+            const parsed = JSON.parse(value);
+            if (typeof parsed !== 'object' || parsed === null) {
+                throw new Error('Not a JSON object');
+            }
+            return parsed;
+        }
+        catch (e) {
+            throw new common_1.BadRequestException('Invalid JSON object provided in form-data field.');
+        }
+    }
 };
-exports.OrdersModule = OrdersModule;
-exports.OrdersModule = OrdersModule = __decorate([
-    (0, common_1.Module)({
-        imports: [sheets_module_1.SheetsModule, drive_module_1.DriveModule],
-        controllers: [orders_controller_1.OrdersController],
-        providers: [orders_service_1.OrdersService],
-    })
-], OrdersModule);
-//# sourceMappingURL=orders.module.js.map
+exports.ParseJsonPipe = ParseJsonPipe;
+exports.ParseJsonPipe = ParseJsonPipe = __decorate([
+    (0, common_1.Injectable)()
+], ParseJsonPipe);
+//# sourceMappingURL=parse-json.pipe.js.map

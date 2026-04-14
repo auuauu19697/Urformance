@@ -5,9 +5,11 @@ import Configure from './components/Configure'
 import Cart from './components/Cart'
 import Checkout from './components/Checkout'
 import Success from './components/Success'
+import Consent from './components/Consent'
 
 // ─── Steps ──────────────────────────────────────────────────────────────────
 const STEP = {
+  CONSENT: 'consent',
   CATALOG: 'catalog',
   CONFIGURE: 'configure',
   CART: 'cart',
@@ -42,7 +44,7 @@ function Header({ step, onCartClick }) {
 const STEP_ORDER = [STEP.CATALOG, STEP.CONFIGURE, STEP.CART, STEP.CHECKOUT, STEP.SUCCESS]
 
 function Steps({ current }) {
-  if (current === STEP.SUCCESS) return null
+  if (current === STEP.SUCCESS || current === STEP.CONSENT) return null
   const labels = ['Browse', 'Select', 'Cart', 'Pay']
   const idx = STEP_ORDER.indexOf(current)
   return (
@@ -60,7 +62,7 @@ function Steps({ current }) {
 
 // ─── Inner app (needs CartProvider) ─────────────────────────────────────────
 function OrderApp() {
-  const [step, setStep] = useState(STEP.CATALOG)
+  const [step, setStep] = useState(STEP.CONSENT)
   const [selectedProduct, setSelectedProduct] = useState(null)
   const [successData, setSuccessData] = useState(null)
   const { dispatch } = useCart()
@@ -98,6 +100,9 @@ function OrderApp() {
       <Steps current={step} />
 
       <main className="max-w-sm mx-auto px-5 pb-16">
+        {step === STEP.CONSENT && (
+          <Consent onAccept={() => { setStep(STEP.CATALOG); window.scrollTo(0, 0) }} />
+        )}
         {step === STEP.CATALOG && (
           <Catalog onSelect={handleProductSelect} />
         )}
