@@ -10,10 +10,14 @@
     "install:backend": "npm --prefix backend install",
     "dev:frontend": "npm --prefix frontend run dev",
     "build:frontend": "npm --prefix frontend run build",
-    "install:frontend": "npm --prefix frontend install"
+    "install:frontend": "npm --prefix frontend install",
+    "dev:admin": "npm --prefix admin run dev",
+    "build:admin": "npm --prefix admin run build",
+    "install:admin": "npm --prefix admin install"
   },
   "workspaces": [
     "backend",
-    "frontend"
+    "frontend",
+    "admin"
   ]
 }

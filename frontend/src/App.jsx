@@ -137,22 +137,8 @@ function OrderApp() {
   )
 }
 
-import AdminDashboard from './components/AdminDashboard'
-
 // ─── Root ────────────────────────────────────────────────────────────────────
 export default function App() {
-  const [isAdmin, setIsAdmin] = useState(window.location.hash === '#admin')
-
-  // Listen for hash changes so user can toggle between UI seamlessly
-  window.addEventListener('hashchange', () => {
-    setIsAdmin(window.location.hash === '#admin')
-  })
-
-  // If in internal mode, render dashboard completely removing storefront context
-  if (isAdmin) {
-    return <AdminDashboard />
-  }
-
   return (
     <CartProvider>
       <OrderApp />
