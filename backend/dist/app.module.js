@@ -15,6 +15,7 @@ const configuration_1 = require("./config/configuration");
 const orders_module_1 = require("./orders/orders.module");
 const sheets_module_1 = require("./sheets/sheets.module");
 const drive_module_1 = require("./drive/drive.module");
+const admin_module_1 = require("./admin/admin.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -28,6 +29,7 @@ exports.AppModule = AppModule = __decorate([
             sheets_module_1.SheetsModule,
             drive_module_1.DriveModule,
             orders_module_1.OrdersModule,
+            admin_module_1.AdminModule,
         ],
         providers: [
             {

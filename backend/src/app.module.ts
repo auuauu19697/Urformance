@@ -6,6 +6,7 @@ import configuration from './config/configuration';
 import { OrdersModule } from './orders/orders.module';
 import { SheetsModule } from './sheets/sheets.module';
 import { DriveModule } from './drive/drive.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { DriveModule } from './drive/drive.module';
     SheetsModule,
     DriveModule,
     OrdersModule,
+    AdminModule,
   ],
   providers: [
     // Apply API key guard globally to every route

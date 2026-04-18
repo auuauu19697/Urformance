@@ -6,4 +6,6 @@ export declare class SheetsService {
     constructor(config: ConfigService);
     private getSheetsClient;
     appendOrder(orderId: string, dto: CreateOrderDto, total: number, slipUrl: string): Promise<void>;
+    readOrders(): Promise<any[]>;
+    readOrderItems(): Promise<any[]>;
 }
