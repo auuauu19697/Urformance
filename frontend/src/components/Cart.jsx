@@ -26,7 +26,7 @@ export default function Cart({ onBack, onCheckout }) {
           {cart.map((item, index) => (
             <div
               key={index}
-              className="flex justify-between items-center bg-white border border-slate-200 p-5 rounded-3xl shadow-sm"
+              className="flex justify-between items-start bg-white border border-slate-200 p-5 rounded-3xl shadow-sm"
             >
               <div className="flex-1">
                 <p className="font-black text-[10px] uppercase italic tracking-tight">{item.model}</p>
@@ -34,6 +34,18 @@ export default function Cart({ onBack, onCheckout }) {
                   {item.unitPrice.toLocaleString()}.- / unit · {item.color} · {item.size}
                 </p>
                 <p className="text-xs font-black mt-1 uppercase italic tracking-widest">Qty: {item.qty}</p>
+                {item.screeningData && Object.keys(item.screeningData).length > 0 && (
+                  <div className="flex flex-wrap gap-1 mt-2">
+                    {Object.entries(item.screeningData).map(([k, v]) => (
+                      <span
+                        key={k}
+                        className="text-[9px] font-black uppercase bg-black text-white px-2 py-0.5 rounded-full"
+                      >
+                        {k}: {v}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
               <div className="text-right pl-4">
                 <p className="font-black text-sm mb-1 whitespace-nowrap">

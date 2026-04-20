@@ -38,6 +38,7 @@ let OrdersController = class OrdersController {
         const dto = (0, class_transformer_1.plainToInstance)(create_order_dto_1.CreateOrderDto, parsed, {
             enableImplicitConversion: true,
         });
+        console.log(dto);
         const errors = await (0, class_validator_1.validate)(dto, {
             whitelist: true,
             forbidNonWhitelisted: true,

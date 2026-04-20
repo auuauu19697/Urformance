@@ -113,23 +113,25 @@ export default function Configure({ product, onBack, onDone }) {
         </div>
       )}
 
-      {/* Qty */}
-      <div className="mb-12">
-        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3">
-          {qtyStep}. Quantity
-        </p>
-        <div className="flex items-center border-2 border-slate-200 rounded-2xl w-max bg-white">
-          <button
-            onClick={() => setQty((q) => Math.max(1, q - 1))}
-            className="px-6 py-3 font-bold text-xl hover:bg-slate-50 rounded-l-2xl transition"
-          >−</button>
-          <span className="px-8 py-3 font-black border-x-2 text-lg">{qty}</span>
-          <button
-            onClick={() => setQty((q) => q + 1)}
-            className="px-6 py-3 font-bold text-xl hover:bg-slate-50 rounded-r-2xl transition"
-          >+</button>
+      {/* Qty — only for non-screened products */}
+      {!hasScreening && (
+        <div className="mb-12">
+          <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3">
+            {qtyStep}. Quantity
+          </p>
+          <div className="flex items-center border-2 border-slate-200 rounded-2xl w-max bg-white">
+            <button
+              onClick={() => setQty((q) => Math.max(1, q - 1))}
+              className="px-6 py-3 font-bold text-xl hover:bg-slate-50 rounded-l-2xl transition"
+            >−</button>
+            <span className="px-8 py-3 font-black border-x-2 text-lg">{qty}</span>
+            <button
+              onClick={() => setQty((q) => q + 1)}
+              className="px-6 py-3 font-bold text-xl hover:bg-slate-50 rounded-r-2xl transition"
+            >+</button>
+          </div>
         </div>
-      </div>
+      )}
 
       <button
         onClick={handleAdd}

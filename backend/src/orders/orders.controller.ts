@@ -75,6 +75,8 @@ export class OrdersController {
       enableImplicitConversion: true,
     });
 
+    console.log(dto);
+
     // 3. Validate
     const errors = await validate(dto, {
       whitelist: true,

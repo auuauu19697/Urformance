@@ -10,15 +10,19 @@ function cartReducer(state, action) {
   switch (action.type) {
     case 'ADD_ITEM': {
       const { item } = action
-      const existing = state.cart.find(
-        (c) => c.id === item.id && c.color === item.color && c.size === item.size,
-      )
-      if (existing) {
-        return {
-          ...state,
-          cart: state.cart.map((c) =>
-            c === existing ? { ...c, qty: c.qty + item.qty } : c,
-          ),
+      // Screened shirts are unique per-shirt — never merge them
+      const isScreened = item.screeningData && Object.keys(item.screeningData).length > 0
+      if (!isScreened) {
+        const existing = state.cart.find(
+          (c) => c.id === item.id && c.color === item.color && c.size === item.size && !c.screeningData,
+        )
+        if (existing) {
+          return {
+            ...state,
+            cart: state.cart.map((c) =>
+              c === existing ? { ...c, qty: c.qty + item.qty } : c,
+            ),
+          }
         }
       }
       return { ...state, cart: [...state.cart, item] }

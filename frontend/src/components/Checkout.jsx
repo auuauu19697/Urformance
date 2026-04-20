@@ -186,6 +186,8 @@ export default function Checkout({ onBack, onSuccess }) {
             type="datetime-local"
             value={paymentDateTime}
             onChange={(e) => setPaymentDateTime(e.target.value)}
+            onKeyDown={(e) => e.preventDefault()}
+            onClick={(e) => e.target.showPicker?.()}
             className="w-full p-4 rounded-2xl border-2 border-slate-200 focus:border-black outline-none transition bg-white"
           />
         </div>
