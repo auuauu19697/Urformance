@@ -1,14 +1,23 @@
 {
-  "name": "urformance",
-  "version": "1.0.0",
+  "name": "orders-monorepo",
+  "version": "2.0.0",
   "private": true,
-  "description": "Urformance monorepo — frontend + backend",
+  "description": "Orders System monorepo — frontend (React+Vite) + backend (NestJS)",
   "scripts": {
-    "dev:backend": "npm --prefix backend run dev",
-    "start:backend": "npm --prefix backend start",
-    "install:backend": "npm --prefix backend install"
+    "dev:backend": "npm --prefix backend run start:dev",
+    "build:backend": "npm --prefix backend run build",
+    "start:backend": "npm --prefix backend run start:prod",
+    "install:backend": "npm --prefix backend install",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "build:frontend": "npm --prefix frontend run build",
+    "install:frontend": "npm --prefix frontend install",
+    "dev:admin": "npm --prefix admin run dev",
+    "build:admin": "npm --prefix admin run build",
+    "install:admin": "npm --prefix admin install"
   },
   "workspaces": [
-    "backend"
+    "backend",
+    "frontend",
+    "admin"
   ]
 }

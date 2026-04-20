@@ -1,0 +1,168 @@
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var SheetsService_1;
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.SheetsService = void 0;
+const common_1 = require("@nestjs/common");
+const config_1 = require("@nestjs/config");
+const googleapis_1 = require("googleapis");
+let SheetsService = SheetsService_1 = class SheetsService {
+    constructor(config) {
+        this.config = config;
+        this.logger = new common_1.Logger(SheetsService_1.name);
+    }
+    getSheetsClient() {
+        const auth = new googleapis_1.google.auth.JWT({
+            email: this.config.get('google.serviceAccountEmail'),
+            key: this.config.get('google.privateKey'),
+            scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+        });
+        return googleapis_1.google.sheets({ version: 'v4', auth });
+    }
+    async appendOrder(orderId, dto, total, slipUrl) {
+        const sheets = this.getSheetsClient();
+        const spreadsheetId = this.config.get('google.sheetId');
+        const ordersTab = this.config.get('google.ordersSheet');
+        const itemsTab = this.config.get('google.itemsSheet');
+        const { customer, items, paymentDateTime, note } = dto;
+        const orderRow = [
+            orderId,
+            new Date().toISOString(),
+            customer.fullName,
+            customer.email,
+            customer.phone,
+            customer.instagram ?? '',
+            customer.addressLine1,
+            customer.subdistrict,
+            customer.district,
+            customer.city,
+            customer.province,
+            customer.postalCode,
+            total ?? 'amount',
+            paymentDateTime,
+            slipUrl,
+            note ?? '',
+        ];
+        const itemRows = items.map((item) => [
+            orderId,
+            item.model,
+            item.color,
+            item.size,
+            item.qty,
+            item.unitPrice,
+            item.qty * item.unitPrice,
+            item.screeningData ? JSON.stringify(item.screeningData) : 'No Screen',
+        ]);
+        try {
+            await sheets.spreadsheets.values.append({
+                spreadsheetId,
+                range: `${ordersTab}!A:P`,
+                valueInputOption: 'USER_ENTERED',
+                insertDataOption: 'INSERT_ROWS',
+                requestBody: { values: [orderRow] },
+            });
+            await sheets.spreadsheets.values.append({
+                spreadsheetId,
+                range: `${itemsTab}!A:H`,
+                valueInputOption: 'USER_ENTERED',
+                insertDataOption: 'INSERT_ROWS',
+                requestBody: { values: itemRows },
+            });
+        }
+        catch (err) {
+            this.logger.error('Google Sheets error:', err?.message);
+            throw new common_1.InternalServerErrorException('Failed to write to Google Sheets.');
+        }
+    }
+    async readOrders() {
+        const sheets = this.getSheetsClient();
+        const spreadsheetId = this.config.get('google.sheetId');
+        const ordersTab = this.config.get('google.ordersSheet');
+        try {
+            const res = await sheets.spreadsheets.values.get({
+                spreadsheetId,
+                range: `${ordersTab}!A:P`,
+            });
+            const rows = res.data.values || [];
+            if (rows.length <= 1)
+                return [];
+            const dataRows = rows.slice(1);
+            return dataRows.map(r => ({
+                orderId: r[0],
+                timestamp: r[1],
+                customer: {
+                    fullName: r[2],
+                    email: r[3],
+                    phone: r[4],
+                    instagram: r[5],
+                    addressLine1: r[6],
+                    subdistrict: r[7],
+                    district: r[8],
+                    city: r[9],
+                    province: r[10],
+                    postalCode: r[11],
+                },
+                total: r[12],
+                paymentDateTime: r[13],
+                slipUrl: r[14],
+                note: r[15],
+            }));
+        }
+        catch (err) {
+            this.logger.error('Failed to read Orders:', err?.message);
+            return [];
+        }
+    }
+    async readOrderItems() {
+        const sheets = this.getSheetsClient();
+        const spreadsheetId = this.config.get('google.sheetId');
+        const itemsTab = this.config.get('google.itemsSheet');
+        try {
+            const res = await sheets.spreadsheets.values.get({
+                spreadsheetId,
+                range: `${itemsTab}!A:H`,
+            });
+            const rows = res.data.values || [];
+            if (rows.length <= 1)
+                return [];
+            const dataRows = rows.slice(1);
+            return dataRows.map(r => {
+                let screeningData = undefined;
+                try {
+                    if (r[7] && r[7] !== 'No Screen') {
+                        screeningData = JSON.parse(r[7]);
+                    }
+                }
+                catch { }
+                return {
+                    orderId: r[0],
+                    model: r[1],
+                    color: r[2],
+                    size: r[3],
+                    qty: Number(r[4] || 0),
+                    unitPrice: Number(r[5] || 0),
+                    subtotal: Number(r[6] || 0),
+                    screeningData,
+                };
+            });
+        }
+        catch (err) {
+            this.logger.error('Failed to read OrderItems:', err?.message);
+            return [];
+        }
+    }
+};
+exports.SheetsService = SheetsService;
+exports.SheetsService = SheetsService = SheetsService_1 = __decorate([
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [config_1.ConfigService])
+], SheetsService);
+//# sourceMappingURL=sheets.service.js.map
