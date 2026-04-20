@@ -21,6 +21,13 @@ export class ApiKeyGuard implements CanActivate {
 
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest<Request>();
+
+    // Browsers do not send custom headers (like X-API-Key) on preflight OPTIONS requests.
+    // Allow them to pass through so the CORS middleware can handle them.
+    if (request.method === 'OPTIONS') {
+      return true;
+    }
+
     const incoming = request.headers['x-api-key'] as string | undefined;
     const expected = this.config.get<string>('apiKey');
 
