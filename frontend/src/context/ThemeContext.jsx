@@ -1,0 +1,60 @@
+import { createContext, useContext, useEffect } from 'react'
+import { activeTheme } from '../themes/index.js'
+
+const ThemeContext = createContext(activeTheme)
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+/** Convert camelCase token key → CSS custom property name.
+ *  e.g.  colorPrimary → --color-primary
+ *        radiusCard   → --radius-card
+ *        fontBrand    → --font-brand
+ */
+function tokenToCssVar(key) {
+  return '--' + key.replace(/([A-Z])/g, (c) => '-' + c.toLowerCase())
+}
+
+// ─── Provider ─────────────────────────────────────────────────────────────────
+
+export function ThemeProvider({ children }) {
+  useEffect(() => {
+    const { tokens, googleFont, googleFontWeights, pageTitle, metaDescription } = activeTheme
+    const root = document.documentElement
+
+    // 1. Inject design tokens as CSS custom properties on :root
+    Object.entries(tokens).forEach(([key, value]) => {
+      root.style.setProperty(tokenToCssVar(key), value)
+    })
+
+    // 2. Dynamically load the brand Google Font
+    const fontSlug = googleFont.replace(/\s+/g, '+')
+    const fontUrl  = `https://fonts.googleapis.com/css2?family=${fontSlug}:wght@${googleFontWeights}&display=swap`
+    if (!document.getElementById('brand-font')) {
+      const link  = document.createElement('link')
+      link.id     = 'brand-font'
+      link.rel    = 'stylesheet'
+      link.href   = fontUrl
+      document.head.appendChild(link)
+    }
+
+    // 3. Update page title & meta description
+    document.title = pageTitle
+    const metaEl = document.querySelector('meta[name="description"]')
+    if (metaEl) metaEl.setAttribute('content', metaDescription)
+
+    // 4. Set input style variant (drives CSS [data-input-style] selector)
+    root.setAttribute('data-input-style', activeTheme.inputVariant || 'box')
+  }, [])
+
+  return (
+    <ThemeContext.Provider value={activeTheme}>
+      {children}
+    </ThemeContext.Provider>
+  )
+}
+
+// ─── Hook ─────────────────────────────────────────────────────────────────────
+
+export function useTheme() {
+  return useContext(ThemeContext)
+}

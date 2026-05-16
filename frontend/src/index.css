@@ -1,5 +1,137 @@
 @import "tailwindcss";
 
-@theme {
-  --font-family-sans: 'Inter', system-ui, sans-serif;
+/* ─── Brand Design Tokens ────────────────────────────────────────────────────
+   Defaults here — ThemeContext overwrites them on :root at runtime.
+   ─────────────────────────────────────────────────────────────────────────── */
+:root {
+  --color-primary:    #000000;
+  --color-primary-fg: #ffffff;
+  --color-accent:     #000000;
+  --color-bg:         #f8fafc;
+  --color-surface:    #ffffff;
+  --color-border:     #e2e8f0;
+  --color-muted:      #94a3b8;
+  --radius-card:      1.5rem;
+  --radius-button:    1.5rem;
+  /* Section heading tokens — overridden by brand themes */
+  --section-h-size:      0.625rem;
+  --section-h-weight:    900;
+  --section-h-transform: uppercase;
+  --section-h-tracking:  0.1em;
+  --section-h-color:     var(--color-muted);
+  --radius-input:     1rem;
+  --font-brand:       'Inter', system-ui, sans-serif;
+}
+
+body {
+  font-family: var(--font-brand);
+  background-color: var(--color-bg);
+}
+
+/* ─── Semantic Utility Classes ───────────────────────────────────────────────
+   Used in components instead of hard-coded Tailwind color classes.
+   Layout / spacing utilities still come from Tailwind directly.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+/* Primary CTA button */
+.btn-primary {
+  background-color: var(--color-primary);
+  color:            var(--color-primary-fg);
+  border-radius:    var(--radius-button);
+  transition:       opacity 0.15s, transform 0.1s;
+}
+.btn-primary:disabled {
+  opacity: 0.4;
+  cursor:  not-allowed;
+}
+.btn-primary:not(:disabled):active {
+  transform: scale(0.97);
+}
+
+/* Option toggle buttons (color / size selectors) */
+.option-btn {
+  border:        2px solid var(--color-border);
+  border-radius: var(--radius-input);
+  font-weight:   700;
+  transition:    border-color 0.15s, background-color 0.15s, color 0.15s;
+  cursor:        pointer;
+}
+.option-btn:not(.selected):hover {
+  border-color: var(--color-primary);
+}
+.option-btn.selected {
+  background-color: var(--color-primary);
+  color:            var(--color-primary-fg);
+  border-color:     var(--color-primary);
+}
+
+/* Cards */
+.card {
+  background-color: var(--color-surface);
+  border:           1px solid var(--color-border);
+  border-radius:    var(--radius-card);
+}
+
+/* Form inputs */
+.input-field {
+  border:           2px solid var(--color-border);
+  border-radius:    var(--radius-input);
+  background-color: var(--color-surface);
+  outline:          none;
+  width:            100%;
+  padding:          1rem;
+  transition:       border-color 0.15s;
+}
+.input-field:focus {
+  border-color: var(--color-primary);
+}
+
+/* Text helpers */
+.text-muted  { color: var(--color-muted); }
+.text-accent { color: var(--color-accent); }
+.border-accent { border-color: var(--color-accent); }
+
+/* ─── Section Headings ───────────────────────────────────────────────────────
+   Used in Checkout, Configure, etc.
+   Font size/weight/case driven by brand CSS vars.
+   ─────────────────────────────────────────────────────────────────────────── */
+.section-heading {
+  font-size:      var(--section-h-size, 0.625rem);
+  font-weight:    var(--section-h-weight, 900);
+  text-transform: var(--section-h-transform, uppercase);
+  letter-spacing: var(--section-h-tracking, 0.1em);
+  color:          var(--section-h-color, var(--color-muted));
+  border-bottom:  1px solid var(--color-border);
+  padding-bottom: 0.5rem;
+  display:        block;
+  width:          100%;
+}
+
+/* ─── Input Underline Variant ────────────────────────────────────────────────
+   Activated when ThemeContext sets data-input-style="underline" on <html>.
+   ─────────────────────────────────────────────────────────────────────────── */
+[data-input-style="underline"] .input-field {
+  border:           none;
+  border-bottom:    1.5px solid var(--color-border);
+  border-radius:    0;
+  padding-left:     0;
+  padding-right:    0;
+  background:       transparent;
+  padding-top:      0.625rem;
+  padding-bottom:   0.625rem;
+}
+[data-input-style="underline"] .input-field:focus {
+  border-bottom-color: var(--color-primary);
+  box-shadow:          none;
+}
+
+/* ─── Step label (Configure page) ────────────────────────────────────────── */
+.step-label {
+  font-size:      var(--section-h-size, 0.625rem);
+  font-weight:    var(--section-h-weight, 900);
+  text-transform: var(--section-h-transform, uppercase);
+  letter-spacing: var(--section-h-tracking, 0.1em);
+  color:          var(--color-muted);
+  margin-bottom:  0.75rem;
+  display:        block;
 }

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { CartProvider, useCart } from './context/CartContext'
+import { ThemeProvider, useTheme } from './context/ThemeContext'
 import Catalog from './components/Catalog'
 import Configure from './components/Configure'
 import Cart from './components/Cart'
@@ -20,17 +21,21 @@ const STEP = {
 // ─── Header ─────────────────────────────────────────────────────────────────
 function Header({ step, onCartClick }) {
   const { itemCount } = useCart()
+  const { brandName } = useTheme()
+  console.log(`brandName: ${brandName}`);
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-slate-100 px-5 py-4 flex justify-between items-center">
-      <h1 className="font-black italic text-xl uppercase tracking-tighter">URFORMANCE</h1>
+    <header className="sticky top-0 z-50 border-b px-5 py-4 flex justify-between items-center"
+      style={{ background: 'var(--color-surface)', borderColor: 'var(--color-border)' }}
+    >
+      <h1 className="font-black italic text-xl uppercase tracking-tighter">{brandName}</h1>
       {step !== STEP.SUCCESS && (
-        <button onClick={onCartClick} className="relative">
+        <button id="cart-icon-btn" onClick={onCartClick} className="relative">
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
               d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17M17 13v4a2 2 0 01-2 2H9a2 2 0 01-2-2v-4" />
           </svg>
           {itemCount > 0 && (
-            <span className="absolute -top-1.5 -right-1.5 bg-black text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center">
+            <span className="btn-primary absolute -top-1.5 -right-1.5 text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center">
               {itemCount}
             </span>
           )}
@@ -51,24 +56,25 @@ function Steps({ current }) {
     <div className="flex justify-center gap-1 px-5 pb-4 pt-2">
       {labels.map((label, i) => (
         <div key={label} className="flex items-center gap-1">
-          <div className={`h-1 rounded-full transition-all
-            ${i === 0 ? 'w-5' : 'w-8'}
-            ${i <= idx - 1 ? 'bg-black' : i === idx ? 'bg-black' : 'bg-slate-200'}`} />
+          <div
+            className={`h-1 rounded-full transition-all ${i === 0 ? 'w-5' : 'w-8'}`}
+            style={{ background: i <= idx ? 'var(--color-primary)' : 'var(--color-border)' }}
+          />
         </div>
       ))}
     </div>
   )
 }
 
-// ─── Inner app (needs CartProvider) ─────────────────────────────────────────
+// ─── Inner app (needs CartProvider + ThemeProvider) ──────────────────────────
 function OrderApp() {
   const [step, setStep] = useState(STEP.CONSENT)
-  const [selectedProduct, setSelectedProduct] = useState(null)
+  const [selectedProduct, setSelected] = useState(null)
   const [successData, setSuccessData] = useState(null)
   const { dispatch } = useCart()
 
   function handleProductSelect(product) {
-    setSelectedProduct(product)
+    setSelected(product)
     setStep(STEP.CONFIGURE)
     window.scrollTo(0, 0)
   }
@@ -92,11 +98,8 @@ function OrderApp() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <Header
-        step={step}
-        onCartClick={() => { setStep(STEP.CART); window.scrollTo(0, 0) }}
-      />
+    <div className="min-h-screen" style={{ background: 'var(--color-bg)' }}>
+      <Header step={step} onCartClick={() => { setStep(STEP.CART); window.scrollTo(0, 0) }} />
       <Steps current={step} />
 
       <main className="max-w-sm mx-auto px-5 pb-16">
@@ -120,10 +123,7 @@ function OrderApp() {
           />
         )}
         {step === STEP.CHECKOUT && (
-          <Checkout
-            onBack={() => setStep(STEP.CART)}
-            onSuccess={handleSuccess}
-          />
+          <Checkout onBack={() => setStep(STEP.CART)} onSuccess={handleSuccess} />
         )}
         {step === STEP.SUCCESS && (
           <Success
@@ -140,8 +140,10 @@ function OrderApp() {
 // ─── Root ────────────────────────────────────────────────────────────────────
 export default function App() {
   return (
-    <CartProvider>
-      <OrderApp />
-    </CartProvider>
+    <ThemeProvider>
+      <CartProvider>
+        <OrderApp />
+      </CartProvider>
+    </ThemeProvider>
   )
 }

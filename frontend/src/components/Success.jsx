@@ -4,23 +4,24 @@ export default function Success({ orderId, total, onReset }) {
       <div className="text-6xl">🎉</div>
       <div>
         <h2 className="text-3xl font-black italic uppercase leading-none mb-2">Order Placed!</h2>
-        <p className="text-slate-400 font-semibold">We'll contact you shortly to confirm.</p>
+        <p className="font-semibold text-muted">We'll contact you shortly to confirm.</p>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-3xl p-6 w-full text-left shadow-sm space-y-3">
+      <div className="card p-6 w-full text-left shadow-sm space-y-3">
         <div className="flex justify-between text-sm font-bold">
-          <span className="text-slate-400 uppercase tracking-wide text-[10px]">Order ID</span>
+          <span className="uppercase tracking-wide text-[10px] text-muted">Order ID</span>
           <span className="font-black">{orderId}</span>
         </div>
         <div className="flex justify-between text-sm font-bold">
-          <span className="text-slate-400 uppercase tracking-wide text-[10px]">Total Paid</span>
-          <span className="font-black">{(total).toLocaleString()} THB</span>
+          <span className="uppercase tracking-wide text-[10px] text-muted">Total Paid</span>
+          <span className="font-black">{total?.toLocaleString()} THB</span>
         </div>
       </div>
 
       <button
+        id="place-another-btn"
         onClick={onReset}
-        className="w-full bg-black text-white py-5 rounded-3xl font-black text-lg shadow-2xl uppercase italic tracking-wider active:scale-95 transition"
+        className="btn-primary w-full py-5 font-black text-lg shadow-2xl uppercase italic tracking-wider"
       >
         Place Another Order
       </button>
