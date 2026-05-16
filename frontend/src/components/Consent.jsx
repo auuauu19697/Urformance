@@ -3,14 +3,22 @@ import { useTheme } from '../context/ThemeContext'
 export default function Consent({ onAccept }) {
   const { brandName, icon, consentText } = useTheme()
 
+  const isImagePath = typeof icon === 'string' && (icon.startsWith('/') || icon.startsWith('http'))
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-5"
       style={{ background: 'var(--color-bg)' }}
     >
       <div className="max-w-sm w-full">
 
-        {/* Icon */}
-        <div className="text-5xl text-center mb-6">{icon}</div>
+        {/* Icon / Logo */}
+        <div className="flex justify-center mb-6">
+          {isImagePath ? (
+            <img src={icon} alt={brandName} className="h-16 w-auto object-contain" />
+          ) : (
+            <span className="text-5xl">{icon}</span>
+          )}
+        </div>
 
         {/* Brand */}
         <h1 className="font-black italic text-2xl uppercase tracking-tighter text-center mb-8">
