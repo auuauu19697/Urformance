@@ -7,13 +7,13 @@ export default function Success({ orderId, total, onReset }) {
         <p className="font-semibold text-muted">We'll contact you shortly to confirm.</p>
       </div>
 
-      <div className="card p-6 w-full text-left shadow-sm space-y-3">
-        <div className="flex justify-between text-sm font-bold">
-          <span className="uppercase tracking-wide text-[10px] text-muted">Order ID</span>
+      <div className="card p-6 w-full text-left shadow-sm space-y-4">
+        <div className="flex justify-between text-base">
+          <span className="uppercase tracking-wide text-xs font-bold text-muted">Order ID</span>
           <span className="font-black">{orderId}</span>
         </div>
-        <div className="flex justify-between text-sm font-bold">
-          <span className="uppercase tracking-wide text-[10px] text-muted">Total Paid</span>
+        <div className="flex justify-between text-base">
+          <span className="uppercase tracking-wide text-xs font-bold text-muted">Total Paid</span>
           <span className="font-black">{total?.toLocaleString()} THB</span>
         </div>
       </div>

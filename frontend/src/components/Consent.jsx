@@ -30,7 +30,7 @@ export default function Consent({ onAccept }) {
           <h2 className="text-xl font-black italic uppercase leading-tight mb-4">
             {consentText.title}
           </h2>
-          <p className="text-sm font-medium leading-relaxed text-muted">
+          <p className="text-base font-medium leading-relaxed text-muted">
             {consentText.body}
           </p>
         </div>
@@ -44,7 +44,7 @@ export default function Consent({ onAccept }) {
           {consentText.cta}
         </button>
 
-        <p className="text-center text-[10px] font-bold uppercase tracking-widest mt-6 text-muted">
+        <p className="text-center text-xs font-bold uppercase tracking-widest mt-6 text-muted">
           Tap to continue and start shopping
         </p>
       </div>
