@@ -4,10 +4,12 @@
 
 import urformance from './urformance.js'
 import muJersey   from './mu-jersey.js'
+import kuOutfit   from './ku-outfit.js'
 
 const themes = {
   'urformance': urformance,
   'mu-jersey':  muJersey,
+  'ku-outfit':  kuOutfit,
 }
 
 const brandKey = import.meta.env.VITE_BRAND || 'urformance'
