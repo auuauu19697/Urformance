@@ -9,8 +9,9 @@ export default function Cart({ onBack, onCheckout }) {
       <div className="flex justify-between items-end mb-6">
         <h2 className="text-3xl font-black italic uppercase leading-none">Cart</h2>
         <button
+          id="add-more-btn"
           onClick={onBack}
-          className="text-xs font-black text-blue-600 uppercase border-b-2 border-blue-600 pb-1"
+          className="text-xs font-black uppercase border-b-2 pb-1 text-accent border-accent"
         >
           + Add More
         </button>
@@ -18,19 +19,16 @@ export default function Cart({ onBack, onCheckout }) {
 
       {/* Items */}
       {isEmpty ? (
-        <p className="text-center py-16 text-slate-400 font-bold uppercase italic tracking-widest">
+        <p className="text-center py-16 font-bold uppercase italic tracking-widest text-muted">
           Cart is empty
         </p>
       ) : (
         <div className="space-y-3 mb-8">
           {cart.map((item, index) => (
-            <div
-              key={index}
-              className="flex justify-between items-start bg-white border border-slate-200 p-5 rounded-3xl shadow-sm"
-            >
+            <div key={index} className="card flex justify-between items-start p-5 shadow-sm">
               <div className="flex-1">
                 <p className="font-black text-[10px] uppercase italic tracking-tight">{item.model}</p>
-                <p className="text-[10px] font-black text-slate-400 mt-0.5 uppercase">
+                <p className="text-[10px] font-black mt-0.5 uppercase text-muted">
                   {item.unitPrice.toLocaleString()}.- / unit · {item.color} · {item.size}
                 </p>
                 <p className="text-xs font-black mt-1 uppercase italic tracking-widest">Qty: {item.qty}</p>
@@ -39,7 +37,7 @@ export default function Cart({ onBack, onCheckout }) {
                     {Object.entries(item.screeningData).map(([k, v]) => (
                       <span
                         key={k}
-                        className="text-[9px] font-black uppercase bg-black text-white px-2 py-0.5 rounded-full"
+                        className="btn-primary text-[9px] font-black uppercase px-2 py-0.5 rounded-full"
                       >
                         {k}: {v}
                       </span>
@@ -52,6 +50,7 @@ export default function Cart({ onBack, onCheckout }) {
                   {(item.qty * item.unitPrice).toLocaleString()}.-
                 </p>
                 <button
+                  id={`remove-item-${index}`}
                   onClick={() => dispatch({ type: 'REMOVE_ITEM', index })}
                   className="text-[9px] uppercase font-black text-red-500 tracking-tighter"
                 >
@@ -65,15 +64,15 @@ export default function Cart({ onBack, onCheckout }) {
 
       {/* Summary */}
       {!isEmpty && (
-        <div className="bg-white border border-slate-200 rounded-3xl p-6 space-y-3 shadow-sm mb-8">
-          <div className="flex justify-between text-slate-500 font-bold text-sm">
+        <div className="card p-6 space-y-3 shadow-sm mb-8">
+          <div className="flex justify-between font-bold text-sm text-muted">
             <span>Subtotal</span><span>{total.toLocaleString()}.-</span>
           </div>
-          <div className="flex justify-between text-slate-500 font-bold text-sm">
-            <span>Shipping</span>
+          <div className="flex justify-between font-bold text-sm">
+            <span className="text-muted">Shipping</span>
             <span className="text-green-600 font-black uppercase text-xs">Free</span>
           </div>
-          <hr className="border-slate-100" />
+          <hr style={{ borderColor: 'var(--color-border)' }} />
           <div className="flex justify-between text-2xl font-black italic">
             <span>TOTAL</span><span>{total.toLocaleString()}.-</span>
           </div>
@@ -81,9 +80,10 @@ export default function Cart({ onBack, onCheckout }) {
       )}
 
       <button
+        id="checkout-btn"
         onClick={onCheckout}
         disabled={isEmpty}
-        className="w-full bg-black text-white py-5 rounded-3xl font-black text-lg shadow-2xl disabled:bg-slate-300 disabled:cursor-not-allowed uppercase italic tracking-wider transition"
+        className="btn-primary w-full py-5 font-black text-lg shadow-2xl uppercase italic tracking-wider disabled:cursor-not-allowed"
       >
         Continue to Payment
       </button>
