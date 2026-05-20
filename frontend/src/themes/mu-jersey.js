@@ -59,9 +59,14 @@ const muJersey = {
         { minQty: 16, price: 730 },
         { minQty: 30, price: 690 },
       ],
-      image: null,
+      // Per-color images — set to null until real photos are ready
+      colorImages: {
+        Navy: null,
+        Black: null,
+      },
       colors: ['Navy', 'Black'],
-      sizes: ['S', 'M', 'L', 'XL'],
+      sizes: ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL', '6XL', '7XL'],
+      sizeChartImage: '/size-chart-default.png',
       screeningFields: [],
     },
   ],

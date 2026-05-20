@@ -66,9 +66,14 @@ const kuOutfit = {
         { minQty: 16, price: 920 },
         { minQty: 30, price: 890 },
       ],
-      image: null,
+      colorImages: {
+        White: null,
+        Cream: null,
+        Green: null,
+      },
       colors: ['White', 'Cream', 'Green'],
-      sizes: ['S', 'M', 'L', 'XL', 'XXL'],
+      sizes: ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL', '6XL', '7XL'],
+      sizeChartImage: '/size-chart-default.png',
       screeningFields: [],
     }
   ],

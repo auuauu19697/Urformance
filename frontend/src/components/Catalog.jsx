@@ -1,12 +1,16 @@
+import { useState } from 'react'
 import { useTheme } from '../context/ThemeContext'
 import { hasPricingTiers } from '../utils/pricing'
 
 function ProductCard({ product, onSelect }) {
   const showTiers = hasPricingTiers(product)
-  // Lowest tier price = last tier (highest minQty, lowest price)
   const lowestPrice = showTiers
     ? product.pricingTiers[product.pricingTiers.length - 1].price
     : product.price
+
+  // Preview the first color image on the catalog card
+  const firstColor = product.colors[0]
+  const previewImage = product.colorImages?.[firstColor] ?? null
 
   return (
     <div
@@ -15,11 +19,12 @@ function ProductCard({ product, onSelect }) {
       onClick={() => onSelect(product)}
     >
       {/* Image */}
-      <div className="aspect-[4/5] flex items-center justify-center font-black italic text-sm uppercase tracking-wider"
+      <div
+        className="aspect-[4/5] flex items-center justify-center font-black italic text-sm uppercase tracking-wider"
         style={{ background: 'var(--color-border)', color: 'var(--color-muted)' }}
       >
-        {product.image
-          ? <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+        {previewImage
+          ? <img src={previewImage} alt={product.name} className="w-full h-full object-cover" />
           : 'PHOTO'}
       </div>
 
