@@ -46,6 +46,8 @@ export class MailService implements OnModuleInit {
   async sendOrderConfirmation(
     orderId: string,
     dto: CreateOrderDto,
+    subtotal: number,
+    shippingFee: number,
     total: number,
   ): Promise<void> {
     if (!this.transporter) {
@@ -53,7 +55,7 @@ export class MailService implements OnModuleInit {
       return;
     }
 
-    const html = buildOrderConfirmationHtml(orderId, dto, total, this.brandName);
+    const html = buildOrderConfirmationHtml(orderId, dto, subtotal, shippingFee, total, this.brandName);
 
     try {
       const info = await this.transporter.sendMail({

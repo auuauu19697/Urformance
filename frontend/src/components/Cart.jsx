@@ -1,8 +1,10 @@
+import { useState } from 'react'
 import { useCart } from '../context/CartContext'
 
 export default function Cart({ onBack, onCheckout }) {
-  const { cart, total, dispatch } = useCart()
+  const { cart, subtotal, shippingFee, total, dispatch } = useCart()
   const isEmpty = cart.length === 0
+  const [showShippingInfo, setShowShippingInfo] = useState(false)
 
   return (
     <div>
@@ -66,11 +68,22 @@ export default function Cart({ onBack, onCheckout }) {
       {!isEmpty && (
         <div className="card p-6 space-y-3 shadow-sm mb-8">
           <div className="flex justify-between font-bold text-base text-muted">
-            <span>Subtotal</span><span>{total.toLocaleString()}.-</span>
+            <span>Subtotal</span><span>{subtotal.toLocaleString()}.-</span>
           </div>
           <div className="flex justify-between font-bold text-base">
-            <span className="text-muted">Shipping</span>
-            <span className="text-green-600 font-black uppercase text-sm">Free</span>
+            <span className="text-muted flex items-center gap-1">
+              Shipping
+              <button 
+                onClick={() => setShowShippingInfo(true)} 
+                className="hover:text-black transition-colors" 
+                title="View Shipping Rates"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </button>
+            </span>
+            <span className="font-black text-sm">{shippingFee.toLocaleString()}.-</span>
           </div>
           <hr style={{ borderColor: 'var(--color-border)' }} />
           <div className="flex justify-between text-2xl font-black italic">
@@ -87,6 +100,55 @@ export default function Cart({ onBack, onCheckout }) {
       >
         Continue to Payment
       </button>
+
+      {/* Shipping Info Modal */}
+      {showShippingInfo && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4 transition-opacity" 
+          onClick={() => setShowShippingInfo(false)}
+        >
+          <div 
+            className="card w-full max-w-sm p-6 shadow-2xl" 
+            style={{ background: 'var(--color-surface)' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex justify-between items-start mb-6">
+              <h3 className="text-2xl font-black italic uppercase leading-none" style={{ color: 'var(--color-primary)' }}>Shipping Rates</h3>
+              <button onClick={() => setShowShippingInfo(false)} className="text-muted hover:text-black">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            
+            <div className="space-y-3 text-sm font-bold text-muted mb-6">
+              <div className="flex justify-between items-center border-b pb-2 border-gray-100">
+                <span>1 - 5 pieces</span>
+                <span className="font-black text-base" style={{ color: 'var(--color-primary)' }}>30 THB</span>
+              </div>
+              <div className="flex justify-between items-center border-b pb-2 border-gray-100">
+                <span>6 - 15 pieces</span>
+                <span className="font-black text-base" style={{ color: 'var(--color-primary)' }}>50 THB</span>
+              </div>
+              <div className="flex justify-between items-center border-b pb-2 border-gray-100">
+                <span>16 - 29 pieces</span>
+                <span className="font-black text-base" style={{ color: 'var(--color-primary)' }}>75 THB</span>
+              </div>
+              <div className="flex justify-between items-center pb-2">
+                <span>30+ pieces</span>
+                <span className="font-black text-base" style={{ color: 'var(--color-primary)' }}>100 THB</span>
+              </div>
+            </div>
+            
+            <button
+              onClick={() => setShowShippingInfo(false)}
+              className="btn-primary w-full py-4 font-black uppercase italic tracking-wider text-sm shadow-lg"
+            >
+              Got it
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

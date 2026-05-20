@@ -6,6 +6,8 @@ import { CreateOrderDto } from '../../orders/dto/create-order.dto';
 export function buildOrderConfirmationHtml(
   orderId: string,
   dto: CreateOrderDto,
+  subtotal: number,
+  shippingFee: number,
   total: number,
   brandName: string,
 ): string {
@@ -126,9 +128,17 @@ export function buildOrderConfirmationHtml(
               ${itemRows}
             </table>
 
-            <!-- Total -->
+            <!-- Totals -->
             <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
               <tr>
+                <td style="padding:8px 8px; font-size:14px; color:#666;">Subtotal</td>
+                <td style="padding:8px 8px; font-size:14px; color:#666; text-align:right;">${subtotal.toLocaleString()} THB</td>
+              </tr>
+              <tr>
+                <td style="padding:8px 8px; font-size:14px; color:#666;">Shipping</td>
+                <td style="padding:8px 8px; font-size:14px; color:#666; text-align:right;">${shippingFee.toLocaleString()} THB</td>
+              </tr>
+              <tr style="border-top:2px solid #eee;">
                 <td style="padding:12px 8px; font-size:18px; font-weight:900;">TOTAL</td>
                 <td style="padding:12px 8px; font-size:18px; font-weight:900; text-align:right;">${total.toLocaleString()} THB</td>
               </tr>

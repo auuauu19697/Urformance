@@ -21,10 +21,10 @@ export class SheetsService {
   /**
    * Writes to two tabs:
    *
-   * Orders (A–Q):
+   * Orders (A–P):
    *   OrderID | Timestamp | Full Name | Email | Phone | Instagram |
-   *   Address Line 1 | Subdistrict | District | City | Province | Postal Code |
-   *   Total (THB) | Items Count | Payment DateTime | Slip URL | Note
+   *   Address Line 1 | Subdistrict | District | Province | Postal Code |
+   *   Subtotal (THB) | Shipping (THB) | Total (THB) | Slip URL | Note
    *
    * OrderItems (A–H):
    *   OrderID | Product Name | Color | Size | Qty | Unit Price | Subtotal | Screening Data
@@ -32,6 +32,8 @@ export class SheetsService {
   async appendOrder(
     orderId: string,
     dto: CreateOrderDto,
+    subtotal: number,
+    shippingFee: number,
     total: number,
     slipUrl: string,
   ): Promise<void> {
@@ -54,7 +56,9 @@ export class SheetsService {
       customer.district,
       customer.province,
       customer.postalCode,
-      total ?? 'amount',
+      subtotal,
+      shippingFee,
+      total,
       slipUrl,
       note ?? '',
     ];
@@ -74,7 +78,7 @@ export class SheetsService {
     try {
       await sheets.spreadsheets.values.append({
         spreadsheetId,
-        range: `${ordersTab}!A:O`,
+        range: `${ordersTab}!A:P`,
         valueInputOption: 'USER_ENTERED',
         insertDataOption: 'INSERT_ROWS',
         requestBody: { values: [orderRow] },
@@ -101,7 +105,7 @@ export class SheetsService {
     try {
       const res = await sheets.spreadsheets.values.get({
         spreadsheetId,
-        range: `${ordersTab}!A:O`,
+        range: `${ordersTab}!A:P`,
       });
       const rows = res.data.values || [];
       if (rows.length <= 1) return []; // Only header or empty
@@ -121,9 +125,11 @@ export class SheetsService {
           province: r[9],
           postalCode: r[10],
         },
-        total: r[11],
-        slipUrl: r[12],
-        note: r[13],
+        subtotal: r[11],
+        shippingFee: r[12],
+        total: r[13],
+        slipUrl: r[14],
+        note: r[15],
       }));
     } catch (err: any) {
       this.logger.error('Failed to read Orders:', err?.message);

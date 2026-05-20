@@ -1,4 +1,5 @@
 import { createContext, useContext, useReducer } from 'react'
+import { calculateShippingFee } from '../utils/shipping'
 
 const CartContext = createContext(null)
 
@@ -39,11 +40,13 @@ function cartReducer(state, action) {
 export function CartProvider({ children }) {
   const [state, dispatch] = useReducer(cartReducer, initialState)
 
-  const total = state.cart.reduce((sum, item) => sum + item.qty * item.unitPrice, 0)
+  const subtotal = state.cart.reduce((sum, item) => sum + item.qty * item.unitPrice, 0)
   const itemCount = state.cart.reduce((sum, item) => sum + item.qty, 0)
+  const shippingFee = calculateShippingFee(itemCount)
+  const total = subtotal + shippingFee
 
   return (
-    <CartContext.Provider value={{ cart: state.cart, total, itemCount, dispatch }}>
+    <CartContext.Provider value={{ cart: state.cart, subtotal, shippingFee, total, itemCount, dispatch }}>
       {children}
     </CartContext.Provider>
   )

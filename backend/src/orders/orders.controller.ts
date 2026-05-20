@@ -109,6 +109,8 @@ export class OrdersController {
     return {
       success: true,
       orderId: result.orderId,
+      subtotal: result.subtotal,
+      shippingFee: result.shippingFee,
       total: result.total,
       message: 'Order saved successfully.',
     };
