@@ -4,25 +4,28 @@ import { useTheme } from '../context/ThemeContext'
 import { submitOrder } from '../services/orderApi'
 
 export default function Checkout({ onBack, onSuccess }) {
-  const { cart, total }                       = useCart()
-  const { paymentMethod, paymentNote, qrImage } = useTheme()
+  const { cart, total } = useCart()
+  const { paymentMethod, paymentNote } = useTheme()
 
-  const [fullName, setFullName]           = useState('')
-  const [email, setEmail]                 = useState('')
-  const [phone, setPhone]                 = useState('')
-  const [instagram, setInstagram]         = useState('')
-  const [addressLine1, setAddressLine1]   = useState('')
-  const [subdistrict, setSubdistrict]     = useState('')
-  const [district, setDistrict]           = useState('')
-  const [city, setCity]                   = useState('')
-  const [province, setProvince]           = useState('')
-  const [postalCode, setPostalCode]       = useState('')
-  const [paymentDateTime, setPaymentDT]   = useState('')
-  const [note, setNote]                   = useState('')
-  const [slip, setSlip]                   = useState(null)
-  const [slipPreview, setSlipPreview]     = useState(null)
-  const [error, setError]                 = useState('')
-  const [loading, setLoading]             = useState(false)
+  const promptPayNumber = import.meta.env.VITE_PROMPTPAY_NUMBER
+  const dynamicQrUrl = `https://promptpay.io/${promptPayNumber}/${total}`
+
+  const [fullName, setFullName] = useState('')
+  const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
+  const [instagram, setInstagram] = useState('')
+  const [addressLine1, setAddressLine1] = useState('')
+  const [subdistrict, setSubdistrict] = useState('')
+  const [district, setDistrict] = useState('')
+  const [city, setCity] = useState('')
+  const [province, setProvince] = useState('')
+  const [postalCode, setPostalCode] = useState('')
+  const [paymentDateTime, setPaymentDT] = useState('')
+  const [note, setNote] = useState('')
+  const [slip, setSlip] = useState(null)
+  const [slipPreview, setSlipPreview] = useState(null)
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
   const fileRef = useRef(null)
 
   function handleSlip(e) {
@@ -37,13 +40,13 @@ export default function Checkout({ onBack, onSuccess }) {
   async function handleSubmit() {
     setError('')
     if (!fullName.trim() || !email.trim() || !phone.trim() ||
-        !addressLine1.trim() || !subdistrict.trim() || !district.trim() ||
-        !city.trim() || !province.trim() || !postalCode.trim()) {
+      !addressLine1.trim() || !subdistrict.trim() || !district.trim() ||
+      !city.trim() || !province.trim() || !postalCode.trim()) {
       setError('Please complete all required shipping information.')
       return
     }
     if (!paymentDateTime) { setError('Please provide the date and time of payment.'); return }
-    if (!slip)            { setError('Please upload your payment slip.'); return }
+    if (!slip) { setError('Please upload your payment slip.'); return }
 
     setLoading(true)
     try {
@@ -94,10 +97,10 @@ export default function Checkout({ onBack, onSuccess }) {
           Contact Information
         </h3>
         {[
-          { id: 'input-full-name',  label: 'Full Name *',           value: fullName,   set: setFullName,   type: 'text'  },
-          { id: 'input-email',      label: 'Email *',               value: email,      set: setEmail,      type: 'email' },
-          { id: 'input-phone',      label: 'Phone Number *',        value: phone,      set: setPhone,      type: 'tel'   },
-          { id: 'input-instagram',  label: 'Instagram (optional)',  value: instagram,  set: setInstagram,  type: 'text'  },
+          { id: 'input-full-name', label: 'Full Name *', value: fullName, set: setFullName, type: 'text' },
+          { id: 'input-email', label: 'Email *', value: email, set: setEmail, type: 'email' },
+          { id: 'input-phone', label: 'Phone Number *', value: phone, set: setPhone, type: 'tel' },
+          { id: 'input-instagram', label: 'Instagram (optional)', value: instagram, set: setInstagram, type: 'text' },
         ].map(({ id, label, value, set, type }) => (
           <div key={label}>
             <label className={labelCls}>{label}</label>
@@ -123,10 +126,10 @@ export default function Checkout({ onBack, onSuccess }) {
         <div className="grid grid-cols-2 gap-4">
           {[
             { id: 'input-subdistrict', label: 'Subdistrict *', value: subdistrict, set: setSubdistrict },
-            { id: 'input-district',    label: 'District *',    value: district,    set: setDistrict    },
-            { id: 'input-city',        label: 'City *',        value: city,        set: setCity        },
-            { id: 'input-province',    label: 'Province *',    value: province,    set: setProvince    },
-            { id: 'input-postal',      label: 'Postal Code *', value: postalCode,  set: setPostalCode  },
+            { id: 'input-district', label: 'District *', value: district, set: setDistrict },
+            { id: 'input-city', label: 'City *', value: city, set: setCity },
+            { id: 'input-province', label: 'Province *', value: province, set: setProvince },
+            { id: 'input-postal', label: 'Postal Code *', value: postalCode, set: setPostalCode },
           ].map(({ id, label, value, set }) => (
             <div key={label}>
               <label className={labelCls}>{label}</label>
@@ -175,20 +178,11 @@ export default function Checkout({ onBack, onSuccess }) {
               {total.toLocaleString()} THB
             </span>
           </p>
-          {qrImage ? (
-            <img
-              src={qrImage}
-              alt="Payment QR Code"
-              className="w-48 h-48 object-contain mx-auto rounded-2xl"
-            />
-          ) : (
-            <div
-              className="w-48 h-48 mx-auto rounded-2xl flex items-center justify-center font-bold text-sm"
-              style={{ background: 'var(--color-bg)', color: 'var(--color-muted)' }}
-            >
-              QR CODE HERE
-            </div>
-          )}
+          <img
+            src={dynamicQrUrl}
+            alt="Payment QR Code"
+            className="w-48 h-48 object-contain mx-auto rounded-2xl"
+          />
           {paymentNote && (
             <p className="text-sm font-semibold mt-3 text-muted">{paymentNote}</p>
           )}
