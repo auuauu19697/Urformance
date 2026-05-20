@@ -71,14 +71,14 @@ export default function Checkout({ onBack, onSuccess }) {
   }
 
   // ── Shared label class ────────────────────────────────────────────────────
-  const labelCls = 'block text-[10px] font-black uppercase mb-1 ml-1 text-muted'
+  const labelCls = 'block text-xs font-black uppercase mb-1.5 ml-1 text-muted'
 
   return (
     <div>
       {/* Back */}
       <button id="checkout-back-btn"
         onClick={onBack}
-        className="text-xs font-black mb-6 flex items-center uppercase tracking-widest text-muted"
+        className="text-sm font-black mb-6 flex items-center uppercase tracking-widest text-muted"
       >
         <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeWidth="3" d="M15 19l-7-7 7-7" />
@@ -169,7 +169,7 @@ export default function Checkout({ onBack, onSuccess }) {
 
         {/* QR Code — dynamic per brand */}
         <div className="card p-6 text-center">
-          <p className="text-[10px] font-black uppercase mb-4 tracking-tighter text-muted">
+          <p className="text-xs font-black uppercase mb-4 tracking-tighter text-muted">
             Scan to pay:{' '}
             <span className="font-black" style={{ color: 'var(--color-primary)' }}>
               {total.toLocaleString()} THB
@@ -190,7 +190,7 @@ export default function Checkout({ onBack, onSuccess }) {
             </div>
           )}
           {paymentNote && (
-            <p className="text-xs font-bold mt-3 text-muted">{paymentNote}</p>
+            <p className="text-sm font-semibold mt-3 text-muted">{paymentNote}</p>
           )}
         </div>
 

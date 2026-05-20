@@ -37,7 +37,7 @@ export default function Configure({ product, onBack, onDone }) {
       {/* Back */}
       <button id="configure-back-btn"
         onClick={onBack}
-        className="text-xs font-black mb-6 flex items-center uppercase tracking-widest text-muted"
+        className="text-sm font-black mb-6 flex items-center uppercase tracking-widest text-muted"
       >
         <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeWidth="3" d="M15 19l-7-7 7-7" />
@@ -95,7 +95,7 @@ export default function Configure({ product, onBack, onDone }) {
           <div className="space-y-4">
             {product.screeningFields.map((field) => (
               <div key={field.key}>
-                <label className="block text-[10px] font-black uppercase mb-1 ml-1 text-muted">
+                <label className="block text-xs font-black uppercase mb-1.5 ml-1 text-muted">
                   {field.label}
                 </label>
                 <input

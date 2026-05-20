@@ -34,7 +34,7 @@ export default function Catalog({ onSelect }) {
   return (
     <div>
       <h2 className="text-3xl font-black italic uppercase leading-none mb-8">Collection</h2>
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-6">
         {products.map((p) => (
           <ProductCard key={p.id} product={p} onSelect={onSelect} />
         ))}

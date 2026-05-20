@@ -49,32 +49,6 @@ const muJersey = {
 
   products: [
     {
-      id: 'mu-jersey-home',
-      name: 'MU Home Jersey',
-      tagline: 'Sublimation Print · Season 2025',
-      price: 1190,
-      image: null,
-      colors: ['Home Red', 'Home White'],
-      sizes: ['S', 'M', 'L', 'XL', 'XXL'],
-      screeningFields: [
-        { key: 'jerseyNumber', label: 'Jersey Number', placeholder: '10', maxLength: 3 },
-        { key: 'printName', label: 'Name on Jersey', placeholder: 'SOMCHAI', maxLength: 20 },
-      ],
-    },
-    {
-      id: 'mu-jersey-away',
-      name: 'MU Away Jersey',
-      tagline: 'Sublimation Print · Season 2025',
-      price: 1190,
-      image: null,
-      colors: ['Away Black', 'Away Grey'],
-      sizes: ['S', 'M', 'L', 'XL', 'XXL'],
-      screeningFields: [
-        { key: 'jerseyNumber', label: 'Jersey Number', placeholder: '10', maxLength: 3 },
-        { key: 'printName', label: 'Name on Jersey', placeholder: 'SOMCHAI', maxLength: 20 },
-      ],
-    },
-    {
       id: 'mu-training',
       name: 'MU Training Top',
       tagline: 'DryFit Training Kit',
