@@ -17,10 +17,8 @@ export default function Checkout({ onBack, onSuccess }) {
   const [addressLine1, setAddressLine1] = useState('')
   const [subdistrict, setSubdistrict] = useState('')
   const [district, setDistrict] = useState('')
-  const [city, setCity] = useState('')
   const [province, setProvince] = useState('')
   const [postalCode, setPostalCode] = useState('')
-  const [paymentDateTime, setPaymentDT] = useState('')
   const [note, setNote] = useState('')
   const [slip, setSlip] = useState(null)
   const [slipPreview, setSlipPreview] = useState(null)
@@ -39,13 +37,12 @@ export default function Checkout({ onBack, onSuccess }) {
 
   async function handleSubmit() {
     setError('')
-    if (!fullName.trim() || !email.trim() || !phone.trim() ||
+    if (!fullName.trim() || !email.trim() || !phone.trim() || !instagram.trim() ||
       !addressLine1.trim() || !subdistrict.trim() || !district.trim() ||
-      !city.trim() || !province.trim() || !postalCode.trim()) {
-      setError('Please complete all required shipping information.')
+      !province.trim() || !postalCode.trim()) {
+      setError('Please complete all required information.')
       return
     }
-    if (!paymentDateTime) { setError('Please provide the date and time of payment.'); return }
     if (!slip) { setError('Please upload your payment slip.'); return }
 
     setLoading(true)
@@ -55,13 +52,12 @@ export default function Checkout({ onBack, onSuccess }) {
           fullName: fullName.trim(), email: email.trim(), phone: phone.trim(),
           instagram: instagram.trim(), addressLine1: addressLine1.trim(),
           subdistrict: subdistrict.trim(), district: district.trim(),
-          city: city.trim(), province: province.trim(), postalCode: postalCode.trim(),
+          province: province.trim(), postalCode: postalCode.trim(),
         },
         items: cart.map((item) => ({
           sku: item.sku, model: item.model, color: item.color, size: item.size,
           qty: item.qty, unitPrice: item.unitPrice, screeningData: item.screeningData,
         })),
-        paymentDateTime,
         slip,
         note: note.trim(),
       })
@@ -100,7 +96,7 @@ export default function Checkout({ onBack, onSuccess }) {
           { id: 'input-full-name', label: 'Full Name *', value: fullName, set: setFullName, type: 'text' },
           { id: 'input-email', label: 'Email *', value: email, set: setEmail, type: 'email' },
           { id: 'input-phone', label: 'Phone Number *', value: phone, set: setPhone, type: 'tel' },
-          { id: 'input-instagram', label: 'Instagram (optional)', value: instagram, set: setInstagram, type: 'text' },
+          { id: 'input-instagram', label: 'Instagram *', value: instagram, set: setInstagram, type: 'text' },
         ].map(({ id, label, value, set, type }) => (
           <div key={label}>
             <label className={labelCls}>{label}</label>
@@ -127,7 +123,6 @@ export default function Checkout({ onBack, onSuccess }) {
           {[
             { id: 'input-subdistrict', label: 'Subdistrict *', value: subdistrict, set: setSubdistrict },
             { id: 'input-district', label: 'District *', value: district, set: setDistrict },
-            { id: 'input-city', label: 'City *', value: city, set: setCity },
             { id: 'input-province', label: 'Province *', value: province, set: setProvince },
             { id: 'input-postal', label: 'Postal Code *', value: postalCode, set: setPostalCode },
           ].map(({ id, label, value, set }) => (
@@ -155,20 +150,6 @@ export default function Checkout({ onBack, onSuccess }) {
         <h3 className="section-heading mt-2">
           Payment ({paymentMethod})
         </h3>
-
-        {/* Payment Date & Time */}
-        <div>
-          <label className={labelCls}>Payment Date &amp; Time *</label>
-          <input
-            id="input-payment-datetime"
-            type="datetime-local"
-            value={paymentDateTime}
-            onChange={(e) => setPaymentDT(e.target.value)}
-            onKeyDown={(e) => e.preventDefault()}
-            onClick={(e) => e.target.showPicker?.()}
-            className="input-field"
-          />
-        </div>
 
         {/* QR Code — dynamic per brand */}
         <div className="card p-6 text-center">

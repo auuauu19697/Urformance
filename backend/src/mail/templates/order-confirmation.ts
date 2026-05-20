@@ -9,7 +9,39 @@ export function buildOrderConfirmationHtml(
   total: number,
   brandName: string,
 ): string {
-  const { customer, items, paymentDateTime, note } = dto;
+  const { customer, items, note } = dto;
+
+  // ── Brand Theming ──────────────────────────────────────────────────────────
+  let primaryColor = '#111111';
+  let primaryFg = '#ffffff';
+  let bgOuter = '#f5f5f5';
+  let bgInner = '#ffffff';
+  let headerFont = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+  let headerFontStyle = 'italic';
+  let headerFontWeight = '900';
+  let headerLetterSpacing = '2px';
+
+  const brandLower = (brandName || '').toLowerCase();
+
+  if (brandLower.includes('mu-jersey')) {
+    primaryColor = '#1e2d4a';
+    primaryFg = '#ffffff';
+    bgOuter = '#f8f5f0';
+    bgInner = '#ffffff';
+    headerFont = "Georgia, serif";
+    headerFontStyle = 'normal';
+    headerFontWeight = '600';
+    headerLetterSpacing = '1px';
+  } else if (brandLower.includes('ku-outfit')) {
+    primaryColor = '#4C6A4A';
+    primaryFg = '#FFFCF4';
+    bgOuter = '#f4f1ea'; // slightly darker warm cream for outer background so white card pops
+    bgInner = '#ffffff';
+    headerFont = "Georgia, serif";
+    headerFontStyle = 'normal';
+    headerFontWeight = '600';
+    headerLetterSpacing = '1px';
+  }
 
   // ── Item rows ──────────────────────────────────────────────────────────────
   const itemRows = items
@@ -17,14 +49,14 @@ export function buildOrderConfirmationHtml(
       const subtotal = item.qty * item.unitPrice;
       const screeningInfo = item.screeningData
         ? Object.entries(item.screeningData)
-            .map(([k, v]) => `${k}: ${v}`)
-            .join(', ')
+          .map(([k, v]) => `${k}: ${v}`)
+          .join(', ')
         : '';
       return `
       <tr>
         <td style="padding:10px 8px; border-bottom:1px solid #eee;">
           <strong>${item.model}</strong><br/>
-          <span style="color:#888; font-size:13px;">${item.color} · ${item.size}</span>
+          <span style="color:#888; font-size:13px;">${item.color} &middot; ${item.size}</span>
           ${screeningInfo ? `<br/><span style="color:#888; font-size:12px;">🏷 ${screeningInfo}</span>` : ''}
         </td>
         <td style="padding:10px 8px; border-bottom:1px solid #eee; text-align:center;">${item.qty}</td>
@@ -39,7 +71,6 @@ export function buildOrderConfirmationHtml(
     customer.addressLine1,
     customer.subdistrict,
     customer.district,
-    customer.city,
     customer.province,
     customer.postalCode,
   ]
@@ -50,15 +81,15 @@ export function buildOrderConfirmationHtml(
 <!DOCTYPE html>
 <html lang="en">
 <head><meta charset="UTF-8"/></head>
-<body style="margin:0; padding:0; background:#f5f5f5; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5; padding:24px 0;">
+<body style="margin:0; padding:0; background:${bgOuter}; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:${bgOuter}; padding:24px 0;">
     <tr><td align="center">
-      <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff; border-radius:8px; overflow:hidden;">
+      <table width="600" cellpadding="0" cellspacing="0" style="background:${bgInner}; border-radius:8px; overflow:hidden;">
 
         <!-- Header -->
         <tr>
-          <td style="background:#111; color:#fff; padding:28px 32px; text-align:center;">
-            <h1 style="margin:0; font-size:22px; letter-spacing:2px; font-weight:900; font-style:italic;">${brandName}</h1>
+          <td style="background:${primaryColor}; color:${primaryFg}; padding:28px 32px; text-align:center;">
+            <h1 style="margin:0; font-family:${headerFont}; font-size:24px; letter-spacing:${headerLetterSpacing}; font-weight:${headerFontWeight}; font-style:${headerFontStyle};">${brandName}</h1>
           </td>
         </tr>
 
@@ -78,8 +109,8 @@ export function buildOrderConfirmationHtml(
                   <strong style="font-size:16px;">${orderId}</strong>
                 </td>
                 <td style="background:#f8f8f8; border-radius:6px; padding:12px 16px; text-align:right;">
-                  <span style="font-size:12px; color:#888; text-transform:uppercase; letter-spacing:1px;">Payment</span><br/>
-                  <strong style="font-size:14px;">${paymentDateTime}</strong>
+                  <span style="font-size:12px; color:#888; text-transform:uppercase; letter-spacing:1px;">Date</span><br/>
+                  <strong style="font-size:14px;">${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</strong>
                 </td>
               </tr>
             </table>
@@ -106,7 +137,7 @@ export function buildOrderConfirmationHtml(
             <hr style="border:none; border-top:1px solid #eee; margin:0 0 24px;"/>
 
             <!-- Shipping -->
-            <h3 style="margin:0 0 8px; font-size:14px; text-transform:uppercase; letter-spacing:1px; color:#888;">Shipping To</h3>
+            <h3 style="margin:0 0 8px; font-size:14px; text-transform:uppercase; letter-spacing:1px; color:${primaryColor};">Shipping To</h3>
             <p style="margin:0 0 4px; font-size:14px;"><strong>${customer.fullName}</strong></p>
             <p style="margin:0 0 4px; font-size:14px; color:#555;">${address}</p>
             <p style="margin:0 0 4px; font-size:14px; color:#555;">📞 ${customer.phone}</p>

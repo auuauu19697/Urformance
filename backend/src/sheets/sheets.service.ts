@@ -39,7 +39,7 @@ export class SheetsService {
     const spreadsheetId = this.config.get<string>('google.sheetId');
     const ordersTab = this.config.get<string>('google.ordersSheet');
     const itemsTab = this.config.get<string>('google.itemsSheet');
-    const { customer, items, paymentDateTime, note } = dto;
+    const { customer, items, note } = dto;
 
     // ── Orders row ────────────────────────────────────────────────────────────
     const orderRow = [
@@ -52,11 +52,9 @@ export class SheetsService {
       customer.addressLine1,
       customer.subdistrict,
       customer.district,
-      customer.city,
       customer.province,
       customer.postalCode,
       total ?? 'amount',
-      paymentDateTime,
       slipUrl,
       note ?? '',
     ];
@@ -76,7 +74,7 @@ export class SheetsService {
     try {
       await sheets.spreadsheets.values.append({
         spreadsheetId,
-        range: `${ordersTab}!A:P`,
+        range: `${ordersTab}!A:O`,
         valueInputOption: 'USER_ENTERED',
         insertDataOption: 'INSERT_ROWS',
         requestBody: { values: [orderRow] },
@@ -103,7 +101,7 @@ export class SheetsService {
     try {
       const res = await sheets.spreadsheets.values.get({
         spreadsheetId,
-        range: `${ordersTab}!A:P`,
+        range: `${ordersTab}!A:O`,
       });
       const rows = res.data.values || [];
       if (rows.length <= 1) return []; // Only header or empty
@@ -120,14 +118,12 @@ export class SheetsService {
           addressLine1: r[6],
           subdistrict: r[7],
           district: r[8],
-          city: r[9],
-          province: r[10],
-          postalCode: r[11],
+          province: r[9],
+          postalCode: r[10],
         },
-        total: r[12],
-        paymentDateTime: r[13],
-        slipUrl: r[14],
-        note: r[15],
+        total: r[11],
+        slipUrl: r[12],
+        note: r[13],
       }));
     } catch (err: any) {
       this.logger.error('Failed to read Orders:', err?.message);

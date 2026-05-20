@@ -18,13 +18,12 @@ export class CustomerDto {
   @IsEmail() email: string;
   @IsString() @IsNotEmpty() phone: string;
 
-  @IsString() @IsOptional() instagram?: string;
+  @IsString() @IsNotEmpty() instagram: string;  // now required
 
   // Thai structured address
   @IsString() @IsNotEmpty() addressLine1: string;   // house no, road, village
   @IsString() @IsNotEmpty() subdistrict: string;    // ตำบล / แขวง
   @IsString() @IsNotEmpty() district: string;       // อำเภอ / เขต
-  @IsString() @IsNotEmpty() city: string;           // เมือง
   @IsString() @IsNotEmpty() province: string;       // จังหวัด
   @IsString() @IsNotEmpty() postalCode: string;     // รหัสไปรษณีย์
 }
@@ -53,9 +52,6 @@ export class CreateOrderDto {
   @ValidateNested({ each: true })
   @Type(() => OrderItemDto)
   items: OrderItemDto[];
-
-  /** When the customer made the payment — user-provided datetime string */
-  @IsString() @IsNotEmpty() paymentDateTime: string;
 
   @IsString() @IsOptional() note?: string;
 }
