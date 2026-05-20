@@ -23,7 +23,7 @@ export function buildOrderConfirmationHtml(
 
   const brandLower = (brandName || '').toLowerCase();
 
-  if (brandLower.includes('mu jersey')) {
+  if (brandLower.includes('mu-jersey')) {
     primaryColor = '#1e2d4a';
     primaryFg = '#ffffff';
     bgOuter = '#f8f5f0';
@@ -32,7 +32,7 @@ export function buildOrderConfirmationHtml(
     headerFontStyle = 'normal';
     headerFontWeight = '600';
     headerLetterSpacing = '1px';
-  } else if (brandLower.includes('ku outfit')) {
+  } else if (brandLower.includes('ku-outfit')) {
     primaryColor = '#4C6A4A';
     primaryFg = '#FFFCF4';
     bgOuter = '#f4f1ea'; // slightly darker warm cream for outer background so white card pops
