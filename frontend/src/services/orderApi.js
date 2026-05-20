@@ -3,9 +3,9 @@ import { API_URL, API_KEY } from '../config'
 /**
  * Submit an order to the NestJS backend.
  */
-export async function submitOrder({ customer, items, paymentDateTime, slip, note = '' }) {
+export async function submitOrder({ customer, items, slip, note = '' }) {
   const formData = new FormData()
-  const orderPayload = { customer, items, paymentDateTime, note };
+  const orderPayload = { customer, items, note };
   console.log('Submitting Order Payload:', orderPayload);
 
   formData.append('slip', slip)

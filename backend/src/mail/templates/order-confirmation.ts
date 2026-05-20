@@ -9,7 +9,7 @@ export function buildOrderConfirmationHtml(
   total: number,
   brandName: string,
 ): string {
-  const { customer, items, paymentDateTime, note } = dto;
+  const { customer, items, note } = dto;
 
   // ── Item rows ──────────────────────────────────────────────────────────────
   const itemRows = items
@@ -77,8 +77,8 @@ export function buildOrderConfirmationHtml(
                   <strong style="font-size:16px;">${orderId}</strong>
                 </td>
                 <td style="background:#f8f8f8; border-radius:6px; padding:12px 16px; text-align:right;">
-                  <span style="font-size:12px; color:#888; text-transform:uppercase; letter-spacing:1px;">Payment</span><br/>
-                  <strong style="font-size:14px;">${paymentDateTime}</strong>
+                  <span style="font-size:12px; color:#888; text-transform:uppercase; letter-spacing:1px;">Date</span><br/>
+                  <strong style="font-size:14px;">${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</strong>
                 </td>
               </tr>
             </table>

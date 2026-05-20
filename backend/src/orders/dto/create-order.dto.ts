@@ -53,8 +53,5 @@ export class CreateOrderDto {
   @Type(() => OrderItemDto)
   items: OrderItemDto[];
 
-  /** When the customer made the payment — user-provided datetime string */
-  @IsString() @IsNotEmpty() paymentDateTime: string;
-
   @IsString() @IsOptional() note?: string;
 }
