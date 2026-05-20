@@ -52,7 +52,6 @@ export class SheetsService {
       customer.addressLine1,
       customer.subdistrict,
       customer.district,
-      customer.city,
       customer.province,
       customer.postalCode,
       total ?? 'amount',
@@ -120,14 +119,13 @@ export class SheetsService {
           addressLine1: r[6],
           subdistrict: r[7],
           district: r[8],
-          city: r[9],
-          province: r[10],
-          postalCode: r[11],
+          province: r[9],
+          postalCode: r[10],
         },
-        total: r[12],
-        paymentDateTime: r[13],
-        slipUrl: r[14],
-        note: r[15],
+        total: r[11],
+        paymentDateTime: r[12],
+        slipUrl: r[13],
+        note: r[14],
       }));
     } catch (err: any) {
       this.logger.error('Failed to read Orders:', err?.message);

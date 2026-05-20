@@ -39,7 +39,6 @@ export function buildOrderConfirmationHtml(
     customer.addressLine1,
     customer.subdistrict,
     customer.district,
-    customer.city,
     customer.province,
     customer.postalCode,
   ]
