@@ -1,5 +1,7 @@
-import { createContext, useContext, useReducer } from 'react'
+import { createContext, useContext, useReducer, useMemo } from 'react'
 import { calculateShippingFee } from '../utils/shipping'
+import { getUnitPrice } from '../utils/pricing'
+import { useTheme } from './ThemeContext'
 
 const CartContext = createContext(null)
 
@@ -39,14 +41,42 @@ function cartReducer(state, action) {
 
 export function CartProvider({ children }) {
   const [state, dispatch] = useReducer(cartReducer, initialState)
+  const { products } = useTheme()
 
-  const subtotal = state.cart.reduce((sum, item) => sum + item.qty * item.unitPrice, 0)
-  const itemCount = state.cart.reduce((sum, item) => sum + item.qty, 0)
+  // Build a lookup map: productId → product config (with pricingTiers)
+  const productMap = useMemo(
+    () => Object.fromEntries((products || []).map((p) => [p.id, p])),
+    [products],
+  )
+
+  // ── Compute total qty per product (for tiered pricing) ───────────────────
+  const qtyByProduct = useMemo(() => {
+    const map = {}
+    for (const item of state.cart) {
+      map[item.id] = (map[item.id] || 0) + item.qty
+    }
+    return map
+  }, [state.cart])
+
+  // ── Enrich cart items with the correct tiered unitPrice ──────────────────
+  const cart = useMemo(() =>
+    state.cart.map((item) => {
+      const product = productMap[item.id]
+      if (!product?.pricingTiers) return item
+      const totalQty = qtyByProduct[item.id] || item.qty
+      const tieredPrice = getUnitPrice(product, totalQty)
+      return { ...item, unitPrice: tieredPrice }
+    }),
+    [state.cart, productMap, qtyByProduct],
+  )
+
+  const subtotal = cart.reduce((sum, item) => sum + item.qty * item.unitPrice, 0)
+  const itemCount = cart.reduce((sum, item) => sum + item.qty, 0)
   const shippingFee = calculateShippingFee(itemCount)
   const total = subtotal + shippingFee
 
   return (
-    <CartContext.Provider value={{ cart: state.cart, subtotal, shippingFee, total, itemCount, dispatch }}>
+    <CartContext.Provider value={{ cart, subtotal, shippingFee, total, itemCount, qtyByProduct, dispatch }}>
       {children}
     </CartContext.Provider>
   )

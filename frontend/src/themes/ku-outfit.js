@@ -60,6 +60,12 @@ const kuOutfit = {
       name: 'Ku Club Sweatshirt',
       tagline: 'Embroidered Script Logo',
       price: 990,
+      pricingTiers: [
+        { minQty: 1, price: 990 },
+        { minQty: 6, price: 950 },
+        { minQty: 16, price: 920 },
+        { minQty: 30, price: 890 },
+      ],
       image: null,
       colors: ['White', 'Cream', 'Green'],
       sizes: ['S', 'M', 'L', 'XL', 'XXL'],

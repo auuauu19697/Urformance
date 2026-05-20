@@ -53,6 +53,12 @@ const muJersey = {
       name: 'MU Training Top',
       tagline: 'DryFit Training Kit',
       price: 790,
+      pricingTiers: [
+        { minQty: 1, price: 790 },
+        { minQty: 6, price: 760 },
+        { minQty: 16, price: 730 },
+        { minQty: 30, price: 690 },
+      ],
       image: null,
       colors: ['Navy', 'Black'],
       sizes: ['S', 'M', 'L', 'XL'],

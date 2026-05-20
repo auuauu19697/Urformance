@@ -1,6 +1,13 @@
 import { useTheme } from '../context/ThemeContext'
+import { hasPricingTiers } from '../utils/pricing'
 
 function ProductCard({ product, onSelect }) {
+  const showTiers = hasPricingTiers(product)
+  // Lowest tier price = last tier (highest minQty, lowest price)
+  const lowestPrice = showTiers
+    ? product.pricingTiers[product.pricingTiers.length - 1].price
+    : product.price
+
   return (
     <div
       id={`product-card-${product.id}`}
@@ -22,7 +29,18 @@ function ProductCard({ product, onSelect }) {
           <h3 className="font-black text-lg leading-none">{product.name}</h3>
           <p className="text-xs mt-1 font-semibold text-muted">{product.tagline}</p>
         </div>
-        <p className="font-black text-lg">{product.price.toLocaleString()}.-</p>
+        <div className="text-right">
+          {showTiers ? (
+            <>
+              <p className="font-black text-lg">{product.price.toLocaleString()}.-</p>
+              <p className="text-[10px] font-bold text-muted uppercase tracking-tight">
+                from {lowestPrice.toLocaleString()}.-
+              </p>
+            </>
+          ) : (
+            <p className="font-black text-lg">{product.price.toLocaleString()}.-</p>
+          )}
+        </div>
       </div>
     </div>
   )

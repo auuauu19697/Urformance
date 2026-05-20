@@ -1,18 +1,25 @@
 import { useState } from 'react'
 import { useCart } from '../context/CartContext'
+import { getUnitPrice, hasPricingTiers } from '../utils/pricing'
 
 export default function Configure({ product, onBack, onDone }) {
   const [size, setSize]               = useState('')
   const [color, setColor]             = useState(product.colors[0])
   const [qty, setQty]                 = useState(1)
   const [screeningData, setScreening] = useState({})
-  const { dispatch }                  = useCart()
+  const { qtyByProduct, dispatch }    = useCart()
 
   const hasColor    = product.colors.length > 1
   const hasScreening = product.screeningFields?.length > 0
   const sizeStep    = hasColor ? 2 : 1
   const screenStep  = sizeStep + 1
   const qtyStep     = hasScreening ? screenStep + 1 : screenStep
+
+  // ── Tiered pricing ────────────────────────────────────────────────────────
+  const showTiers       = hasPricingTiers(product)
+  const existingQty     = qtyByProduct[product.id] || 0
+  const previewTotalQty = existingQty + qty
+  const currentPrice    = getUnitPrice(product, previewTotalQty)
 
   function handleAdd() {
     if (!size) { alert('Please select a size.'); return }
@@ -25,11 +32,20 @@ export default function Configure({ product, onBack, onDone }) {
         color,
         size,
         qty,
-        unitPrice:     product.price,
+        unitPrice:     currentPrice,
         screeningData: Object.keys(screeningData).length > 0 ? screeningData : undefined,
       },
     })
     onDone()
+  }
+
+  /**
+   * Format tier range label, e.g. "1 – 5" or "30+"
+   */
+  function tierLabel(tier, idx, tiers) {
+    const next = tiers[idx + 1]
+    if (!next) return `${tier.minQty}+`
+    return `${tier.minQty} – ${next.minQty - 1}`
   }
 
   return (
@@ -46,7 +62,60 @@ export default function Configure({ product, onBack, onDone }) {
       </button>
 
       <h2 className="text-3xl font-black italic uppercase leading-none">{product.name}</h2>
-      <p className="text-xl mb-8 font-bold text-muted">{product.price.toLocaleString()} THB</p>
+
+      {/* Price display */}
+      {showTiers ? (
+        <div className="mb-8">
+          <p className="text-xl font-bold" style={{ color: 'var(--color-primary)' }}>
+            {currentPrice.toLocaleString()} THB
+            {currentPrice < product.price && (
+              <span className="text-sm line-through text-muted ml-2 font-semibold">
+                {product.price.toLocaleString()}
+              </span>
+            )}
+          </p>
+
+          {/* Pricing tiers table */}
+          <div className="card mt-4 p-4 shadow-sm">
+            <p className="text-[11px] font-black uppercase tracking-wider text-muted mb-3">
+              🏷 Bulk Pricing — Buy More, Save More
+            </p>
+            <div className="space-y-2">
+              {product.pricingTiers.map((tier, idx) => {
+                const isActive = showTiers && (
+                  idx === product.pricingTiers.length - 1
+                    ? previewTotalQty >= tier.minQty
+                    : previewTotalQty >= tier.minQty && previewTotalQty < (product.pricingTiers[idx + 1]?.minQty ?? Infinity)
+                )
+                return (
+                  <div
+                    key={tier.minQty}
+                    className={`flex justify-between items-center text-sm px-3 py-2 rounded-lg transition-all ${
+                      isActive
+                        ? 'font-black'
+                        : 'text-muted'
+                    }`}
+                    style={isActive ? {
+                      background: 'var(--color-primary)',
+                      color: 'var(--color-primary-fg)',
+                    } : {}}
+                  >
+                    <span>{tierLabel(tier, idx, product.pricingTiers)} pcs</span>
+                    <span className="font-black">{tier.price.toLocaleString()} THB / pc</span>
+                  </div>
+                )
+              })}
+            </div>
+            {existingQty > 0 && (
+              <p className="text-[11px] font-bold text-muted mt-3">
+                Already in cart: {existingQty} pcs · Adding {qty} more = {previewTotalQty} total
+              </p>
+            )}
+          </div>
+        </div>
+      ) : (
+        <p className="text-xl mb-8 font-bold text-muted">{product.price.toLocaleString()} THB</p>
+      )}
 
       {/* Color */}
       {hasColor && (
@@ -143,7 +212,7 @@ export default function Configure({ product, onBack, onDone }) {
         onClick={handleAdd}
         className="btn-primary w-full py-5 font-black text-lg shadow-2xl uppercase italic tracking-wider"
       >
-        Add to Order
+        Add to Order — {(qty * currentPrice).toLocaleString()} THB
       </button>
     </div>
   )
