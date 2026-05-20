@@ -66,6 +66,8 @@ const muJersey = {
       },
       colors: ['Navy', 'Black'],
       sizes: ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL', '6XL', '7XL'],
+      oversizeSurcharge: 30,  // THB extra per piece for 4XL and above
+      oversizeFrom: '4XL',
       sizeChartImage: '/size-chart-default.png',
       screeningFields: [],
     },

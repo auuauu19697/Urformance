@@ -58,13 +58,13 @@ export function CartProvider({ children }) {
     return map
   }, [state.cart])
 
-  // ── Enrich cart items with the correct tiered unitPrice ──────────────────
+  // ── Enrich cart items with the correct tiered + oversize unitPrice ────────
   const cart = useMemo(() =>
     state.cart.map((item) => {
       const product = productMap[item.id]
-      if (!product?.pricingTiers) return item
+      if (!product) return item
       const totalQty = qtyByProduct[item.id] || item.qty
-      const tieredPrice = getUnitPrice(product, totalQty)
+      const tieredPrice = getUnitPrice(product, totalQty, item.size)
       return { ...item, unitPrice: tieredPrice }
     }),
     [state.cart, productMap, qtyByProduct],

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useCart } from '../context/CartContext'
-import { getUnitPrice, hasPricingTiers } from '../utils/pricing'
+import { getUnitPrice, hasPricingTiers, getOversizeSurcharge, hasOversizeSurcharge } from '../utils/pricing'
 
 export default function Configure({ product, onBack, onDone }) {
   const [size, setSize]               = useState('')
@@ -18,9 +18,14 @@ export default function Configure({ product, onBack, onDone }) {
 
   // ── Tiered pricing ────────────────────────────────────────────────────────
   const showTiers       = hasPricingTiers(product)
+  const showOversize    = hasOversizeSurcharge(product)
   const existingQty     = qtyByProduct[product.id] || 0
   const previewTotalQty = existingQty + qty
-  const currentPrice    = getUnitPrice(product, previewTotalQty)
+  // Base tiered price (before oversize)
+  const basePrice       = getUnitPrice(product, previewTotalQty, null)
+  // Full price including oversize surcharge for selected size
+  const currentPrice    = getUnitPrice(product, previewTotalQty, size || null)
+  const surchargeSingle = size ? getOversizeSurcharge(product, size) : 0
 
   // ── Per-color image ───────────────────────────────────────────────────────
   const colorImage = product.colorImages?.[color] ?? null
@@ -68,24 +73,20 @@ export default function Configure({ product, onBack, onDone }) {
         style={{ background: 'var(--color-border)', color: 'var(--color-muted)' }}
       >
         {colorImage
-          ? <img
-              src={colorImage}
-              alt={`${product.name} — ${color}`}
-              className="w-full h-full object-cover transition-opacity duration-300"
-            />
+          ? <img src={colorImage} alt={`${product.name} — ${color}`} className="w-full h-full object-cover transition-opacity duration-300" />
           : 'PHOTO'}
       </div>
 
       <h2 className="text-3xl font-black italic uppercase leading-none">{product.name}</h2>
 
-      {/* Price display */}
+      {/* ── Price display ── */}
       {showTiers ? (
         <div className="mb-8">
           <p className="text-xl font-bold mt-1" style={{ color: 'var(--color-primary)' }}>
             {currentPrice.toLocaleString()} THB / pc
-            {currentPrice < product.price && (
+            {currentPrice < (showTiers ? product.pricingTiers[0].price : product.price) + surchargeSingle && (
               <span className="text-sm line-through text-muted ml-2 font-semibold">
-                {product.price.toLocaleString()}
+                {(product.price + surchargeSingle).toLocaleString()}
               </span>
             )}
           </p>
@@ -108,13 +109,26 @@ export default function Configure({ product, onBack, onDone }) {
                     style={isActive ? { background: 'var(--color-primary)', color: 'var(--color-primary-fg)' } : {}}
                   >
                     <span>{tierLabel(tier, idx, product.pricingTiers)} pcs</span>
-                    <span className="font-black">{tier.price.toLocaleString()} THB / pc</span>
+                    <span className="font-black">
+                      {tier.price.toLocaleString()} THB / pc
+                      {surchargeSingle > 0 && (
+                        <span className="ml-1 opacity-70">+{surchargeSingle}</span>
+                      )}
+                    </span>
                   </div>
                 )
               })}
             </div>
+
+            {/* Oversize surcharge note */}
+            {showOversize && (
+              <p className="text-[11px] font-bold mt-3 px-1" style={{ color: 'var(--color-primary)' }}>
+                📐 {product.oversizeFrom} and above +{product.oversizeSurcharge} THB / pc
+              </p>
+            )}
+
             {existingQty > 0 && (
-              <p className="text-[11px] font-bold text-muted mt-3">
+              <p className="text-[11px] font-bold text-muted mt-2 px-1">
                 Already in cart: {existingQty} pcs · Adding {qty} more = {previewTotalQty} total
               </p>
             )}
@@ -161,19 +175,38 @@ export default function Configure({ product, onBack, onDone }) {
             </button>
           )}
         </div>
-        {/* Adaptive grid: wider sizes need more columns */}
         <div className="grid grid-cols-4 gap-2">
-          {product.sizes.map((s) => (
-            <button
-              key={s}
-              id={`size-btn-${s}`}
-              onClick={() => setSize(s)}
-              className={`option-btn py-3 text-sm ${size === s ? 'selected' : ''}`}
-            >
-              {s}
-            </button>
-          ))}
+          {product.sizes.map((s) => {
+            const surcharge = getOversizeSurcharge(product, s)
+            const isOversize = surcharge > 0
+            return (
+              <button
+                key={s}
+                id={`size-btn-${s}`}
+                onClick={() => setSize(s)}
+                className={`option-btn py-3 text-sm relative ${size === s ? 'selected' : ''}`}
+              >
+                <span>{s}</span>
+                {isOversize && (
+                  <span
+                    className="absolute -top-1.5 -right-1.5 text-[9px] font-black px-1 py-0.5 rounded-full leading-none"
+                    style={{
+                      background: size === s ? 'rgba(255,255,255,0.25)' : 'var(--color-primary)',
+                      color: size === s ? 'inherit' : 'var(--color-primary-fg)',
+                    }}
+                  >
+                    +{surcharge}
+                  </span>
+                )}
+              </button>
+            )
+          })}
         </div>
+        {showOversize && (
+          <p className="text-[11px] font-bold text-muted mt-2 ml-1">
+            📐 {product.oversizeFrom}+ sizes include +{product.oversizeSurcharge} THB surcharge per piece
+          </p>
+        )}
       </div>
 
       {/* ── Screening / Personalisation ── */}
@@ -246,34 +279,21 @@ export default function Configure({ product, onBack, onDone }) {
             style={{ background: 'var(--color-surface)' }}
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Modal header */}
             <div
               className="flex justify-between items-center px-5 py-4 border-b"
               style={{ borderColor: 'var(--color-border)' }}
             >
-              <h3
-                className="text-xl font-black italic uppercase"
-                style={{ color: 'var(--color-primary)' }}
-              >
+              <h3 className="text-xl font-black italic uppercase" style={{ color: 'var(--color-primary)' }}>
                 Size Guide
               </h3>
-              <button
-                onClick={() => setShowSizeChart(false)}
-                className="text-muted hover:opacity-70 transition-opacity"
-              >
+              <button onClick={() => setShowSizeChart(false)} className="text-muted hover:opacity-70 transition-opacity">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
-
-            {/* Size chart image */}
             <div className="overflow-y-auto max-h-[70vh]">
-              <img
-                src={product.sizeChartImage}
-                alt="Size Chart"
-                className="w-full h-auto"
-              />
+              <img src={product.sizeChartImage} alt="Size Chart" className="w-full h-auto" />
             </div>
           </div>
         </div>
