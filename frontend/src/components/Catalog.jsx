@@ -8,9 +8,9 @@ function ProductCard({ product, onSelect }) {
     ? product.pricingTiers[product.pricingTiers.length - 1].price
     : product.price
 
-  // Preview the first color image on the catalog card
+  // Use the collection image if available, otherwise fall back to the first color image
   const firstColor = product.colors[0]
-  const previewImage = product.colorImages?.[firstColor] ?? null
+  const previewImage = product.collectionImage || product.colorImages?.[firstColor] || null
 
   return (
     <div

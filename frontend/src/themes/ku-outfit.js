@@ -66,6 +66,7 @@ const kuOutfit = {
         { minQty: 16, price: 920 },
         { minQty: 30, price: 890 },
       ],
+      collectionImage: null,
       colorImages: {
         White: null,
         Cream: null,

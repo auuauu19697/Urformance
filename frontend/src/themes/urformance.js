@@ -54,6 +54,7 @@ const urformance = {
         { minQty: 16, price: 820 },
         { minQty: 30, price: 790 },
       ],
+      collectionImage: null,
       colorImages: {
         Black: null,
         White: null,
@@ -77,6 +78,7 @@ const urformance = {
         { minQty: 16, price: 730 },
         { minQty: 30, price: 690 },
       ],
+      collectionImage: null,
       colorImages: {
         Black: null,
         White: null,

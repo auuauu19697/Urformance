@@ -49,24 +49,25 @@ const muJersey = {
 
   products: [
     {
-      id: 'mu-training',
-      name: 'MU Training Top',
+      id: '1',
+      name: 'Autotech',
       tagline: 'DryFit Training Kit',
-      price: 790,
+      price: 390,
       pricingTiers: [
-        { minQty: 1, price: 790 },
-        { minQty: 6, price: 760 },
-        { minQty: 16, price: 730 },
-        { minQty: 30, price: 690 },
+        { minQty: 1, price: 390 },
+        { minQty: 6, price: 380 },
+        { minQty: 16, price: 370 },
+        { minQty: 30, price: 350 },
       ],
       // Per-color images — set to null until real photos are ready
+      collectionImage: '/product/autotech-collection.jpg',
       colorImages: {
-        Navy: null,
-        Black: null,
+        Navy: '/product/autotech-navy.jpg',
+        Black: '/product/autotech-black.jpg',
       },
       colors: ['Navy', 'Black'],
       sizes: ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL', '6XL', '7XL'],
-      oversizeSurcharge: 30,  // THB extra per piece for 4XL and above
+      oversizeSurcharge: 20,  // THB extra per piece for 4XL and above
       oversizeFrom: '4XL',
       sizeChartImage: '/size-chart-default.png',
       screeningFields: [],
