@@ -148,9 +148,9 @@ export function buildOrderConfirmationHtml(
 
             <!-- Shipping -->
             <h3 style="margin:0 0 8px; font-size:14px; text-transform:uppercase; letter-spacing:1px; color:${primaryColor};">Shipping To</h3>
-            <p style="margin:0 0 4px; font-size:14px;"><strong>${customer.fullName}</strong></p>
+            <p style="margin:0 0 4px; font-size:14px;"><strong>${customer.shippingName}</strong></p>
             <p style="margin:0 0 4px; font-size:14px; color:#555;">${address}</p>
-            <p style="margin:0 0 4px; font-size:14px; color:#555;">📞 ${customer.phone}</p>
+            <p style="margin:0 0 4px; font-size:14px; color:#555;">📞 ${customer.shippingPhone}</p>
             <p style="margin:0 0 0; font-size:14px; color:#555;">✉️ ${customer.email}</p>
 
             ${note ? `<p style="margin:16px 0 0; padding:12px; background:#fffbeb; border-radius:6px; font-size:13px; color:#92400e;">📝 <strong>Note:</strong> ${note}</p>` : ''}

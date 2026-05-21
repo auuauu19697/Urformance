@@ -14,6 +14,9 @@ export default function Checkout({ onBack, onSuccess }) {
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
   const [instagram, setInstagram] = useState('')
+  const [shippingName, setShippingName] = useState('')
+  const [shippingPhone, setShippingPhone] = useState('')
+  const [sameAsContact, setSameAsContact] = useState(false)
   const [addressLine1, setAddressLine1] = useState('')
   const [subdistrict, setSubdistrict] = useState('')
   const [district, setDistrict] = useState('')
@@ -37,7 +40,10 @@ export default function Checkout({ onBack, onSuccess }) {
 
   async function handleSubmit() {
     setError('')
+    const finalShippingName = sameAsContact ? fullName : shippingName
+    const finalShippingPhone = sameAsContact ? phone : shippingPhone
     if (!fullName.trim() || !email.trim() || !phone.trim() || !instagram.trim() ||
+      !finalShippingName.trim() || !finalShippingPhone.trim() ||
       !addressLine1.trim() || !subdistrict.trim() || !district.trim() ||
       !province.trim() || !postalCode.trim()) {
       setError('Please complete all required information.')
@@ -50,7 +56,10 @@ export default function Checkout({ onBack, onSuccess }) {
       const result = await submitOrder({
         customer: {
           fullName: fullName.trim(), email: email.trim(), phone: phone.trim(),
-          instagram: instagram.trim(), addressLine1: addressLine1.trim(),
+          instagram: instagram.trim(),
+          shippingName: finalShippingName.trim(),
+          shippingPhone: finalShippingPhone.trim(),
+          addressLine1: addressLine1.trim(),
           subdistrict: subdistrict.trim(), district: district.trim(),
           province: province.trim(), postalCode: postalCode.trim(),
         },
@@ -108,6 +117,73 @@ export default function Checkout({ onBack, onSuccess }) {
         <h3 className="section-heading mt-8">
           Shipping Address
         </h3>
+
+        {/* Same as contact checkbox */}
+        <label
+          id="same-as-contact-label"
+          className="flex items-center gap-2.5 cursor-pointer select-none group"
+          style={{ marginBottom: '0.25rem' }}
+        >
+          <span
+            className="inline-flex items-center justify-center w-5 h-5 rounded-md border-2 transition-all shrink-0"
+            style={{
+              borderColor: sameAsContact ? 'var(--color-primary)' : 'var(--color-border)',
+              background: sameAsContact ? 'var(--color-primary)' : 'transparent',
+            }}
+          >
+            {sameAsContact && (
+              <svg className="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
+              </svg>
+            )}
+          </span>
+          <input
+            id="same-as-contact-checkbox"
+            type="checkbox"
+            checked={sameAsContact}
+            onChange={(e) => {
+              const checked = e.target.checked
+              setSameAsContact(checked)
+              if (checked) {
+                setShippingName(fullName)
+                setShippingPhone(phone)
+              }
+            }}
+            className="hidden"
+          />
+          <span className="text-xs font-black uppercase tracking-wide text-muted group-hover:opacity-80 transition-opacity">
+            Same as order name
+          </span>
+        </label>
+
+        {/* Shipping Name & Phone */}
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className={labelCls}>Recipient Name *</label>
+            <input
+              id="input-shipping-name"
+              type="text"
+              value={sameAsContact ? fullName : shippingName}
+              onChange={(e) => setShippingName(e.target.value)}
+              disabled={sameAsContact}
+              className="input-field"
+              style={sameAsContact ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
+            />
+          </div>
+          <div>
+            <label className={labelCls}>Phone Number *</label>
+            <input
+              id="input-shipping-phone"
+              type="tel"
+              value={sameAsContact ? phone : shippingPhone}
+              onChange={(e) => setShippingPhone(e.target.value)}
+              disabled={sameAsContact}
+              className="input-field"
+              style={sameAsContact ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
+            />
+          </div>
+        </div>
+
         <div>
           <label className={labelCls}>Address Line 1 *</label>
           <textarea
