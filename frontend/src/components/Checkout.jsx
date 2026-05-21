@@ -281,7 +281,7 @@ export default function Checkout({ onBack, onSuccess }) {
         disabled={loading}
         className="btn-primary w-full py-5 font-black text-lg shadow-2xl uppercase italic tracking-wider"
       >
-        {loading ? 'กำลังส่งข้อมูล…' : 'ยืนยันคำสั่งซื้อ'}
+        {loading ? 'Submitting…' : 'Submit Order'}
       </button>
     </div>
   )
