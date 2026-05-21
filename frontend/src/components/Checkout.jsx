@@ -171,7 +171,7 @@ export default function Checkout({ onBack, onSuccess }) {
 
         {/* Slip upload */}
         <div>
-          <label className={labelCls}>Upload Payment Slip</label>
+          <label className={labelCls}>Upload Payment Slip *</label>
           <label
             id="slip-upload-label"
             onClick={() => fileRef.current?.click()}

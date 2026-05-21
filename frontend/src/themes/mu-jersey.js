@@ -43,7 +43,9 @@ const muJersey = {
 
   consentText: {
     title: 'Before You Order',
-    body: 'This is a pre-order for MU Jersey. Production begins after the order period closes. Please allow 4–6 weeks for production and delivery.',
+    body: `Before You Order
+This is a pre-order for MU Jersey. Production begins after the order period closes. Please allow 4–6 weeks for production and delivery.
+Any question please feel free to contact ig: @mu.jersey`,
     cta: "Got It — Let's Order",
   },
 
@@ -51,7 +53,7 @@ const muJersey = {
     {
       id: '1',
       name: 'Autotech',
-      tagline: 'DryFit Training Kit',
+      tagline: 'This collection no customize name&number',
       price: 390,
       pricingTiers: [
         { minQty: 1, price: 390 },

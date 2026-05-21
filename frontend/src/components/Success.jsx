@@ -4,7 +4,7 @@ export default function Success({ orderId, total, onReset }) {
       <div className="text-6xl">🎉</div>
       <div>
         <h2 className="text-3xl font-black italic uppercase leading-none mb-2">Order Placed!</h2>
-        <p className="font-semibold text-muted">We'll contact you shortly to confirm.</p>
+        <p className="font-semibold text-muted">Please check your email for comformation email, if there is no email sent to you please contact @mu.jerseys.</p>
       </div>
 
       <div className="card p-6 w-full text-left shadow-sm space-y-4">
