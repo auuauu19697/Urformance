@@ -25,6 +25,7 @@ export default function Checkout({ onBack, onSuccess }) {
   const [note, setNote] = useState('')
   const [slip, setSlip] = useState(null)
   const [slipPreview, setSlipPreview] = useState(null)
+  const [confirmed, setConfirmed] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const fileRef = useRef(null)
@@ -271,6 +272,41 @@ export default function Checkout({ onBack, onSuccess }) {
         </div>
       </div>
 
+      {/* Confirmation checkbox */}
+      <label
+        id="confirm-order-label"
+        className="flex items-start gap-3 cursor-pointer select-none group mb-4"
+      >
+        <span
+          className="inline-flex items-center justify-center w-5 h-5 rounded-md border-2 transition-all shrink-0 mt-0.5"
+          style={{
+            borderColor: confirmed ? 'var(--color-primary)' : 'var(--color-border)',
+            background: confirmed ? 'var(--color-primary)' : 'transparent',
+          }}
+        >
+          {confirmed && (
+            <svg className="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
+            </svg>
+          )}
+        </span>
+        <input
+          id="confirm-order-checkbox"
+          type="checkbox"
+          checked={confirmed}
+          onChange={(e) => setConfirmed(e.target.checked)}
+          className="hidden"
+        />
+        <span className="text-xs leading-relaxed text-muted group-hover:opacity-80 transition-opacity">
+          <span className="block font-bold" style={{ color: 'var(--color-muted)' }}>
+            กรุณาตรวจสอบรายละเอียดให้ครบถ้วน หลังส่งออเดอร์แล้วจะไม่สามารถแก้ไขได้ทุกกรณี
+          </span>
+          <span className="block mt-0.5">
+            Please double-check your information. Once your order is placed, it cannot be edited under any circumstances.
+          </span>
+        </span>
+      </label>
+
       {/* Error */}
       {error && <p className="text-red-500 text-sm font-bold mb-4 text-center">{error}</p>}
 
@@ -278,7 +314,7 @@ export default function Checkout({ onBack, onSuccess }) {
       <button
         id="submit-order-btn"
         onClick={handleSubmit}
-        disabled={loading}
+        disabled={loading || !confirmed}
         className="btn-primary w-full py-5 font-black text-lg shadow-2xl uppercase italic tracking-wider"
       >
         {loading ? 'Submitting…' : 'Submit Order'}
