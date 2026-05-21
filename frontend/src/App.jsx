@@ -19,7 +19,7 @@ const STEP = {
 }
 
 // ─── Header ─────────────────────────────────────────────────────────────────
-function Header({ step, onCartClick }) {
+function Header({ step, onCartClick, onLogoClick }) {
   const { itemCount } = useCart()
   const { brandName } = useTheme()
   console.log(`brandName: ${brandName}`);
@@ -27,7 +27,12 @@ function Header({ step, onCartClick }) {
     <header className="sticky top-0 z-50 border-b px-5 py-4 flex justify-between items-center"
       style={{ background: 'var(--color-surface)', borderColor: 'var(--color-border)' }}
     >
-      <h1 className="font-black italic text-xl uppercase tracking-tighter">{brandName}</h1>
+      <h1 
+        className="font-black italic text-xl uppercase tracking-tighter cursor-pointer select-none hover:opacity-80 transition-opacity"
+        onClick={onLogoClick}
+      >
+        {brandName}
+      </h1>
       {step !== STEP.SUCCESS && (
         <button id="cart-icon-btn" onClick={onCartClick} className="relative">
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -99,7 +104,16 @@ function OrderApp() {
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--color-bg)' }}>
-      <Header step={step} onCartClick={() => { setStep(STEP.CART); window.scrollTo(0, 0) }} />
+      <Header
+        step={step}
+        onCartClick={() => { setStep(STEP.CART); window.scrollTo(0, 0) }}
+        onLogoClick={() => {
+          if (step !== STEP.CONSENT) {
+            setStep(STEP.CATALOG)
+            window.scrollTo(0, 0)
+          }
+        }}
+      />
       <Steps current={step} />
 
       <main className="max-w-sm mx-auto px-5 pb-16">
