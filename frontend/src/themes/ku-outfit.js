@@ -11,8 +11,8 @@ const kuOutfit = {
   metaDescription: 'Order Ku Club official apparel online.',
 
   // ── Typography ──────────────────────────────────────────────────────────────
-  googleFont: 'Cormorant Garamond',
-  googleFontWeights: '400;500;600;700',
+  googleFont: null,          // Satoshi is loaded via Fontshare in index.html
+  googleFontWeights: null,
 
   // ── Design tokens ───────────────────────────────────────────────────────────
   tokens: {
@@ -28,7 +28,7 @@ const kuOutfit = {
     radiusButton: '0.375rem',  // slightly rounded
     radiusInput: '0.375rem',
 
-    fontBrand: "'Cormorant Garamond', Georgia, serif",
+    fontBrand: "'Satoshi', 'LINE Seed Sans TH', system-ui, sans-serif",
 
     // Section heading tokens — elegant larger labels
     sectionHSize: '1.25rem',

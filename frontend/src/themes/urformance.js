@@ -10,8 +10,8 @@ const urformance = {
   metaDescription: 'Order Urformance performance wear online.',
 
   // ── Typography ──────────────────────────────────────────────────────────────
-  googleFont: 'Inter',
-  googleFontWeights: '400;700;900',
+  googleFont: null,          // Satoshi is loaded via Fontshare in index.html
+  googleFontWeights: null,
 
   // ── Design tokens (injected as CSS custom properties) ───────────────────────
   tokens: {
@@ -25,7 +25,7 @@ const urformance = {
     radiusCard: '1.5rem',
     radiusButton: '1.5rem',
     radiusInput: '1rem',
-    fontBrand: "'Inter', system-ui, sans-serif",
+    fontBrand: "'Satoshi', 'LINE Seed Sans TH', system-ui, sans-serif",
     fontSizeBase: '1.1rem',
   },
 

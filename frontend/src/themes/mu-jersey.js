@@ -8,8 +8,8 @@ const muJersey = {
   pageTitle: 'MU Jersey — Order',
   metaDescription: 'Order premium MU football jerseys online.',
 
-  googleFont: 'Cormorant Garamond',
-  googleFontWeights: '400;500;600;700',
+  googleFont: null,          // Satoshi is loaded via Fontshare in index.html
+  googleFontWeights: null,
 
   tokens: {
     colorPrimary: '#1e2d4a',   // deep navy
@@ -24,7 +24,7 @@ const muJersey = {
     radiusButton: '0.25rem',   // nearly square
     radiusInput: '0',
 
-    fontBrand: "'Cormorant Garamond', Georgia, serif",
+    fontBrand: "'Satoshi', 'LINE Seed Sans TH', system-ui, sans-serif",
 
     // Section heading tokens (override Urformance tiny-label defaults)
     sectionHSize: '1.5rem',

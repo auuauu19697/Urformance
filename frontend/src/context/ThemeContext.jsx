@@ -26,15 +26,17 @@ export function ThemeProvider({ children }) {
       root.style.setProperty(tokenToCssVar(key), value)
     })
 
-    // 2. Dynamically load the brand Google Font
-    const fontSlug = googleFont.replace(/\s+/g, '+')
-    const fontUrl  = `https://fonts.googleapis.com/css2?family=${fontSlug}:wght@${googleFontWeights}&display=swap`
-    if (!document.getElementById('brand-font')) {
-      const link  = document.createElement('link')
-      link.id     = 'brand-font'
-      link.rel    = 'stylesheet'
-      link.href   = fontUrl
-      document.head.appendChild(link)
+    // 2. Dynamically load the brand Google Font (skip if font is loaded via other CDN)
+    if (googleFont) {
+      const fontSlug = googleFont.replace(/\s+/g, '+')
+      const fontUrl  = `https://fonts.googleapis.com/css2?family=${fontSlug}:wght@${googleFontWeights}&display=swap`
+      if (!document.getElementById('brand-font')) {
+        const link  = document.createElement('link')
+        link.id     = 'brand-font'
+        link.rel    = 'stylesheet'
+        link.href   = fontUrl
+        document.head.appendChild(link)
+      }
     }
 
     // 3. Update page title & meta description

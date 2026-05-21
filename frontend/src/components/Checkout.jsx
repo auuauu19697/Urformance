@@ -46,10 +46,10 @@ export default function Checkout({ onBack, onSuccess }) {
       !finalShippingName.trim() || !finalShippingPhone.trim() ||
       !addressLine1.trim() || !subdistrict.trim() || !district.trim() ||
       !province.trim() || !postalCode.trim()) {
-      setError('Please complete all required information.')
+      setError('กรุณากรอกข้อมูลให้ครบถ้วน')
       return
     }
-    if (!slip) { setError('Please upload your payment slip.'); return }
+    if (!slip) { setError('กรุณาอัปโหลดสลิปการชำระเงิน'); return }
 
     setLoading(true)
     try {
@@ -72,7 +72,7 @@ export default function Checkout({ onBack, onSuccess }) {
       })
       onSuccess(result)
     } catch (err) {
-      setError(err.message || 'Failed to submit order. Please try again.')
+      setError(err.message || 'เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง')
     } finally {
       setLoading(false)
     }
@@ -102,9 +102,9 @@ export default function Checkout({ onBack, onSuccess }) {
           Contact Information
         </h3>
         {[
-          { id: 'input-full-name', label: 'Full Name *', value: fullName, set: setFullName, type: 'text' },
-          { id: 'input-email', label: 'Email *', value: email, set: setEmail, type: 'email' },
-          { id: 'input-phone', label: 'Phone Number *', value: phone, set: setPhone, type: 'tel' },
+          { id: 'input-full-name', label: 'ชื่อ-นามสกุล *', value: fullName, set: setFullName, type: 'text' },
+          { id: 'input-email', label: 'อีเมล *', value: email, set: setEmail, type: 'email' },
+          { id: 'input-phone', label: 'เบอร์โทรศัพท์ *', value: phone, set: setPhone, type: 'tel' },
           { id: 'input-instagram', label: 'Instagram *', value: instagram, set: setInstagram, type: 'text' },
         ].map(({ id, label, value, set, type }) => (
           <div key={label}>
@@ -152,14 +152,14 @@ export default function Checkout({ onBack, onSuccess }) {
             className="hidden"
           />
           <span className="text-xs font-black uppercase tracking-wide text-muted group-hover:opacity-80 transition-opacity">
-            Same as order name
+            ใช้ชื่อและเบอร์เดียวกับผู้สั่ง
           </span>
         </label>
 
         {/* Shipping Name & Phone */}
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className={labelCls}>Recipient Name *</label>
+            <label className={labelCls}>ชื่อผู้รับ *</label>
             <input
               id="input-shipping-name"
               type="text"
@@ -171,7 +171,7 @@ export default function Checkout({ onBack, onSuccess }) {
             />
           </div>
           <div>
-            <label className={labelCls}>Phone Number *</label>
+            <label className={labelCls}>เบอร์โทรผู้รับ *</label>
             <input
               id="input-shipping-phone"
               type="tel"
@@ -185,22 +185,22 @@ export default function Checkout({ onBack, onSuccess }) {
         </div>
 
         <div>
-          <label className={labelCls}>Address Line 1 *</label>
+          <label className={labelCls}>ที่อยู่ *</label>
           <textarea
             id="input-address"
             rows={2}
             value={addressLine1}
             onChange={(e) => setAddressLine1(e.target.value)}
-            placeholder="House No., Building, Street..."
+            placeholder="บ้านเลขที่ อาคาร ถนน..."
             className="input-field resize-none"
           />
         </div>
         <div className="grid grid-cols-2 gap-4">
           {[
-            { id: 'input-subdistrict', label: 'Subdistrict *', value: subdistrict, set: setSubdistrict },
-            { id: 'input-district', label: 'District *', value: district, set: setDistrict },
-            { id: 'input-province', label: 'Province *', value: province, set: setProvince },
-            { id: 'input-postal', label: 'Postal Code *', value: postalCode, set: setPostalCode },
+            { id: 'input-subdistrict', label: 'ตำบล / แขวง *', value: subdistrict, set: setSubdistrict },
+            { id: 'input-district', label: 'อำเภอ / เขต *', value: district, set: setDistrict },
+            { id: 'input-province', label: 'จังหวัด *', value: province, set: setProvince },
+            { id: 'input-postal', label: 'รหัสไปรษณีย์ *', value: postalCode, set: setPostalCode },
           ].map(({ id, label, value, set }) => (
             <div key={label}>
               <label className={labelCls}>{label}</label>
@@ -209,13 +209,13 @@ export default function Checkout({ onBack, onSuccess }) {
           ))}
         </div>
         <div>
-          <label className={labelCls}>Note (optional)</label>
+          <label className={labelCls}>หมายเหตุ (ถ้ามี)</label>
           <input
             id="input-note"
             type="text"
             value={note}
             onChange={(e) => setNote(e.target.value)}
-            placeholder="Special requests, gift wrapping…"
+            placeholder="คำขอพิเศษ หรือข้อมูลเพิ่มเติม…"
             className="input-field"
           />
         </div>
@@ -230,7 +230,7 @@ export default function Checkout({ onBack, onSuccess }) {
         {/* QR Code — dynamic per brand */}
         <div className="card p-6 text-center">
           <p className="text-xs font-black uppercase mb-4 tracking-tighter text-muted">
-            Scan to pay:{' '}
+            สแกนจ่าย:{' '}
             <span className="font-black" style={{ color: 'var(--color-primary)' }}>
               {total.toLocaleString()} THB
             </span>
@@ -281,7 +281,7 @@ export default function Checkout({ onBack, onSuccess }) {
         disabled={loading}
         className="btn-primary w-full py-5 font-black text-lg shadow-2xl uppercase italic tracking-wider"
       >
-        {loading ? 'Submitting…' : 'Submit Order'}
+        {loading ? 'กำลังส่งข้อมูล…' : 'ยืนยันคำสั่งซื้อ'}
       </button>
     </div>
   )

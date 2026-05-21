@@ -1,5 +1,37 @@
 @import "tailwindcss";
 
+/* ─── LINE Seed Sans TH — self-hosted via JSDelivr ───────────────────────────
+   Rg = Regular (400), Bd = Bold (700), XBd = ExtraBold (800), He = Heavy (900)
+   ─────────────────────────────────────────────────────────────────────────── */
+@font-face {
+  font-family: 'LINE Seed Sans TH';
+  src: url('https://cdn.jsdelivr.net/npm/@fontpkg/line-seed-sans-th@1.0.1/LINESeedSansTH_Th.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'LINE Seed Sans TH';
+  src: url('https://cdn.jsdelivr.net/npm/@fontpkg/line-seed-sans-th@1.0.1/LINESeedSansTH_Rg.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'LINE Seed Sans TH';
+  src: url('https://cdn.jsdelivr.net/npm/@fontpkg/line-seed-sans-th@1.0.1/LINESeedSansTH_Bd.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'LINE Seed Sans TH';
+  src: url('https://cdn.jsdelivr.net/npm/@fontpkg/line-seed-sans-th@1.0.1/LINESeedSansTH_XBd.ttf') format('truetype');
+  font-weight: 800 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* ─── Brand Design Tokens ────────────────────────────────────────────────────
    Defaults here — ThemeContext overwrites them on :root at runtime.
    ─────────────────────────────────────────────────────────────────────────── */
@@ -20,7 +52,7 @@
   --section-h-tracking: 0.1em;
   --section-h-color: var(--color-muted);
   --radius-input: 1rem;
-  --font-brand: 'Inter', system-ui, sans-serif;
+  --font-brand: 'Satoshi', 'LINE Seed Sans TH', system-ui, sans-serif;
 }
 
 body {
