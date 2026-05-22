@@ -39,10 +39,20 @@ export function ThemeProvider({ children }) {
       }
     }
 
-    // 3. Update page title & meta description
+    // 3. Update page title & meta description & favicon
     document.title = pageTitle
     const metaEl = document.querySelector('meta[name="description"]')
     if (metaEl) metaEl.setAttribute('content', metaDescription)
+    
+    if (activeTheme.icon) {
+      let iconEl = document.querySelector("link[rel~='icon']")
+      if (!iconEl) {
+        iconEl = document.createElement('link')
+        iconEl.rel = 'icon'
+        document.head.appendChild(iconEl)
+      }
+      iconEl.href = activeTheme.icon
+    }
 
     // 4. Set input style variant (drives CSS [data-input-style] selector)
     root.setAttribute('data-input-style', activeTheme.inputVariant || 'box')
