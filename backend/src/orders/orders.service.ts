@@ -32,7 +32,7 @@ export class OrdersService {
     const total = subtotal + shippingFee;
 
     // ── Generate order ID ─────────────────────────────────────────────────────
-    const orderId = `ORD-${Date.now()}`;
+    const orderId = `MUJ-${Date.now()}`;
 
     // ── Upload slip to Google Drive ────────────────────────────────────────────
     const slipUrl = await this.drive.uploadSlip(slipFile, orderId);
