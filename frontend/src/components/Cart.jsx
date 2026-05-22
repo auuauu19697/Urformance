@@ -7,23 +7,25 @@ export default function Cart({ onBack, onCheckout }) {
   const [showShippingInfo, setShowShippingInfo] = useState(false)
 
   return (
-    <div>
-      <div className="flex justify-between items-end mb-6">
+    <div className="pt-2">
+      <div className="mb-6">
         <h2 className="text-3xl font-black italic uppercase leading-none">Cart</h2>
-        <button
-          id="add-more-btn"
-          onClick={onBack}
-          className="text-xs font-black uppercase border-b-2 pb-1 text-accent border-accent"
-        >
-          + Add More
-        </button>
       </div>
 
       {/* Items */}
       {isEmpty ? (
-        <p className="text-center py-16 font-bold uppercase italic tracking-widest text-muted">
-          Cart is empty
-        </p>
+        <div className="flex flex-col items-center justify-center py-16 space-y-2">
+          <p className="font-bold uppercase italic tracking-widest text-muted text-center">
+            Your cart is empty
+          </p>
+          <button
+            onClick={onBack}
+            className="font-black uppercase italic tracking-wider underline hover:opacity-80 transition-opacity"
+            style={{ color: 'var(--color-primary)' }}
+          >
+            Browse Collection
+          </button>
+        </div>
       ) : (
         <div className="space-y-3 mb-8">
           {cart.map((item, index) => (
@@ -61,35 +63,44 @@ export default function Cart({ onBack, onCheckout }) {
               </div>
             </div>
           ))}
+          <button
+            id="add-more-btn"
+            onClick={onBack}
+            className="w-full py-4 border-2 border-dashed rounded-xl font-black uppercase italic tracking-wider text-sm transition-opacity hover:opacity-80"
+            style={{ borderColor: 'var(--color-primary)', color: 'var(--color-primary)' }}
+          >
+            + Add More Items
+          </button>
         </div>
       )}
-
       {/* Summary */}
       {!isEmpty && (
-        <div className="card p-6 space-y-3 shadow-sm mb-8">
-          <div className="flex justify-between font-bold text-base text-muted">
-            <span>Subtotal</span><span>{subtotal.toLocaleString()}.-</span>
+        <>
+          <div className="card p-6 space-y-3 shadow-sm mb-8">
+            <div className="flex justify-between font-bold text-base text-muted">
+              <span>Subtotal</span><span>{subtotal.toLocaleString()}.-</span>
+            </div>
+            <div className="flex justify-between font-bold text-base">
+              <span className="text-muted flex items-center gap-1">
+                Shipping
+                <button
+                  onClick={() => setShowShippingInfo(true)}
+                  className="hover:text-black transition-colors"
+                  title="View Shipping Rates"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </button>
+              </span>
+              <span className="font-black text-sm">{shippingFee.toLocaleString()}.-</span>
+            </div>
+            <hr style={{ borderColor: 'var(--color-border)' }} />
+            <div className="flex justify-between text-2xl font-black italic">
+              <span>TOTAL</span><span>{total.toLocaleString()}.-</span>
+            </div>
           </div>
-          <div className="flex justify-between font-bold text-base">
-            <span className="text-muted flex items-center gap-1">
-              Shipping
-              <button 
-                onClick={() => setShowShippingInfo(true)} 
-                className="hover:text-black transition-colors" 
-                title="View Shipping Rates"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </button>
-            </span>
-            <span className="font-black text-sm">{shippingFee.toLocaleString()}.-</span>
-          </div>
-          <hr style={{ borderColor: 'var(--color-border)' }} />
-          <div className="flex justify-between text-2xl font-black italic">
-            <span>TOTAL</span><span>{total.toLocaleString()}.-</span>
-          </div>
-        </div>
+        </>
       )}
 
       <button
@@ -103,12 +114,12 @@ export default function Cart({ onBack, onCheckout }) {
 
       {/* Shipping Info Modal */}
       {showShippingInfo && (
-        <div 
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4 transition-opacity" 
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4 transition-opacity"
           onClick={() => setShowShippingInfo(false)}
         >
-          <div 
-            className="card w-full max-w-sm p-6 shadow-2xl" 
+          <div
+            className="card w-full max-w-sm p-6 shadow-2xl"
             style={{ background: 'var(--color-surface)' }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -120,7 +131,7 @@ export default function Cart({ onBack, onCheckout }) {
                 </svg>
               </button>
             </div>
-            
+
             <div className="space-y-3 text-sm font-bold text-muted mb-6">
               <div className="flex justify-between items-center border-b pb-2 border-gray-100">
                 <span>1 - 5 pieces</span>
@@ -139,7 +150,7 @@ export default function Cart({ onBack, onCheckout }) {
                 <span className="font-black text-base" style={{ color: 'var(--color-primary)' }}>100 THB</span>
               </div>
             </div>
-            
+
             <button
               onClick={() => setShowShippingInfo(false)}
               className="btn-primary w-full py-4 font-black uppercase italic tracking-wider text-sm shadow-lg"
