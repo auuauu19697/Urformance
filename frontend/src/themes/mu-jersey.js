@@ -37,6 +37,17 @@ const muJersey = {
   // input underline style — picked up by ThemeContext → data-input-style attr
   inputVariant: 'underline',
 
+  // ── Pre-order period ─────────────────────────────────────────────────
+  // ISO 8601 with explicit offset — set to null to disable deadline enforcement.
+  preorderDeadline: '2026-05-29T20:32:59+07:00',
+
+  closedText: {
+    heading: 'Pre-order Has Closed',
+    body: 'Thank you for your interest in MU Jersey!\nThe pre-order period has ended. Follow us on Instagram for news about the next collection.',
+    instagram: '@mu.jerseys',
+    instagramUrl: 'https://www.instagram.com/mu.jerseys',
+  },
+
   paymentMethod: 'QR PromptPay',
   paymentNote: null,
   qrImage: null,

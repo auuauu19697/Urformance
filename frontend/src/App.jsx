@@ -1,12 +1,14 @@
 import { useState } from 'react'
 import { CartProvider, useCart } from './context/CartContext'
 import { ThemeProvider, useTheme } from './context/ThemeContext'
+import { activeTheme } from './themes/index.js'
 import Catalog from './components/Catalog'
 import Configure from './components/Configure'
 import Cart from './components/Cart'
 import Checkout from './components/Checkout'
 import Success from './components/Success'
 import Consent from './components/Consent'
+import PreorderClosed from './components/PreorderClosed'
 
 // ─── Steps ──────────────────────────────────────────────────────────────────
 const STEP = {
@@ -153,10 +155,15 @@ function OrderApp() {
 
 // ─── Root ────────────────────────────────────────────────────────────────────
 export default function App() {
+  // Check once at mount — if the deadline has passed, show the closed screen.
+  const isClosed = activeTheme.preorderDeadline
+    ? new Date() >= new Date(activeTheme.preorderDeadline)
+    : false
+
   return (
     <ThemeProvider>
       <CartProvider>
-        <OrderApp />
+        {isClosed ? <PreorderClosed /> : <OrderApp />}
       </CartProvider>
     </ThemeProvider>
   )
