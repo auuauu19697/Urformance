@@ -39,7 +39,7 @@ const muJersey = {
 
   // ── Pre-order period ─────────────────────────────────────────────────
   // ISO 8601 with explicit offset — set to null to disable deadline enforcement.
-  preorderDeadline: '2026-05-29T20:32:59+07:00',
+  preorderDeadline: '2026-05-29T23:59:59+07:00',
 
   closedText: {
     heading: 'Pre-order Has Closed',

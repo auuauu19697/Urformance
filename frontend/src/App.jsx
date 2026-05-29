@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { CartProvider, useCart } from './context/CartContext'
 import { ThemeProvider, useTheme } from './context/ThemeContext'
 import { activeTheme } from './themes/index.js'
@@ -154,11 +154,28 @@ function OrderApp() {
 }
 
 // ─── Root ────────────────────────────────────────────────────────────────────
-export default function App() {
-  // Check once at mount — if the deadline has passed, show the closed screen.
-  const isClosed = activeTheme.preorderDeadline
+function isDeadlinePassed() {
+  return activeTheme.preorderDeadline
     ? new Date() >= new Date(activeTheme.preorderDeadline)
     : false
+}
+
+export default function App() {
+  // Initialise from real clock so a hard-refresh also works.
+  const [isClosed, setIsClosed] = useState(isDeadlinePassed)
+
+  useEffect(() => {
+    if (!activeTheme.preorderDeadline) return
+    const msUntilDeadline = new Date(activeTheme.preorderDeadline) - new Date()
+    if (msUntilDeadline <= 0) {
+      // Already expired by the time the effect runs
+      setIsClosed(true)
+      return
+    }
+    // Fire exactly when the deadline is reached — no polling needed.
+    const timer = setTimeout(() => setIsClosed(true), msUntilDeadline)
+    return () => clearTimeout(timer)
+  }, [])
 
   return (
     <ThemeProvider>
