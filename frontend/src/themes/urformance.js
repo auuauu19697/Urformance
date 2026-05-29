@@ -29,17 +29,6 @@ const urformance = {
     fontSizeBase: '1.1rem',
   },
 
-  // ── Pre-order period ──────────────────────────────────────────────────────────
-  // ISO 8601 with explicit offset — set to null to disable deadline enforcement.
-  preorderDeadline: '2026-07-31T23:59:59+07:00',
-
-  closedText: {
-    heading: 'Pre-order Has Closed',
-    body: 'Thank you for your interest! The pre-order period has ended.\nStay tuned for the next collection and follow us on Instagram for updates.',
-    instagram: '@urformance',   // ← your actual IG handle
-    instagramUrl: 'https://www.instagram.com/urformance',
-  },
-
   // ── Payment ─────────────────────────────────────────────────────────────────
   paymentMethod: 'QR PromptPay',
   paymentNote: null,    // e.g. 'PromptPay: 0812345678'

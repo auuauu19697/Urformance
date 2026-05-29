@@ -1,14 +1,12 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { CartProvider, useCart } from './context/CartContext'
 import { ThemeProvider, useTheme } from './context/ThemeContext'
-import { activeTheme } from './themes/index.js'
 import Catalog from './components/Catalog'
 import Configure from './components/Configure'
 import Cart from './components/Cart'
 import Checkout from './components/Checkout'
 import Success from './components/Success'
 import Consent from './components/Consent'
-import PreorderClosed from './components/PreorderClosed'
 
 // ─── Steps ──────────────────────────────────────────────────────────────────
 const STEP = {
@@ -154,33 +152,11 @@ function OrderApp() {
 }
 
 // ─── Root ────────────────────────────────────────────────────────────────────
-function isDeadlinePassed() {
-  return activeTheme.preorderDeadline
-    ? new Date() >= new Date(activeTheme.preorderDeadline)
-    : false
-}
-
 export default function App() {
-  // Initialise from real clock so a hard-refresh also works.
-  const [isClosed, setIsClosed] = useState(isDeadlinePassed)
-
-  useEffect(() => {
-    if (!activeTheme.preorderDeadline) return
-    const msUntilDeadline = new Date(activeTheme.preorderDeadline) - new Date()
-    if (msUntilDeadline <= 0) {
-      // Already expired by the time the effect runs
-      setIsClosed(true)
-      return
-    }
-    // Fire exactly when the deadline is reached — no polling needed.
-    const timer = setTimeout(() => setIsClosed(true), msUntilDeadline)
-    return () => clearTimeout(timer)
-  }, [])
-
   return (
     <ThemeProvider>
       <CartProvider>
-        {isClosed ? <PreorderClosed /> : <OrderApp />}
+        <OrderApp />
       </CartProvider>
     </ThemeProvider>
   )

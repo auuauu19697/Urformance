@@ -41,17 +41,6 @@ const kuOutfit = {
   // inputs use underline style to match the minimalist premium feel
   inputVariant: 'underline',
 
-  // ── Pre-order period ─────────────────────────────────────────────────────
-  // ISO 8601 with explicit offset — set to null to disable deadline enforcement.
-  preorderDeadline: '2026-07-31T23:59:59+07:00',
-
-  closedText: {
-    heading: 'Pre-order Has Closed',
-    body: 'Thank you for your interest in Ku Outfit!\nThe pre-order period has ended. Follow us on Instagram to stay updated on the next collection.',
-    instagram: '@ku.outfit',   // ← update to your real IG handle
-    instagramUrl: 'https://www.instagram.com/ku.outfit',
-  },
-
   // ── Payment ─────────────────────────────────────────────────────────────────
   paymentMethod: 'QR PromptPay',
   paymentNote: null,
