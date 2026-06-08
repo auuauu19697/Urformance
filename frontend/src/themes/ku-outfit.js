@@ -14,6 +14,12 @@ const kuOutfit = {
   googleFont: null,          // Satoshi is loaded via Fontshare in index.html
   googleFontWeights: null,
 
+  features: {
+    landingPage: false,
+    ordering: true,
+    wishlist: false,
+  },
+
   // ── Design tokens ───────────────────────────────────────────────────────────
   tokens: {
     colorPrimary: '#4C6A4A',   // forest green — CTAs, selected states

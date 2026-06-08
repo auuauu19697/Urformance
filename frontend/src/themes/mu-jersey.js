@@ -11,6 +11,12 @@ const muJersey = {
   googleFont: null,          // Satoshi is loaded via Fontshare in index.html
   googleFontWeights: null,
 
+  features: {
+    landingPage: false,
+    ordering: true,
+    wishlist: false,
+  },
+
   tokens: {
     colorPrimary: '#1e2d4a',   // deep navy
     colorPrimaryFg: '#ffffff',

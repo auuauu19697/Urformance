@@ -13,6 +13,20 @@ const urformance = {
   googleFont: null,          // Satoshi is loaded via Fontshare in index.html
   googleFontWeights: null,
 
+  // ── Features ────────────────────────────────────────────────────────────────
+  features: {
+    landingPage: true,
+    ordering: false,
+    wishlist: true,
+  },
+
+  wishlistText: {
+    heading: 'Join Wishlist',
+    body: 'Sign up to be notified when the next collection drops.',
+    successHeading: "You're on the list",
+    successBody: "Thank you for joining the URFORMANCE wishlist. We'll notify you when the pre-order opens!",
+  },
+
   // ── Design tokens (injected as CSS custom properties) ───────────────────────
   tokens: {
     colorPrimary: '#000000',
