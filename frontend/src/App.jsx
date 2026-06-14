@@ -139,7 +139,7 @@ function OrderApp() {
       />
       <Steps current={step} />
 
-      <main className={step === STEP.LANDING ? '' : 'max-w-sm mx-auto px-5 pb-16'}>
+      <main className={(step === STEP.LANDING || step === STEP.CONSENT) ? '' : 'max-w-sm mx-auto px-5 pb-16'}>
         {step === STEP.LANDING && (
           <LandingPage
             onWishlistClick={() => { setStep(STEP.WISHLIST); window.scrollTo(0, 0) }}

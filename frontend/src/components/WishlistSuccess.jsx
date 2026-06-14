@@ -3,7 +3,7 @@ import { useTheme } from '../context/ThemeContext'
 export default function WishlistSuccess() {
   const { brandName, closedText, wishlistText } = useTheme()
   return (
-    <div className="flex flex-col items-center justify-center pt-20 pb-16 text-center space-y-6">
+    <div className="flex flex-col items-center pt-2 pb-4 text-center space-y-6">
       <div className="w-20 h-20 bg-black text-white rounded-full flex items-center justify-center">
         <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path>

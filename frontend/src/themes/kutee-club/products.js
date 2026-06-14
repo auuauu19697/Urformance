@@ -47,7 +47,7 @@ const products = [
     screeningFields: [],
     orderWindow: {
       startTime: '2026-06-13T23:59:59+07:00',
-      endTime: '2026-06-31T23:59:59+07:00',
+      endTime: '2026-05-31T23:59:59+07:00',
     },
   },
   {
@@ -71,7 +71,7 @@ const products = [
     screeningFields: [],
     orderWindow: {
       startTime: '2026-06-13T23:59:59+07:00',
-      endTime: '2026-06-31T23:59:59+07:00',
+      endTime: '2026-05-31T23:59:59+07:00',
     },
   },
 ]
