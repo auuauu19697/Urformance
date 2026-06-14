@@ -2,31 +2,28 @@
 
 const products = [
   {
-    id: 'ku-club-sweatshirt',
-    name: 'Ku Club Sweatshirt',
-    tagline: 'Embroidered Script Logo',
-    price: 990,
+    id: '1',
+    name: 'Ku Running Society',
+    tagline: 'Kasetsart 1943 Running Society',
+    price: 389,
     pricingTiers: [
-      { minQty: 1, price: 990 },
-      { minQty: 6, price: 950 },
-      { minQty: 16, price: 920 },
-      { minQty: 30, price: 890 },
+      { minQty: 1, price: 389 },
     ],
-    collectionImage: null,
+    collectionImage: '/kutee-club/products/rs1-col.png',
     colorImages: {
-      White: null,
-      Cream: null,
-      Green: null,
+      Green: '/kutee-club/products/rs1-green.jpg',
+      Cream: '/kutee-club/products/rs1-cream.jpg',
+      'Baby blue': '/kutee-club/products/rs1-blue.jpg',
     },
-    colors: ['White', 'Cream', 'Green'],
-    sizes: ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL', '6XL', '7XL'],
-    oversizeSurcharge: 30,
-    oversizeFrom: '4XL',
+    colors: ['Green', 'Cream', 'Baby blue'],
+    sizes: ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL'],
+    oversizeSurcharge: 20,
+    oversizeFrom: '3XL',
     sizeChartImage: '/size-chart-default.png',
     screeningFields: [],
     orderWindow: {
-      startTime: '2026-07-13T23:59:59+07:00',
-      endTime: '2026-07-31T23:59:59+07:00',
+      startTime: '2026-06-13T23:59:59+07:00',
+      endTime: '2026-06-31T23:59:59+07:00',
     },
   }
 ]

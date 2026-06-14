@@ -14,9 +14,9 @@ export default function Consent({ onAccept }) {
         {/* Icon / Logo */}
         <div className="flex justify-center mb-6">
           {isImagePath ? (
-            <img src={icon} alt={brandName} className="h-16 w-auto object-contain" />
+            <img src={icon} alt={brandName} className="h-24 w-auto object-contain" />
           ) : (
-            <span className="text-5xl">{icon}</span>
+            <span className="text-7xl">{icon}</span>
           )}
         </div>
 

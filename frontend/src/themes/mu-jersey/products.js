@@ -12,10 +12,10 @@ const products = [
       { minQty: 16, price: 370 },
       { minQty: 30, price: 350 },
     ],
-    collectionImage: '/product/autotech-collection.jpg',
+    collectionImage: '/mu-jersey/products/autotech-collection.jpg',
     colorImages: {
-      Navy: '/product/autotech-navy.jpg',
-      Black: '/product/autotech-black.jpg',
+      Navy: '/mu-jersey/products/autotech-navy.jpg',
+      Black: '/mu-jersey/products/autotech-black.jpg',
     },
     colors: ['Navy', 'Black'],
     sizes: ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL', '6XL', '7XL'],
@@ -24,8 +24,8 @@ const products = [
     sizeChartImage: '/size-chart-default.png',
     screeningFields: [],
     orderWindow: {
-      startTime: '2026-06-13T23:59:59+07:00',
-      endTime: '2026-06-29T23:59:59+07:00',
+      startTime: '2026-05-13T23:59:59+07:00',
+      endTime: '2026-05-29T23:59:59+07:00',
     },
   },
 ]

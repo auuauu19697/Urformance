@@ -5,7 +5,7 @@ const brandConfig = {
   // ── Identity ────────────────────────────────────────────────────────────────
   brandName: 'MU JERSEY',
   brandSlogan: 'Premium Football Jerseys',
-  icon: '/icons/mu-jersey.jpg',
+  icon: '/mu-jersey/icons/mu-jersey.jpg',
   pageTitle: 'MU Jersey — Order',
   metaDescription: 'Order premium MU football jerseys online.',
 

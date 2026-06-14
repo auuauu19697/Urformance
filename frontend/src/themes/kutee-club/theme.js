@@ -6,7 +6,7 @@ const brandConfig = {
   // ── Identity ────────────────────────────────────────────────────────────────
   brandName: 'KUTEE CLUB',
   brandSlogan: 'Outfit of Ku Club',
-  icon: '/icons/ku-outfit-logo.svg',
+  icon: '/kutee-club/icons/kutee-icon.png',
   pageTitle: 'Kutee Club — Order',
   metaDescription: 'Order Ku Club official apparel online.',
 
