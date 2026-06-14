@@ -170,7 +170,7 @@ export default function LandingPage({ onWishlistClick, onPreorderClick }) {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-        background: '#0a0a0a',
+        background: 'var(--color-primary)',
         color: '#fff',
         position: 'relative',
         overflow: 'hidden',
@@ -178,7 +178,7 @@ export default function LandingPage({ onWishlistClick, onPreorderClick }) {
         {/* Background texture — repeated diagonal lines */}
         <div style={{
           position: 'absolute', inset: 0, pointerEvents: 'none',
-          backgroundImage: 'repeating-linear-gradient(45deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 40px)',
+          backgroundImage: 'repeating-linear-gradient(45deg, rgba(255,248,123,0.04) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 40px)',
         }} />
 
         <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '6rem 2rem 4rem', position: 'relative', zIndex: 1 }}>
@@ -245,7 +245,7 @@ export default function LandingPage({ onWishlistClick, onPreorderClick }) {
                   onClick={onPreorderClick}
                   style={{
                     background: 'transparent', color: '#fff',
-                    border: '1.5px solid rgba(255,255,255,0.3)',
+                    border: '1.5px solid rgba(252,252,252,0.25)',
                     borderRadius: '3px', padding: '0.9rem 2rem',
                     fontWeight: 900, fontSize: '0.75rem',
                     letterSpacing: '0.12em', textTransform: 'uppercase',
@@ -367,12 +367,12 @@ export default function LandingPage({ onWishlistClick, onPreorderClick }) {
 
       {/* ── 4. JOIN US ──────────────────────────────────────────────────────── */}
       <section style={{
-        background: '#0a0a0a', color: '#fff',
+        background: 'var(--color-primary)', color: 'var(--color-primary-fg)',
         position: 'relative', overflow: 'hidden',
       }}>
         <div style={{
           position: 'absolute', inset: 0, pointerEvents: 'none',
-          backgroundImage: 'repeating-linear-gradient(135deg, rgba(255,255,255,0.012) 0px, rgba(255,255,255,0.012) 1px, transparent 1px, transparent 50px)',
+          backgroundImage: 'repeating-linear-gradient(135deg, rgba(255,248,123,0.03) 0px, rgba(255,255,255,0.012) 1px, transparent 1px, transparent 50px)',
         }} />
         <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '6rem 2rem', position: 'relative', zIndex: 1 }}>
           <div style={{ maxWidth: '56ch' }}>
@@ -396,8 +396,8 @@ export default function LandingPage({ onWishlistClick, onPreorderClick }) {
                 <button
                   onClick={onWishlistClick}
                   style={{
-                    background: '#fff', color: '#000',
-                    border: 'none', borderRadius: '3px',
+                    background: 'var(--color-accent)', color: 'var(--color-accent-fg)',
+                    border: 'none', borderRadius: 'var(--radius-button)',
                     padding: '1rem 2.5rem',
                     fontWeight: 900, fontSize: '0.8rem',
                     letterSpacing: '0.12em', textTransform: 'uppercase',
@@ -435,7 +435,7 @@ export default function LandingPage({ onWishlistClick, onPreorderClick }) {
 
       {/* ── 5. FOOTER ───────────────────────────────────────────────────────── */}
       <footer style={{
-        background: '#0a0a0a', borderTop: '1px solid rgba(255,255,255,0.07)',
+        background: 'var(--color-primary)', borderTop: '1px solid rgba(252,252,252,0.08)',
         color: 'rgba(255,255,255,0.3)',
       }}>
         <div style={{

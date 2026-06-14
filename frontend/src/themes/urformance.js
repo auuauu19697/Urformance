@@ -1,5 +1,5 @@
 // ─── Urformance Brand Theme ───────────────────────────────────────────────────
-// Black & white minimalist performance wear
+// Palette: Cloud / Brick / Sunbeam / Tan + Sky / Mint / Apricot / Forest
 
 const urformance = {
   // ── Identity ────────────────────────────────────────────────────────────────
@@ -29,17 +29,27 @@ const urformance = {
 
   // ── Design tokens (injected as CSS custom properties) ───────────────────────
   tokens: {
-    colorPrimary: '#000000',
-    colorPrimaryFg: '#ffffff',
-    colorAccent: '#000000',
-    colorBg: '#f8fafc',
-    colorSurface: '#ffffff',
-    colorBorder: '#e2e8f0',
-    colorMuted: '#94a3b8',
-    radiusCard: '1.5rem',
-    radiusButton: '1.5rem',
-    radiusInput: '1rem',
-    fontBrand: "'Satoshi', 'LINE Seed Sans TH', system-ui, sans-serif",
+    // Primary palette
+    colorPrimary:   '#2B2521',   // Brick — CTAs, dark hero, headings
+    colorPrimaryFg: '#FCFCFC',   // Cloud — text on Brick
+    colorAccent:    '#FFF87B',   // Sunbeam — highlights & tags
+    colorAccentFg:  '#2B2521',   // Brick — text on Sunbeam
+    colorBg:        '#FCFCFC',   // Cloud — page background
+    colorSurface:   '#FFFFFF',   // White — card surfaces
+    colorBorder:    '#E0D9D0',   // Warm light border
+    colorMuted:     '#8E8172',   // Tan — muted text
+
+    // Secondary palette (accessible as CSS vars e.g. var(--color-sky))
+    colorSky:       '#C8E0E8',
+    colorMint:      '#C9FFB0',
+    colorApricot:   '#FF885F',
+    colorForest:    '#456344',
+
+    // Shape & typography
+    radiusCard:   '4px',
+    radiusButton: '3px',
+    radiusInput:  '3px',
+    fontBrand:    "'Satoshi', 'LINE Seed Sans TH', system-ui, sans-serif",
     fontSizeBase: '1.1rem',
   },
 
