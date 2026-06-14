@@ -1,7 +1,7 @@
-// ─── Urformance Brand Theme ───────────────────────────────────────────────────
+// ─── Urformance Brand Config ─────────────────────────────────────────────────
 // Palette: Cloud / Brick / Sunbeam / Tan + Sky / Mint / Apricot / Forest
 
-const urformance = {
+const brandConfig = {
   // ── Identity ────────────────────────────────────────────────────────────────
   brandName: 'URFORMANCE',
   brandSlogan: 'Performance Wear',
@@ -53,10 +53,6 @@ const urformance = {
     fontSizeBase: '1.1rem',
   },
 
-  // ── Pre-order period ──────────────────────────────────────────────────────────
-  // ISO 8601 with explicit offset — set to null to disable deadline enforcement.
-  preorderDeadline: '2026-07-31T23:59:59+07:00',
-
   closedText: {
     heading: 'Pre-order Has Closed',
     body: 'Thank you for your interest! The pre-order period has ended.\nStay tuned for the next collection and follow us on Instagram for updates.',
@@ -75,58 +71,6 @@ const urformance = {
     body: 'This is a pre-order. Production begins after the order period closes and takes approximately 4–6 weeks. By continuing you acknowledge and agree to wait for the production timeline.',
     cta: "I Understand — Let's Order",
   },
-
-  // ── Products ─────────────────────────────────────────────────────────────────
-  products: [
-    {
-      id: 'performance-pro',
-      name: 'Performance Pro',
-      tagline: 'DryTech™ Wicking Fabric',
-      price: 890,
-      pricingTiers: [
-        { minQty: 1, price: 890 },
-        { minQty: 6, price: 850 },
-        { minQty: 16, price: 820 },
-        { minQty: 30, price: 790 },
-      ],
-      collectionImage: null,
-      colorImages: {
-        Black: null,
-        White: null,
-        Navy: null,
-      },
-      colors: ['Black', 'White', 'Navy'],
-      sizes: ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL', '6XL', '7XL'],
-      oversizeSurcharge: 30,
-      oversizeFrom: '4XL',
-      sizeChartImage: '/size-chart-default.png',
-      screeningFields: [],
-    },
-    {
-      id: 'daily-runner',
-      name: 'Daily Runner',
-      tagline: 'Soft-touch Cotton Blend',
-      price: 790,
-      pricingTiers: [
-        { minQty: 1, price: 790 },
-        { minQty: 6, price: 760 },
-        { minQty: 16, price: 730 },
-        { minQty: 30, price: 690 },
-      ],
-      collectionImage: null,
-      colorImages: {
-        Black: null,
-        White: null,
-        Olive: null,
-      },
-      colors: ['Black', 'White', 'Olive'],
-      sizes: ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL', '6XL', '7XL'],
-      oversizeSurcharge: 30,
-      oversizeFrom: '4XL',
-      sizeChartImage: '/size-chart-default.png',
-      screeningFields: [],
-    },
-  ],
 }
 
-export default urformance
+export default brandConfig

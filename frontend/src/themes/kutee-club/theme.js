@@ -1,19 +1,20 @@
-// ─── KU Outfit Brand Theme ────────────────────────────────────────────────────
+// ─── Kutee Club Brand Config ─────────────────────────────────────────────────
 // Forest green & warm cream — elegant university club apparel
 // Brand palette: #FFFCF4 (cream) · #4C6A4A (green) · #8D6A5A (brown)
 
-const kuOutfit = {
+const brandConfig = {
   // ── Identity ────────────────────────────────────────────────────────────────
-  brandName: 'KU OUTFIT',
+  brandName: 'KUTEE CLUB',
   brandSlogan: 'Outfit of Ku Club',
   icon: '/icons/ku-outfit-logo.svg',
-  pageTitle: 'Ku Outfit — Order',
+  pageTitle: 'Kutee Club — Order',
   metaDescription: 'Order Ku Club official apparel online.',
 
   // ── Typography ──────────────────────────────────────────────────────────────
   googleFont: null,          // Satoshi is loaded via Fontshare in index.html
   googleFontWeights: null,
 
+  // ── Features ────────────────────────────────────────────────────────────────
   features: {
     landingPage: false,
     ordering: true,
@@ -47,13 +48,9 @@ const kuOutfit = {
   // inputs use underline style to match the minimalist premium feel
   inputVariant: 'underline',
 
-  // ── Pre-order period ─────────────────────────────────────────────────────
-  // ISO 8601 with explicit offset — set to null to disable deadline enforcement.
-  preorderDeadline: '2026-07-31T23:59:59+07:00',
-
   closedText: {
     heading: 'Pre-order Has Closed',
-    body: 'Thank you for your interest in Ku Outfit!\nThe pre-order period has ended. Follow us on Instagram to stay updated on the next collection.',
+    body: 'Thank you for your interest in Kutee Club!\nThe pre-order period has ended. Follow us on Instagram to stay updated on the next collection.',
     instagram: '@ku.outfit',   // ← update to your real IG handle
     instagramUrl: 'https://www.instagram.com/ku.outfit',
   },
@@ -66,37 +63,9 @@ const kuOutfit = {
   // ── Content ─────────────────────────────────────────────────────────────────
   consentText: {
     title: 'Before You Order',
-    body: 'This is a pre-order for Ku Club official apparel. Production begins after the order period closes. Please allow 4–6 weeks for production and delivery.',
+    body: 'This is a pre-order for Kutee Club official apparel. Production begins after the order period closes. Please allow 4–6 weeks for production and delivery.',
     cta: 'Continue to Order',
   },
-
-  // ── Products ─────────────────────────────────────────────────────────────────
-  products: [
-    {
-      id: 'ku-club-sweatshirt',
-      name: 'Ku Club Sweatshirt',
-      tagline: 'Embroidered Script Logo',
-      price: 990,
-      pricingTiers: [
-        { minQty: 1, price: 990 },
-        { minQty: 6, price: 950 },
-        { minQty: 16, price: 920 },
-        { minQty: 30, price: 890 },
-      ],
-      collectionImage: null,
-      colorImages: {
-        White: null,
-        Cream: null,
-        Green: null,
-      },
-      colors: ['White', 'Cream', 'Green'],
-      sizes: ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL', '6XL', '7XL'],
-      oversizeSurcharge: 30,
-      oversizeFrom: '4XL',
-      sizeChartImage: '/size-chart-default.png',
-      screeningFields: [],
-    }
-  ],
 }
 
-export default kuOutfit
+export default brandConfig

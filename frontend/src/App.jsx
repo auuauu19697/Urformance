@@ -187,28 +187,51 @@ function OrderApp() {
 }
 
 // ─── Root ────────────────────────────────────────────────────────────────────
-function isDeadlinePassed() {
-  return activeTheme.preorderDeadline
-    ? new Date() >= new Date(activeTheme.preorderDeadline)
-    : false
+function getNextTransitionTime(products, now) {
+  let nextTime = null
+  for (const p of products) {
+    const start = p.orderWindow?.startTime ? new Date(p.orderWindow.startTime) : null
+    const end = p.orderWindow?.endTime ? new Date(p.orderWindow.endTime) : null
+
+    if (start && start > now) {
+      if (!nextTime || start < nextTime) nextTime = start
+    }
+    if (end && end > now) {
+      if (!nextTime || end < nextTime) nextTime = end
+    }
+  }
+  return nextTime
+}
+
+function checkIsClosed(products, now) {
+  return !products.some((p) => {
+    const start = p.orderWindow?.startTime ? new Date(p.orderWindow.startTime) : null
+    const end = p.orderWindow?.endTime ? new Date(p.orderWindow.endTime) : null
+    const isIncoming = start && now < start
+    const isClosed = end && now >= end
+    return !isIncoming && !isClosed
+  })
 }
 
 export default function App() {
-  // Initialise from real clock so a hard-refresh also works.
-  const [isClosed, setIsClosed] = useState(isDeadlinePassed)
+  const products = activeTheme.products || []
+  const [tick, setTick] = useState(0)
 
   useEffect(() => {
-    if (!activeTheme.preorderDeadline) return
-    const msUntilDeadline = new Date(activeTheme.preorderDeadline) - new Date()
-    if (msUntilDeadline <= 0) {
-      // Already expired by the time the effect runs
-      setIsClosed(true)
-      return
-    }
-    // Fire exactly when the deadline is reached — no polling needed.
-    const timer = setTimeout(() => setIsClosed(true), msUntilDeadline)
+    const now = new Date()
+    const nextTransition = getNextTransitionTime(products, now)
+    if (!nextTransition) return
+
+    const delay = nextTransition - now
+    const timer = setTimeout(() => {
+      setTick((t) => t + 1)
+    }, delay)
+
     return () => clearTimeout(timer)
-  }, [])
+  }, [products, tick])
+
+  const now = new Date()
+  const isClosed = checkIsClosed(products, now)
 
   return (
     <ThemeProvider>
