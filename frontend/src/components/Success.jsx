@@ -1,10 +1,27 @@
+import { useTheme } from '../context/ThemeContext'
+
 export default function Success({ orderId, total, onReset }) {
+  const theme = useTheme()
+  const ig     = theme.closedText?.instagram    ?? '@brand'
+  const igUrl  = theme.closedText?.instagramUrl ?? '#'
+
   return (
     <div className="flex flex-col items-center text-center pt-2 gap-6">
       <div className="text-6xl">🎉</div>
       <div>
         <h2 className="text-3xl font-black italic uppercase leading-none mb-2">Order Placed!</h2>
-        <p className="font-semibold text-muted">Please check your email for comformation email, if there is no email sent to you please contact @mu.jerseys.</p>
+        <p className="font-semibold text-muted">
+          Please check your email for a confirmation. If you don't receive one, reach us on Instagram at{' '}
+          <a
+            href={igUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-accent underline"
+          >
+            {ig}
+          </a>
+          .
+        </p>
       </div>
 
       <div className="card p-6 w-full text-left shadow-sm space-y-4">
