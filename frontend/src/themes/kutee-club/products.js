@@ -12,6 +12,10 @@ const products = [
     price: 389,
     pricingTiers: [
       { minQty: 1, price: 389 },
+      { minQty: 6, price: 379 },
+      { minQty: 16, price: 369 },
+      { minQty: 31, price: 359 },
+      { minQty: 51, price: 349 },
     ],
     collectionImage: '/kutee-club/products/rs1-col.jpg',
     colorImages: {
@@ -34,6 +38,10 @@ const products = [
     price: 389,
     pricingTiers: [
       { minQty: 1, price: 389 },
+      { minQty: 6, price: 379 },
+      { minQty: 16, price: 369 },
+      { minQty: 31, price: 359 },
+      { minQty: 51, price: 349 },
     ],
     collectionImage: '/kutee-club/products/rs2-col.jpg',
     colorImages: {
@@ -55,6 +63,10 @@ const products = [
     price: 429,
     pricingTiers: [
       { minQty: 1, price: 429 },
+      { minQty: 6, price: 419 },
+      { minQty: 16, price: 409 },
+      { minQty: 31, price: 399 },
+      { minQty: 51, price: 379 },
     ],
     collectionImage: '/kutee-club/products/polo-col.jpg',
     colorImages: {
@@ -62,7 +74,7 @@ const products = [
       Pink: '/kutee-club/products/polo-pink.png',
     },
     colors: ['Cream', 'Pink'],
-    sizes: ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL'],
+    sizes: ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL', '6XL', '7XL'],
     oversizeSurcharge: 20,
     oversizeFrom: '3XL',
     sizeChartImage: '/size-chart-default.png',
