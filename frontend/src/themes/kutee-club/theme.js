@@ -51,8 +51,8 @@ const brandConfig = {
   closedText: {
     heading: 'Pre-order Has Closed',
     body: 'Thank you for your interest in Kutee Club!\nThe pre-order period has ended. Follow us on Instagram to stay updated on the next collection.',
-    instagram: '@ku.outfit',   // ← update to your real IG handle
-    instagramUrl: 'https://www.instagram.com/ku.outfit',
+    instagram: '@kutee.club',   // ← update to your real IG handle
+    instagramUrl: 'https://www.instagram.com/kutee.club',
   },
 
   // ── Payment ─────────────────────────────────────────────────────────────────
@@ -63,7 +63,7 @@ const brandConfig = {
   // ── Content ─────────────────────────────────────────────────────────────────
   consentText: {
     title: 'Before You Order',
-    body: 'This is a pre-order for Kutee Club official apparel. Production begins after the order period closes. Please allow 4–6 weeks for production and delivery.',
+    body: 'This is a pre-order for Kutee Club. Production begins after the order period closes. Please allow 4–6 weeks for production and delivery.',
     cta: 'Continue to Order',
   },
 }
