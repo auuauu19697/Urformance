@@ -46,9 +46,9 @@ const products = [
     collectionImage: '/kutee-club/products/rs2-col.jpg',
     colorImages: {
       Black: '/kutee-club/products/rs2-black.png',
-      Cream: '/kutee-club/products/rs2-cream.png',
+      White: '/kutee-club/products/rs2-cream.png',
     },
-    colors: ['Black', 'Cream'],
+    colors: ['Black', 'White'],
     sizes: ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL'],
     oversizeSurcharge: 20,
     oversizeFrom: '3XL',
