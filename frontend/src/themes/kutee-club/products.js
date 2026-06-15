@@ -1,4 +1,8 @@
 // ─── Kutee Club Products Config ──────────────────────────────────────────────
+const firstPreorderPeriod = {
+  startTime: '2026-06-13T23:59:59+07:00',
+  endTime: '2026-06-25T23:59:59+07:00',
+}
 
 const products = [
   {
@@ -9,11 +13,11 @@ const products = [
     pricingTiers: [
       { minQty: 1, price: 389 },
     ],
-    collectionImage: '/kutee-club/products/rs1-col.png',
+    collectionImage: '/kutee-club/products/rs1-col.jpg',
     colorImages: {
-      Green: '/kutee-club/products/rs1-green.jpg',
-      Cream: '/kutee-club/products/rs1-cream.jpg',
-      'Baby blue': '/kutee-club/products/rs1-blue.jpg',
+      Green: '/kutee-club/products/rs1-green.png',
+      Cream: '/kutee-club/products/rs1-cream.png',
+      'Baby blue': '/kutee-club/products/rs1-blue.png',
     },
     colors: ['Green', 'Cream', 'Baby blue'],
     sizes: ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL'],
@@ -21,10 +25,7 @@ const products = [
     oversizeFrom: '3XL',
     sizeChartImage: '/size-chart-default.png',
     screeningFields: [],
-    orderWindow: {
-      startTime: '2026-06-13T23:59:59+07:00',
-      endTime: '2026-06-31T23:59:59+07:00',
-    },
+    orderWindow: firstPreorderPeriod,
   },
   {
     id: '2',
@@ -34,10 +35,10 @@ const products = [
     pricingTiers: [
       { minQty: 1, price: 389 },
     ],
-    collectionImage: null,
+    collectionImage: '/kutee-club/products/rs2-col.jpg',
     colorImages: {
-      Black: null,
-      Cream: null,
+      Black: '/kutee-club/products/rs2-black.png',
+      Cream: '/kutee-club/products/rs2-cream.png',
     },
     colors: ['Black', 'Cream'],
     sizes: ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL'],
@@ -45,23 +46,20 @@ const products = [
     oversizeFrom: '3XL',
     sizeChartImage: '/size-chart-default.png',
     screeningFields: [],
-    orderWindow: {
-      startTime: '2026-06-13T23:59:59+07:00',
-      endTime: '2026-05-31T23:59:59+07:00',
-    },
+    orderWindow: firstPreorderPeriod,
   },
   {
     id: '3',
-    name: 'Ku Polo',
+    name: 'Ku Classic Polo',
     tagline: 'Kasetsart 1943 Polo Shirt',
-    price: 389,
+    price: 429,
     pricingTiers: [
-      { minQty: 1, price: 389 },
+      { minQty: 1, price: 429 },
     ],
-    collectionImage: null,
+    collectionImage: '/kutee-club/products/polo-col.jpg',
     colorImages: {
-      Cream: null,
-      Pink: null,
+      Cream: '/kutee-club/products/polo-cream.png',
+      Pink: '/kutee-club/products/polo-pink.png',
     },
     colors: ['Cream', 'Pink'],
     sizes: ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL'],
@@ -69,10 +67,7 @@ const products = [
     oversizeFrom: '3XL',
     sizeChartImage: '/size-chart-default.png',
     screeningFields: [],
-    orderWindow: {
-      startTime: '2026-06-13T23:59:59+07:00',
-      endTime: '2026-05-31T23:59:59+07:00',
-    },
+    orderWindow: firstPreorderPeriod,
   },
 ]
 
