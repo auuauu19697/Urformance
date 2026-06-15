@@ -11,7 +11,7 @@ export class OrdersService {
     private readonly sheets: SheetsService,
     private readonly drive: DriveService,
     private readonly mail: MailService,
-  ) {}
+  ) { }
 
   async createOrder(
     dto: CreateOrderDto,
@@ -32,7 +32,15 @@ export class OrdersService {
     const total = subtotal + shippingFee;
 
     // ── Generate order ID ─────────────────────────────────────────────────────
-    const orderId = `MUJ-${Date.now()}`;
+    const brand = (process.env.BRAND_NAME ?? '').toUpperCase();
+    let prefix: string;
+    switch (brand) {
+      case 'KUTEE-CLUB': prefix = 'KTC'; break;
+      case 'MU-JERSEY':  prefix = 'MUJ'; break;
+      case 'URFORMANCE': prefix = 'URF'; break;
+      default:           prefix = 'ORD'; break;
+    }
+    const orderId = `${prefix}-${Date.now()}`;
 
     // ── Upload slip to Google Drive ────────────────────────────────────────────
     const slipUrl = await this.drive.uploadSlip(slipFile, orderId);
@@ -43,7 +51,7 @@ export class OrdersService {
     // ── Send confirmation email (fire-and-forget) ─────────────────────────────
     this.mail
       .sendOrderConfirmation(orderId, dto, subtotal, shippingFee, total)
-      .catch(() => {}); // errors already logged inside MailService
+      .catch(() => { }); // errors already logged inside MailService
 
     return { orderId, subtotal, shippingFee, total };
   }

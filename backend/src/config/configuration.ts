@@ -12,8 +12,9 @@ export default () => ({
     sheetId: process.env.GOOGLE_SHEET_ID,
     ordersSheet: process.env.GOOGLE_ORDERS_SHEET ?? 'Orders',
     itemsSheet: process.env.GOOGLE_ITEMS_SHEET ?? 'OrderItems',
+    wishlistSheet: process.env.GOOGLE_WISHLIST_SHEET ?? 'Wishlist',
     driveFolderId: process.env.GOOGLE_DRIVE_FOLDER_ID ?? '',
-    
+
     // OAuth2 Credentials for Drive
     clientId: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,

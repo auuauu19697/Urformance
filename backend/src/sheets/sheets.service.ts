@@ -2,6 +2,7 @@ import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common
 import { ConfigService } from '@nestjs/config';
 import { google } from 'googleapis';
 import { CreateOrderDto } from '../orders/dto/create-order.dto';
+import { CreateWishlistDto } from 'src/wishlist/dto/create-wishlist.dto';
 
 @Injectable()
 export class SheetsService {
@@ -112,7 +113,7 @@ export class SheetsService {
       });
       const rows = res.data.values || [];
       if (rows.length <= 1) return []; // Only header or empty
-      
+
       const dataRows = rows.slice(1);
       return dataRows.map(r => ({
         orderId: r[0],
@@ -178,6 +179,37 @@ export class SheetsService {
     } catch (err: any) {
       this.logger.error('Failed to read OrderItems:', err?.message);
       return [];
+    }
+  }
+
+  async appendWishlist(
+    dto: CreateWishlistDto,
+  ): Promise<void> {
+    const sheets = this.getSheetsClient();
+    const spreadsheetId = this.config.get<string>('google.sheetId');
+    const wishlistTab = this.config.get<string>('google.wishlistSheet');
+
+    const row = [
+      new Date().toISOString(),
+      dto.fullName,
+      dto.age,
+      dto.email,
+      dto.phone,
+      dto.instagram,
+      dto.note ?? '',
+    ];
+
+    try {
+      await sheets.spreadsheets.values.append({
+        spreadsheetId,
+        range: `${wishlistTab}!A:G`,
+        valueInputOption: 'USER_ENTERED',
+        insertDataOption: 'INSERT_ROWS',
+        requestBody: { values: [row] },
+      });
+    } catch (err: any) {
+      this.logger.error('Google Sheets error (Wishlist):', err?.message);
+      throw new InternalServerErrorException('Failed to write to Google Sheets.');
     }
   }
 }

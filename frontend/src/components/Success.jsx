@@ -1,6 +1,6 @@
 export default function Success({ orderId, total, onReset }) {
   return (
-    <div className="flex flex-col items-center text-center py-12 gap-6">
+    <div className="flex flex-col items-center text-center pt-2 gap-6">
       <div className="text-6xl">🎉</div>
       <div>
         <h2 className="text-3xl font-black italic uppercase leading-none mb-2">Order Placed!</h2>

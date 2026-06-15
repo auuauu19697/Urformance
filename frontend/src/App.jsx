@@ -9,33 +9,45 @@ import Checkout from './components/Checkout'
 import Success from './components/Success'
 import Consent from './components/Consent'
 import PreorderClosed from './components/PreorderClosed'
+import LandingPage from './components/LandingPage'
+import WishlistForm from './components/WishlistForm'
+import WishlistSuccess from './components/WishlistSuccess'
 
 // ─── Steps ──────────────────────────────────────────────────────────────────
 const STEP = {
+  LANDING: 'landing',
   CONSENT: 'consent',
   CATALOG: 'catalog',
   CONFIGURE: 'configure',
   CART: 'cart',
   CHECKOUT: 'checkout',
   SUCCESS: 'success',
+  WISHLIST: 'wishlist',
+  WISHLIST_SUCCESS: 'wishlist_success',
 }
 
 // ─── Header ─────────────────────────────────────────────────────────────────
 function Header({ step, onCartClick, onLogoClick }) {
   const { itemCount } = useCart()
-  const { brandName } = useTheme()
-  console.log(`brandName: ${brandName}`);
+  const { brandName, brandSlogan } = useTheme()
+  const hideCart = step === STEP.SUCCESS || step === STEP.LANDING || step === STEP.WISHLIST || step === STEP.WISHLIST_SUCCESS
+
   return (
     <header className="sticky top-0 z-50 border-b px-5 py-4 flex justify-between items-center"
       style={{ background: 'var(--color-surface)', borderColor: 'var(--color-border)' }}
     >
-      <h1 
-        className="font-black italic text-xl uppercase tracking-tighter cursor-pointer select-none hover:opacity-80 transition-opacity"
-        onClick={onLogoClick}
-      >
-        {brandName}
-      </h1>
-      {step !== STEP.SUCCESS && (
+      <div>
+        <h1
+          className="font-black italic text-xl uppercase tracking-tighter cursor-pointer select-none hover:opacity-80 transition-opacity"
+          onClick={onLogoClick}
+        >
+          {brandName}
+        </h1>
+        {step === STEP.LANDING && brandSlogan && (
+          <p className="text-[10px] font-bold text-muted uppercase tracking-tight">{brandSlogan}</p>
+        )}
+      </div>
+      {!hideCart && (
         <button id="cart-icon-btn" onClick={onCartClick} className="relative">
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
@@ -48,6 +60,11 @@ function Header({ step, onCartClick, onLogoClick }) {
           )}
         </button>
       )}
+      {(step === STEP.WISHLIST || step === STEP.WISHLIST_SUCCESS) && (
+        <div>
+          <span className="text-xs font-black italic uppercase px-2 py-1 bg-black text-white rounded-full">Wishlist</span>
+        </div>
+      )}
     </header>
   )
 }
@@ -56,7 +73,7 @@ function Header({ step, onCartClick, onLogoClick }) {
 const STEP_ORDER = [STEP.CATALOG, STEP.CONFIGURE, STEP.CART, STEP.CHECKOUT, STEP.SUCCESS]
 
 function Steps({ current }) {
-  if (current === STEP.SUCCESS || current === STEP.CONSENT) return null
+  if (current === STEP.SUCCESS || current === STEP.CONSENT || current === STEP.LANDING || current === STEP.WISHLIST || current === STEP.WISHLIST_SUCCESS) return null
   const labels = ['Browse', 'Select', 'Cart', 'Pay']
   const idx = STEP_ORDER.indexOf(current)
   return (
@@ -75,7 +92,9 @@ function Steps({ current }) {
 
 // ─── Inner app (needs CartProvider + ThemeProvider) ──────────────────────────
 function OrderApp() {
-  const [step, setStep] = useState(STEP.CONSENT)
+  const { features } = useTheme()
+  const initialStep = features?.landingPage ? STEP.LANDING : STEP.CONSENT
+  const [step, setStep] = useState(initialStep)
   const [selectedProduct, setSelected] = useState(null)
   const [successData, setSuccessData] = useState(null)
   const { dispatch } = useCart()
@@ -110,15 +129,29 @@ function OrderApp() {
         step={step}
         onCartClick={() => { setStep(STEP.CART); window.scrollTo(0, 0) }}
         onLogoClick={() => {
-          if (step !== STEP.CONSENT) {
+          if (features?.landingPage) {
+            setStep(STEP.LANDING)
+          } else if (step !== STEP.CONSENT) {
             setStep(STEP.CATALOG)
-            window.scrollTo(0, 0)
           }
+          window.scrollTo(0, 0)
         }}
       />
       <Steps current={step} />
 
-      <main className="max-w-sm mx-auto px-5 pb-16">
+      <main className={(step === STEP.LANDING || step === STEP.CONSENT) ? '' : 'max-w-sm mx-auto px-5 pb-16'}>
+        {step === STEP.LANDING && (
+          <LandingPage
+            onWishlistClick={() => { setStep(STEP.WISHLIST); window.scrollTo(0, 0) }}
+            onPreorderClick={() => { setStep(STEP.CONSENT); window.scrollTo(0, 0) }}
+          />
+        )}
+        {step === STEP.WISHLIST && (
+          <WishlistForm onSuccess={() => { setStep(STEP.WISHLIST_SUCCESS); window.scrollTo(0, 0) }} />
+        )}
+        {step === STEP.WISHLIST_SUCCESS && (
+          <WishlistSuccess />
+        )}
         {step === STEP.CONSENT && (
           <Consent onAccept={() => { setStep(STEP.CATALOG); window.scrollTo(0, 0) }} />
         )}
@@ -154,28 +187,51 @@ function OrderApp() {
 }
 
 // ─── Root ────────────────────────────────────────────────────────────────────
-function isDeadlinePassed() {
-  return activeTheme.preorderDeadline
-    ? new Date() >= new Date(activeTheme.preorderDeadline)
-    : false
+function getNextTransitionTime(products, now) {
+  let nextTime = null
+  for (const p of products) {
+    const start = p.orderWindow?.startTime ? new Date(p.orderWindow.startTime) : null
+    const end = p.orderWindow?.endTime ? new Date(p.orderWindow.endTime) : null
+
+    if (start && start > now) {
+      if (!nextTime || start < nextTime) nextTime = start
+    }
+    if (end && end > now) {
+      if (!nextTime || end < nextTime) nextTime = end
+    }
+  }
+  return nextTime
+}
+
+function checkIsClosed(products, now) {
+  return !products.some((p) => {
+    const start = p.orderWindow?.startTime ? new Date(p.orderWindow.startTime) : null
+    const end = p.orderWindow?.endTime ? new Date(p.orderWindow.endTime) : null
+    const isIncoming = start && now < start
+    const isClosed = end && now >= end
+    return !isIncoming && !isClosed
+  })
 }
 
 export default function App() {
-  // Initialise from real clock so a hard-refresh also works.
-  const [isClosed, setIsClosed] = useState(isDeadlinePassed)
+  const products = activeTheme.products || []
+  const [tick, setTick] = useState(0)
 
   useEffect(() => {
-    if (!activeTheme.preorderDeadline) return
-    const msUntilDeadline = new Date(activeTheme.preorderDeadline) - new Date()
-    if (msUntilDeadline <= 0) {
-      // Already expired by the time the effect runs
-      setIsClosed(true)
-      return
-    }
-    // Fire exactly when the deadline is reached — no polling needed.
-    const timer = setTimeout(() => setIsClosed(true), msUntilDeadline)
+    const now = new Date()
+    const nextTransition = getNextTransitionTime(products, now)
+    if (!nextTransition) return
+
+    const delay = nextTransition - now
+    const timer = setTimeout(() => {
+      setTick((t) => t + 1)
+    }, delay)
+
     return () => clearTimeout(timer)
-  }, [])
+  }, [products, tick])
+
+  const now = new Date()
+  const isClosed = checkIsClosed(products, now)
 
   return (
     <ThemeProvider>

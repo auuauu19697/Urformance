@@ -1,5 +1,26 @@
 @import "tailwindcss";
 
+/* ─── Catalogue — self-hosted ─────────────────────────────────────────────────
+   Place font files in /public/fonts/
+   ─────────────────────────────────────────────────────────────────────────── */
+@font-face {
+  font-family: 'Catalogue';
+  src: url('/fonts/Catalogue-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ─── Aktiv Grotesk Thai — self-hosted ───────────────────────────────────────
+   ─────────────────────────────────────────────────────────────────────────── */
+@font-face {
+  font-family: 'Akiv Grotesk Thai';
+  src: url('/fonts/Aktiv Grotesk Thai.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* ─── LINE Seed Sans TH — self-hosted via JSDelivr ───────────────────────────
    Rg = Regular (400), Bd = Bold (700), XBd = ExtraBold (800), He = Heavy (900)
    ─────────────────────────────────────────────────────────────────────────── */
@@ -52,7 +73,11 @@
   --section-h-tracking: 0.1em;
   --section-h-color: var(--color-muted);
   --radius-input: 1rem;
-  --font-brand: 'Satoshi', 'LINE Seed Sans TH', system-ui, sans-serif;
+  --font-brand: 'Catalogue';
+  --font-secondary: 'Manrope';
+  --font-thai: 'Akiv Grotesk Thai';
+  --font-decorative: 'Apple Garamond';
+  --font-script: 'Brush Script MT';
 }
 
 body {
