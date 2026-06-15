@@ -10,8 +10,16 @@ const brandConfig = {
   metaDescription: 'Order Urformance performance wear online.',
 
   // ── Typography ──────────────────────────────────────────────────────────────
-  googleFont: null,          // Satoshi is loaded via Fontshare in index.html
+  googleFont: null,          // Manrope loaded via index.html; Catalogue is local
   googleFontWeights: null,
+  // Font role tokens (injected as CSS vars)
+  fonts: {
+    brand:       "'Catalogue'",
+    secondary:   "'Manrope'",
+    thai:        "'Akiv Grotesk Thai'",
+    decorative:  "'Apple Garamond'",
+    script:      "'Brush Script MT'",
+  },
 
   // ── Features ────────────────────────────────────────────────────────────────
   features: {
@@ -49,7 +57,11 @@ const brandConfig = {
     radiusCard:   '4px',
     radiusButton: '3px',
     radiusInput:  '3px',
-    fontBrand:    "'Satoshi', 'LINE Seed Sans TH', system-ui, sans-serif",
+    fontBrand:      "'Catalogue'",
+    fontSecondary:  "'Manrope'",
+    fontThai:       "'Akiv Grotesk Thai'",
+    fontDecorative: "'Apple Garamond'",
+    fontScript:     "'Brush Script MT'",
     fontSizeBase: '1.1rem',
   },
 

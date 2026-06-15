@@ -11,8 +11,16 @@ const brandConfig = {
   metaDescription: 'Order Ku Club official apparel online.',
 
   // ── Typography ──────────────────────────────────────────────────────────────
-  googleFont: null,          // Satoshi is loaded via Fontshare in index.html
+  googleFont: null,          // Manrope loaded via index.html; Catalogue is local
   googleFontWeights: null,
+  // Font role tokens (injected as CSS vars)
+  fonts: {
+    brand:       "'Catalogue'",
+    secondary:   "'Manrope'",
+    thai:        "'Akiv Grotesk Thai'",
+    decorative:  "'Apple Garamond'",
+    script:      "'Brush Script MT'",
+  },
 
   // ── Features ────────────────────────────────────────────────────────────────
   features: {
@@ -35,7 +43,11 @@ const brandConfig = {
     radiusButton: '0.375rem',  // slightly rounded
     radiusInput: '0.375rem',
 
-    fontBrand: "'Satoshi', 'LINE Seed Sans TH', system-ui, sans-serif",
+    fontBrand:      "'Catalogue'",
+    fontSecondary:  "'Manrope'",
+    fontThai:       "'Akiv Grotesk Thai'",
+    fontDecorative: "'Apple Garamond'",
+    fontScript:     "'Brush Script MT'",
 
     // Section heading tokens — elegant larger labels
     sectionHSize: '1.25rem',
