@@ -35,10 +35,10 @@ export class OrdersService {
     const brand = (process.env.BRAND_NAME ?? '').toUpperCase();
     let prefix: string;
     switch (brand) {
-      case 'KUTEE-CLUB': prefix = 'KTC'; break;
-      case 'MU-JERSEY':  prefix = 'MUJ'; break;
+      case 'KUTEE-CLUB': prefix = 'KUT'; break;
+      case 'MU-JERSEY': prefix = 'MUJ'; break;
       case 'URFORMANCE': prefix = 'URF'; break;
-      default:           prefix = 'ORD'; break;
+      default: prefix = 'ORD'; break;
     }
     const orderId = `${prefix}-${Date.now()}`;
 
