@@ -216,7 +216,7 @@ export default function Checkout({ onBack, onSuccess }) {
             type="text"
             value={note}
             onChange={(e) => setNote(e.target.value)}
-            placeholder="คำขอพิเศษ หรือข้อมูลเพิ่มเติม…"
+            placeholder="โน๊ตถึงพี่ขนส่ง..."
             className="input-field"
           />
         </div>
