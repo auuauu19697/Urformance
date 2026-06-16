@@ -58,7 +58,7 @@ const products = [
   },
   {
     id: '3',
-    name: 'Ku Classic Polo',
+    name: 'KU Classic Polo',
     tagline: 'Kasetsart 1943 Polo Shirt',
     price: 429,
     pricingTiers: [
