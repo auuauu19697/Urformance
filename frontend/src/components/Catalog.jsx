@@ -50,9 +50,8 @@ function ProductCard({ product, onSelect }) {
   return (
     <div
       id={`product-card-${product.id}`}
-      className={`card overflow-hidden shadow-sm transition-all ${
-        isClosed ? 'opacity-60 cursor-not-allowed' : 'active:scale-[0.98] cursor-pointer'
-      }`}
+      className={`card overflow-hidden shadow-sm transition-all ${isClosed ? 'opacity-60 cursor-not-allowed' : 'active:scale-[0.98] cursor-pointer'
+        }`}
       onClick={isClosed ? undefined : () => onSelect(product)}
     >
       {/* Image */}
@@ -78,9 +77,6 @@ function ProductCard({ product, onSelect }) {
             {showTiers ? (
               <>
                 <p className="font-black text-lg">{product.price.toLocaleString()}.-</p>
-                <p className="text-[10px] font-bold text-muted uppercase tracking-tight">
-                  from {lowestPrice.toLocaleString()}.-
-                </p>
               </>
             ) : (
               <p className="font-black text-lg">{product.price.toLocaleString()}.-</p>

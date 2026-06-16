@@ -7,8 +7,8 @@ const firstPreorderPeriod = {
 const products = [
   {
     id: '1',
-    name: 'Ku Running Society',
-    tagline: 'Kasetsart 1943 Running Society',
+    name: 'KU Running - Ringer Tee',
+    tagline: 'KU Running Society',
     price: 389,
     pricingTiers: [
       { minQty: 1, price: 389 },
@@ -27,14 +27,14 @@ const products = [
     sizes: ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL'],
     oversizeSurcharge: 20,
     oversizeFrom: '3XL',
-    sizeChartImage: '/size-chart-default.png',
+    sizeChartImage: '/kutee-club/products/rs1-sizechart.png',
     screeningFields: [],
     orderWindow: firstPreorderPeriod,
   },
   {
     id: '2',
-    name: 'Ku Running Society 2',
-    tagline: 'Kasetsart 1943 Running Society 2',
+    name: 'KU Running - Oversized',
+    tagline: 'KU Running Society',
     price: 389,
     pricingTiers: [
       { minQty: 1, price: 389 },
@@ -52,7 +52,7 @@ const products = [
     sizes: ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL'],
     oversizeSurcharge: 20,
     oversizeFrom: '3XL',
-    sizeChartImage: '/size-chart-default.png',
+    sizeChartImage: '/kutee-club/products/rs2-sizechart.png',
     screeningFields: [],
     orderWindow: firstPreorderPeriod,
   },
@@ -77,7 +77,7 @@ const products = [
     sizes: ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL', '6XL', '7XL'],
     oversizeSurcharge: 20,
     oversizeFrom: '3XL',
-    sizeChartImage: '/size-chart-default.png',
+    sizeChartImage: '/kutee-club/products/polo-sizechart.png',
     screeningFields: [],
     orderWindow: firstPreorderPeriod,
   },
