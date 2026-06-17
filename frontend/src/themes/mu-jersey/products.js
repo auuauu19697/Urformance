@@ -36,7 +36,7 @@ const products = [
   {
     id: '2',
     name: 'Mahidol Running - Track Tee',
-    tagline: 'Mahidol Running Society',
+    tagline: 'Mahidol Running',
     price: 390,
     pricingTiers: [
       { minQty: 1, price: 390 },
@@ -63,7 +63,7 @@ const products = [
   {
     id: '3',
     name: 'Mahidol Running - Ringer Tee',
-    tagline: 'Mahidol Running Society',
+    tagline: 'Mahidol Running',
     price: 390,
     pricingTiers: [
       { minQty: 1, price: 390 },
