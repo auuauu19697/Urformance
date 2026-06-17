@@ -1,7 +1,7 @@
 // ─── MU Jersey Products Config ──────────────────────────────────────────────
 
 const preorderPeriod = {
-  startTime: '2026-06-17T00:00:00+07:00',
+  startTime: '2026-06-18T16:00:00+07:00',
   endTime: '2026-06-25T23:59:59+07:00',
 }
 
