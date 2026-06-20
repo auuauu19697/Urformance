@@ -14,11 +14,11 @@ const brandConfig = {
   googleFontWeights: null,
   // Font role tokens (injected as CSS vars)
   fonts: {
-    brand:       "'Catalogue'",
-    secondary:   "'Manrope'",
-    thai:        "'Akiv Grotesk Thai'",
-    decorative:  "'Apple Garamond'",
-    script:      "'Brush Script MT'",
+    brand: "'Catalogue'",
+    secondary: "'Manrope'",
+    thai: "'Akiv Grotesk Thai'",
+    decorative: "'Apple Garamond'",
+    script: "'Brush Script MT'",
   },
 
   // ── Features ────────────────────────────────────────────────────────────────
@@ -38,38 +38,38 @@ const brandConfig = {
   // ── Design tokens (injected as CSS custom properties) ───────────────────────
   tokens: {
     // Primary palette
-    colorPrimary:   '#2B2521',   // Brick — CTAs, dark hero, headings
+    colorPrimary: '#2B2521',   // Brick — CTAs, dark hero, headings
     colorPrimaryFg: '#FCFCFC',   // Cloud — text on Brick
-    colorAccent:    '#FFF87B',   // Sunbeam — highlights & tags
-    colorAccentFg:  '#2B2521',   // Brick — text on Sunbeam
-    colorBg:        '#FCFCFC',   // Cloud — page background
-    colorSurface:   '#FFFFFF',   // White — card surfaces
-    colorBorder:    '#E0D9D0',   // Warm light border
-    colorMuted:     '#8E8172',   // Tan — muted text
+    colorAccent: '#FFF87B',   // Sunbeam — highlights & tags
+    colorAccentFg: '#2B2521',   // Brick — text on Sunbeam
+    colorBg: '#FCFCFC',   // Cloud — page background
+    colorSurface: '#FFFFFF',   // White — card surfaces
+    colorBorder: '#E0D9D0',   // Warm light border
+    colorMuted: '#8E8172',   // Tan — muted text
 
     // Secondary palette (accessible as CSS vars e.g. var(--color-sky))
-    colorSky:       '#C8E0E8',
-    colorMint:      '#C9FFB0',
-    colorApricot:   '#FF885F',
-    colorForest:    '#456344',
+    colorSky: '#C8E0E8',
+    colorMint: '#C9FFB0',
+    colorApricot: '#FF885F',
+    colorForest: '#456344',
 
     // Shape & typography
-    radiusCard:   '4px',
+    radiusCard: '4px',
     radiusButton: '3px',
-    radiusInput:  '3px',
-    fontBrand:      "'Catalogue'",
-    fontSecondary:  "'Manrope'",
-    fontThai:       "'Akiv Grotesk Thai'",
+    radiusInput: '3px',
+    fontBrand: "'Catalogue'",
+    fontSecondary: "'Manrope'",
+    fontThai: "'Akiv Grotesk Thai'",
     fontDecorative: "'Apple Garamond'",
-    fontScript:     "'Brush Script MT'",
+    fontScript: "'Brush Script MT'",
     fontSizeBase: '1.1rem',
   },
 
   closedText: {
     heading: 'Pre-order Has Closed',
     body: 'Thank you for your interest! The pre-order period has ended.\nStay tuned for the next collection and follow us on Instagram for updates.',
-    instagram: '@urformance',   // ← your actual IG handle
-    instagramUrl: 'https://www.instagram.com/urformance',
+    instagram: '@urformance.bkk',   // ← your actual IG handle
+    instagramUrl: 'https://www.instagram.com/urformance.bkk',
   },
 
   // ── Payment ─────────────────────────────────────────────────────────────────
