@@ -70,6 +70,7 @@ export default function FabricTech({ landing }) {
           {/* Right: body text */}
           <p style={{
             fontSize: '1rem', fontWeight: 600, lineHeight: 1.75,
+            fontFamily: 'var(--font-secondary)',
             color: 'rgba(255,255,255,0.5)',
             maxWidth: '42ch',
           }}>
@@ -118,6 +119,7 @@ export default function FabricTech({ landing }) {
               {/* Body */}
               <p style={{
                 fontSize: '0.83rem', fontWeight: 600, lineHeight: 1.65,
+                fontFamily: 'var(--font-secondary)',
                 color: 'rgba(255,255,255,0.45)',
               }}>
                 {feat.body}

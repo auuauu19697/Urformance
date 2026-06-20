@@ -103,13 +103,13 @@ export default function Checkout({ onBack, onSuccess }) {
           Contact Information
         </h3>
         {[
-          { id: 'input-full-name', label: 'ชื่อ-นามสกุล *', value: fullName, set: setFullName, type: 'text' },
-          { id: 'input-email', label: 'อีเมล *', value: email, set: setEmail, type: 'email' },
-          { id: 'input-phone', label: 'เบอร์โทรศัพท์ *', value: phone, set: setPhone, type: 'tel' },
+          { id: 'input-full-name', label: 'ชื่อ-นามสกุล *', value: fullName, set: setFullName, type: 'text', thai: true },
+          { id: 'input-email', label: 'อีเมล *', value: email, set: setEmail, type: 'email', thai: true },
+          { id: 'input-phone', label: 'เบอร์โทรศัพท์ *', value: phone, set: setPhone, type: 'tel', thai: true },
           { id: 'input-instagram', label: 'Instagram *', value: instagram, set: setInstagram, type: 'text' },
-        ].map(({ id, label, value, set, type }) => (
+        ].map(({ id, label, value, set, type, thai }) => (
           <div key={label}>
-            <label className={labelCls}>{label}</label>
+            <label className={`${labelCls}${thai ? ' font-thai' : ''}`}>{label}</label>
             <input id={id} type={type} value={value} onChange={(e) => set(e.target.value)} className="input-field" />
           </div>
         ))}
@@ -152,7 +152,7 @@ export default function Checkout({ onBack, onSuccess }) {
             }}
             className="hidden"
           />
-          <span className="text-xs font-black uppercase tracking-wide text-muted group-hover:opacity-80 transition-opacity">
+          <span className="text-xs font-black uppercase tracking-wide text-muted group-hover:opacity-80 transition-opacity font-thai">
             ใช้ชื่อและเบอร์เดียวกับผู้สั่ง
           </span>
         </label>
@@ -160,7 +160,7 @@ export default function Checkout({ onBack, onSuccess }) {
         {/* Shipping Name & Phone */}
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className={labelCls}>ชื่อผู้รับ *</label>
+            <label className={`${labelCls} font-thai`}>ชื่อผู้รับ *</label>
             <input
               id="input-shipping-name"
               type="text"
@@ -172,7 +172,7 @@ export default function Checkout({ onBack, onSuccess }) {
             />
           </div>
           <div>
-            <label className={labelCls}>เบอร์โทรผู้รับ *</label>
+            <label className={`${labelCls} font-thai`}>เบอร์โทรผู้รับ *</label>
             <input
               id="input-shipping-phone"
               type="tel"
@@ -186,7 +186,7 @@ export default function Checkout({ onBack, onSuccess }) {
         </div>
 
         <div>
-          <label className={labelCls}>ที่อยู่ *</label>
+          <label className={`${labelCls} font-thai`}>ที่อยู่ *</label>
           <textarea
             id="input-address"
             rows={2}
@@ -204,13 +204,13 @@ export default function Checkout({ onBack, onSuccess }) {
             { id: 'input-postal', label: 'รหัสไปรษณีย์ *', value: postalCode, set: setPostalCode },
           ].map(({ id, label, value, set }) => (
             <div key={label}>
-              <label className={labelCls}>{label}</label>
+              <label className={`${labelCls} font-thai`}>{label}</label>
               <input id={id} type="text" value={value} onChange={(e) => set(e.target.value)} className="input-field" />
             </div>
           ))}
         </div>
         <div>
-          <label className={labelCls}>หมายเหตุ (ถ้ามี)</label>
+          <label className={`${labelCls} font-thai`}>หมายเหตุ (ถ้ามี)</label>
           <input
             id="input-note"
             type="text"
@@ -230,7 +230,7 @@ export default function Checkout({ onBack, onSuccess }) {
 
         {/* QR Code — dynamic per brand */}
         <div className="card p-6 text-center">
-          <p className="text-xs font-black uppercase mb-4 tracking-tighter text-muted">
+          <p className="text-xs font-black uppercase mb-4 tracking-tighter text-muted font-thai">
             สแกนจ่าย:{' '}
             <span className="font-black" style={{ color: 'var(--color-primary)' }}>
               {total.toLocaleString()} THB
@@ -242,7 +242,7 @@ export default function Checkout({ onBack, onSuccess }) {
             className="w-48 h-48 object-contain mx-auto rounded-2xl"
           />
           {paymentNote && (
-            <p className="text-sm font-semibold mt-3 text-muted">{paymentNote}</p>
+            <p className="text-sm font-semibold mt-3 text-muted font-secondary">{paymentNote}</p>
           )}
         </div>
 
@@ -298,17 +298,17 @@ export default function Checkout({ onBack, onSuccess }) {
           className="hidden"
         />
         <span className="text-xs leading-relaxed text-muted group-hover:opacity-80 transition-opacity">
-          <span className="block font-bold" style={{ color: 'var(--color-muted)' }}>
+          <span className="block font-bold font-thai" style={{ color: 'var(--color-muted)' }}>
             กรุณาตรวจสอบรายละเอียดให้ครบถ้วน หลังส่งออเดอร์แล้วจะไม่สามารถแก้ไขได้ทุกกรณี
           </span>
-          <span className="block mt-0.5">
+          <span className="block mt-0.5 font-secondary">
             Please double-check your information. Once your order is placed, it cannot be edited under any circumstances.
           </span>
         </span>
       </label>
 
       {/* Error */}
-      {error && <p className="text-red-500 text-sm font-bold mb-4 text-center">{error}</p>}
+      {error && <p className="text-red-500 text-sm font-bold mb-4 text-center font-secondary">{error}</p>}
 
       {/* Submit */}
       <button

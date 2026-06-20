@@ -10,18 +10,6 @@ const brandConfig = {
   pageTitle: 'Kutee Club — Order',
   metaDescription: 'Order Ku Club official apparel online.',
 
-  // ── Typography ──────────────────────────────────────────────────────────────
-  googleFont: null,          // Manrope loaded via index.html; Catalogue is local
-  googleFontWeights: null,
-  // Font role tokens (injected as CSS vars)
-  fonts: {
-    brand:       "'Catalogue'",
-    secondary:   "'Manrope'",
-    thai:        "'Akiv Grotesk Thai'",
-    decorative:  "'Apple Garamond'",
-    script:      "'Brush Script MT'",
-  },
-
   // ── Features ────────────────────────────────────────────────────────────────
   features: {
     landingPage: false,

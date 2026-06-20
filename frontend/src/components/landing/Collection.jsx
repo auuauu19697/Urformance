@@ -19,6 +19,7 @@ export default function Collection({ landing, products }) {
           </div>
           <p style={{
             fontSize: '0.8rem', fontWeight: 700, color: 'var(--color-muted)',
+            fontFamily: 'var(--font-secondary)',
             maxWidth: '30ch', lineHeight: 1.6, textAlign: 'right',
           }}>
             {landing?.collection?.description || "First drop launching soon. Join the waitlist to be notified before anyone else."}
@@ -28,7 +29,7 @@ export default function Collection({ landing, products }) {
         {products && products.length > 0 ? (
           products.map((p, i) => <ProductCard key={p.id} product={p} index={i} />)
         ) : (
-          <p style={{ textAlign: 'center', color: 'var(--color-muted)', fontWeight: 700, paddingTop: '3rem' }}>
+          <p style={{ textAlign: 'center', color: 'var(--color-muted)', fontWeight: 700, fontFamily: 'var(--font-secondary)', paddingTop: '3rem' }}>
             Products coming soon.
           </p>
         )}

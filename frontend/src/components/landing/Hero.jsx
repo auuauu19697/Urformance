@@ -61,6 +61,7 @@ export default function Hero({ brandName, icon, brandSlogan, landing, features, 
         <p style={{
           fontSize: 'clamp(1rem, 2.5vw, 1.3rem)',
           fontWeight: 600,
+          fontFamily: 'var(--font-secondary)',
           color: 'rgba(255,255,255,0.5)',
           maxWidth: '44ch',
           lineHeight: 1.65,

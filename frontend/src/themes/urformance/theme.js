@@ -9,18 +9,6 @@ const brandConfig = {
   pageTitle: 'Urformance — Order',
   metaDescription: 'Order Urformance performance wear online.',
 
-  // ── Typography ──────────────────────────────────────────────────────────────
-  googleFont: null,          // Manrope loaded via index.html; Catalogue is local
-  googleFontWeights: null,
-  // Font role tokens (injected as CSS vars)
-  fonts: {
-    brand: "'Catalogue'",
-    secondary: "'Manrope'",
-    thai: "'Akiv Grotesk Thai'",
-    decorative: "'Apple Garamond'",
-    script: "'Brush Script MT'",
-  },
-
   // ── Features ────────────────────────────────────────────────────────────────
   features: {
     landingPage: true,

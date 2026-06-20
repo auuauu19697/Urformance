@@ -69,6 +69,7 @@ export default function Vision({ landing }) {
       </h2>
       <p style={{
         fontSize: '0.95rem', fontWeight: 600, lineHeight: 1.7,
+        fontFamily: 'var(--font-secondary)',
         color: 'var(--color-muted)', maxWidth: '28ch',
       }}>
         {body}

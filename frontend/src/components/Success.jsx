@@ -10,7 +10,7 @@ export default function Success({ orderId, total, onReset }) {
       <div className="text-6xl">🎉</div>
       <div>
         <h2 className="text-3xl font-black italic uppercase leading-none mb-2">Order Placed!</h2>
-        <p className="font-semibold text-muted">
+        <p className="font-semibold text-muted font-secondary">
           Please check your email for a confirmation. If you don't receive one, reach us on Instagram at{' '}
           <a
             href={igUrl}

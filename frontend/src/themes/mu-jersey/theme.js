@@ -9,10 +9,6 @@ const brandConfig = {
   pageTitle: 'MU Jersey — Order',
   metaDescription: 'Order premium MU football jerseys online.',
 
-  // ── Typography ──────────────────────────────────────────────────────────────
-  googleFont: null,          // Satoshi is loaded via Fontshare in index.html
-  googleFontWeights: null,
-
   // ── Features ────────────────────────────────────────────────────────────────
   features: {
     landingPage: false,
@@ -35,6 +31,10 @@ const brandConfig = {
     radiusInput: '0',
 
     fontBrand: "'Satoshi', 'LINE Seed Sans TH', system-ui, sans-serif",
+    fontSecondary: "'Satoshi'",
+    fontThai: "'LINE Seed Sans TH'",
+    fontDecorative: "'Satoshi'",
+    fontScript: "'Satoshi'",
 
     // Section heading tokens (override Urformance tiny-label defaults)
     sectionHSize: '1.5rem',

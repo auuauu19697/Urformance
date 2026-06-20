@@ -71,7 +71,7 @@ function ProductCard({ product, onSelect }) {
         <div className="flex justify-between items-center">
           <div>
             <h3 className="font-black text-lg leading-none">{product.name}</h3>
-            <p className="text-xs mt-1 font-semibold text-muted">{product.tagline}</p>
+            <p className="text-xs mt-1 font-semibold text-muted font-secondary">{product.tagline}</p>
           </div>
           <div className="text-right">
             {showTiers ? (
@@ -87,7 +87,7 @@ function ProductCard({ product, onSelect }) {
         {/* Live Countdown or Closed Badge */}
         {product.orderWindow?.endTime && (
           <div
-            className="mt-3 pt-3 border-t border-dashed flex items-center justify-between text-[11px] font-bold text-muted uppercase tracking-wider"
+            className="mt-3 pt-3 border-t border-dashed flex items-center justify-between text-[11px] font-bold text-muted uppercase tracking-wider font-secondary"
             style={{ borderColor: 'var(--color-border)' }}
           >
             <span>Pre-order</span>

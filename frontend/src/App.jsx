@@ -44,7 +44,7 @@ function Header({ step, onCartClick, onLogoClick }) {
           {brandName}
         </h1>
         {step === STEP.LANDING && brandSlogan && (
-          <p className="text-[10px] font-bold text-muted uppercase tracking-tight">{brandSlogan}</p>
+          <p className="text-[10px] font-bold text-muted uppercase tracking-tight font-secondary">{brandSlogan}</p>
         )}
       </div>
       {!hideCart && (

@@ -62,6 +62,7 @@ export default function ProductCard({ product, index }) {
         </h3>
         <p style={{
           fontSize: '1rem', fontWeight: 600, lineHeight: 1.65,
+          fontFamily: 'var(--font-secondary)',
           color: 'var(--color-muted)', marginBottom: '1.5rem', maxWidth: '36ch',
         }}>
           {product.tagline}. Engineered for those who push every rep, every set, every km further than yesterday.
@@ -73,7 +74,7 @@ export default function ProductCard({ product, index }) {
             <p style={{ fontSize: '0.55rem', fontWeight: 900, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--color-muted)', marginBottom: '0.4rem' }}>Colours</p>
             <div style={{ display: 'flex', gap: '0.35rem', alignItems: 'center' }}>
               {product.colors.map(c => <ColorDot key={c} color={c} />)}
-              <span style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--color-muted)', marginLeft: '0.25rem' }}>{product.colors.join(', ')}</span>
+              <span style={{ fontSize: '0.7rem', fontWeight: 700, fontFamily: 'var(--font-secondary)', color: 'var(--color-muted)', marginLeft: '0.25rem' }}>{product.colors.join(', ')}</span>
             </div>
           </div>
           <div>

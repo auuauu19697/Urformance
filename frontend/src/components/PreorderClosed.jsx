@@ -75,7 +75,7 @@ export default function PreorderClosed() {
 
           <div className="space-y-3">
             {bodyParagraphs.map((para, i) => (
-              <p key={i} className="text-base font-medium leading-relaxed text-muted">
+              <p key={i} className="text-base font-medium leading-relaxed text-muted font-secondary">
                 {para}
               </p>
             ))}
@@ -96,7 +96,7 @@ export default function PreorderClosed() {
           </a>
         )}
 
-        <p className="text-center text-xs font-bold uppercase tracking-widest mt-6 text-muted">
+        <p className="text-center text-xs font-bold uppercase tracking-widest mt-6 text-muted font-secondary">
           Stay tuned for the next collection
         </p>
 

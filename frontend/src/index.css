@@ -85,6 +85,23 @@ body {
   background-color: var(--color-bg);
 }
 
+/* ─── Font Role Utilities ────────────────────────────────────────────────────
+   Use these classes instead of inline fontFamily styles.
+   Each maps to a CSS var set by the active theme.
+
+   Roles:
+   • .font-brand       — Primary brand typeface (headings, CTAs, hero text)
+   • .font-secondary   — Supporting typeface (body text, descriptions, form labels)
+   • .font-thai        — Thai-language text
+   • .font-decorative  — Elegant/editorial accents
+   • .font-script      — Handwritten/script accents
+   ─────────────────────────────────────────────────────────────────────────── */
+.font-brand      { font-family: var(--font-brand); }
+.font-secondary  { font-family: var(--font-secondary); }
+.font-thai       { font-family: var(--font-thai); }
+.font-decorative { font-family: var(--font-decorative); }
+.font-script     { font-family: var(--font-script); }
+
 /* ─── Semantic Utility Classes ───────────────────────────────────────────────
    Used in components instead of hard-coded Tailwind color classes.
    Layout / spacing utilities still come from Tailwind directly.
@@ -138,6 +155,7 @@ body {
   border: 2px solid var(--color-border);
   border-radius: var(--radius-input);
   background-color: var(--color-surface);
+  font-family: var(--font-secondary);
   outline: none;
   width: 100%;
   padding: 1rem;

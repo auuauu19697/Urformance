@@ -51,13 +51,13 @@ export default function WaitlistForm({ onSuccess }) {
         <h2 className="text-3xl font-black italic uppercase leading-none">
           {waitlistText?.heading || 'Join Waitlist'}
         </h2>
-        <p className="text-muted font-bold text-sm mt-2">
+        <p className="text-muted font-bold text-sm mt-2 font-secondary">
           {waitlistText?.body || 'Sign up to be notified for the next collection.'}
         </p>
       </div>
 
       {error && (
-        <div className="bg-red-50 text-red-500 p-4 rounded-xl text-sm font-bold mb-6 border border-red-100">
+        <div className="bg-red-50 text-red-500 p-4 rounded-xl text-sm font-bold mb-6 border border-red-100 font-secondary">
           {error}
         </div>
       )}

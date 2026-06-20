@@ -15,7 +15,7 @@ export default function Footer({ brandName, closedText }) {
         <span style={{ fontWeight: 900, fontStyle: 'italic', fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '-0.02em' }}>
           {brandName}
         </span>
-        <span style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+        <span style={{ fontSize: '0.65rem', fontWeight: 700, fontFamily: 'var(--font-secondary)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
           © {new Date().getFullYear()} {brandName}. All rights reserved.
         </span>
         {closedText?.instagram && (

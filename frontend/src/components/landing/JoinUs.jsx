@@ -28,6 +28,7 @@ export default function JoinUs({ landing, features, closedText, onWaitlistClick 
           </h2>
           <p style={{
             fontSize: '1rem', fontWeight: 600, lineHeight: 1.65,
+            fontFamily: 'var(--font-secondary)',
             color: 'rgba(255,255,255,0.5)', marginBottom: '2.5rem',
           }}>
             {landing?.joinUs?.body || "Join our waitlist and get early access to drops, behind-the-scenes updates, and exclusive pre-order windows before we go public."}

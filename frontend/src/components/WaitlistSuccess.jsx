@@ -14,7 +14,7 @@ export default function WaitlistSuccess() {
         <h2 className="text-3xl font-black italic uppercase leading-none mb-3">
           {waitlistText?.successHeading || "You're on the list"}
         </h2>
-        <p className="text-muted font-bold max-w-xs mx-auto">
+        <p className="text-muted font-bold max-w-xs mx-auto font-secondary">
           {waitlistText?.successBody || `Thank you for joining the ${brandName} waitlist. We'll notify you when the pre-order opens!`}
         </p>
       </div>
