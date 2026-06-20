@@ -1,10 +1,12 @@
 {
   "hero": {
-    "tagline": "Apparel engineered for athletes who refuse to compromise. Every piece built to move with you, not against you."
+    "tagline": "Apparel engineered for athletes who refuse to compromise. Every piece built to move with you, not against you.",
+    "image": "/urformance/mood2.png"
   },
   "vision": {
     "heading": "Form Follows\nFunction",
-    "body": "We started URFORMANCE because we couldn't find performance wear that actually performed — without sacrificing how it looked. So we built it ourselves.",
+    "body": "Built for athletes who refuse to compromise — performance and aesthetics, together.",
+    "image": "/urformance/mood1.png",
     "pillars": [
       {
         "num": "01",

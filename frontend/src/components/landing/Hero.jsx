@@ -11,6 +11,19 @@ export default function Hero({ brandName, icon, brandSlogan, landing, features, 
       position: 'relative',
       overflow: 'hidden',
     }}>
+      {/* Background Image with opacity */}
+      {landing?.hero?.image && (
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundImage: `url(${landing.hero.image})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          opacity: 0.15,
+          pointerEvents: 'none',
+        }} />
+      )}
+
       {/* Background texture — repeated diagonal lines */}
       <div style={{
         position: 'absolute', inset: 0, pointerEvents: 'none',
