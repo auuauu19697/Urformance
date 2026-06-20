@@ -20,7 +20,7 @@ const brandConfig = {
     heading: 'Join Waitlist',
     body: 'Sign up to be notified when the next collection drops.',
     successHeading: "You're on the list",
-    successBody: "Thank you for joining the URFORMANCE waitlist. We'll notify you when the pre-order opens!",
+    successBody: "Thank you for joining the URFORMANCE waitlist. We'll notify you when the new collection drops!",
     consentText: "I agree that URFORMANCE may store and use the information I provided — including my name, age, email, phone, and Instagram handle — to notify me about pre-orders, new collection drops, and exclusive updates. My information will not be sold or shared with third parties.",
   },
 
