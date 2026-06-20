@@ -3,6 +3,8 @@ import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
 import { CreateOrderDto } from '../orders/dto/create-order.dto';
 import { buildOrderConfirmationHtml } from './templates/order-confirmation';
+import { CreateWaitlistDto } from '../waitlist/dto/create-waitlist.dto';
+import { buildWaitlistConfirmationHtml } from './templates/waitlist-confirmation';
 
 @Injectable()
 export class MailService implements OnModuleInit {
@@ -67,6 +69,31 @@ export class MailService implements OnModuleInit {
       this.logger.log(`Confirmation email sent to ${dto.customer.email} (${info.messageId})`);
     } catch (err) {
       this.logger.error(`Failed to send confirmation email to ${dto.customer.email}:`, err);
+    }
+  }
+
+  /**
+   * Send a waitlist confirmation email to the user.
+   * Returns silently on failure — must never block the waitlist join flow.
+   */
+  async sendWaitlistConfirmation(dto: CreateWaitlistDto): Promise<void> {
+    if (!this.transporter) {
+      this.logger.debug('No mail transporter — skipping waitlist confirmation email.');
+      return;
+    }
+
+    const html = buildWaitlistConfirmationHtml(dto, this.brandName);
+
+    try {
+      const info = await this.transporter.sendMail({
+        from: `"${this.brandName}" <${this.fromAddress}>`,
+        to: dto.email,
+        subject: `${this.brandName} — Waitlist Confirmed`,
+        html,
+      });
+      this.logger.log(`Waitlist confirmation email sent to ${dto.email} (${info.messageId})`);
+    } catch (err) {
+      this.logger.error(`Failed to send waitlist confirmation email to ${dto.email}:`, err);
     }
   }
 }

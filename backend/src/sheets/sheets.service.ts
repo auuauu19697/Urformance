@@ -197,12 +197,13 @@ export class SheetsService {
       dto.phone,
       dto.instagram,
       dto.note ?? '',
+      dto.consentGiven ? new Date().toISOString() : '',
     ];
 
     try {
       await sheets.spreadsheets.values.append({
         spreadsheetId,
-        range: `${waitlistTab}!A:G`,
+        range: `${waitlistTab}!A:H`,
         valueInputOption: 'USER_ENTERED',
         insertDataOption: 'INSERT_ROWS',
         requestBody: { values: [row] },
