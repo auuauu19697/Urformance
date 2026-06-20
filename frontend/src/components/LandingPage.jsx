@@ -7,13 +7,14 @@ import JoinUs from './landing/JoinUs'
 import Footer from './landing/Footer'
 
 export default function LandingPage({ onWaitlistClick, onPreorderClick }) {
-  const { brandName, icon, brandSlogan, closedText, features, products, landing } = useTheme()
+  const { brandName, icon, wordmark, brandSlogan, closedText, features, products, landing } = useTheme()
 
   return (
     <div style={{ background: 'var(--color-bg)' }}>
       <Hero
         brandName={brandName}
         icon={icon}
+        wordmark={wordmark}
         brandSlogan={brandSlogan}
         landing={landing}
         features={features}

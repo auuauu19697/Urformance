@@ -52,6 +52,13 @@ export function ThemeProvider({ children }) {
         document.head.appendChild(iconEl)
       }
       iconEl.href = activeTheme.icon
+      if (activeTheme.icon.endsWith('.svg')) {
+        iconEl.type = 'image/svg+xml'
+      } else if (activeTheme.icon.endsWith('.png')) {
+        iconEl.type = 'image/png'
+      } else {
+        iconEl.removeAttribute('type')
+      }
     }
 
     // 4. Set input style variant (drives CSS [data-input-style] selector)

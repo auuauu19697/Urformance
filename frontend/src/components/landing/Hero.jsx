@@ -1,4 +1,4 @@
-export default function Hero({ brandName, icon, brandSlogan, landing, features, onWaitlistClick, onPreorderClick }) {
+export default function Hero({ brandName, icon, wordmark, brandSlogan, landing, features, onWaitlistClick, onPreorderClick }) {
   const isImagePath = typeof icon === 'string' && (icon.startsWith('/') || icon.startsWith('http'))
   return (
     <section style={{
@@ -33,10 +33,6 @@ export default function Hero({ brandName, icon, brandSlogan, landing, features, 
       <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '6rem 2rem 4rem', position: 'relative', zIndex: 1 }}>
         {/* Pre-title */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '2rem' }}>
-          {isImagePath
-            ? <img src={icon} alt={brandName} style={{ height: '2rem', objectFit: 'contain' }} />
-            : <span style={{ fontSize: '1.5rem' }}>{icon}</span>
-          }
           <span style={{
             fontSize: '0.6rem', fontWeight: 900, letterSpacing: '0.3em',
             textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)',
@@ -46,16 +42,33 @@ export default function Hero({ brandName, icon, brandSlogan, landing, features, 
         </div>
 
         {/* Giant wordmark */}
-        <h1 style={{
-          fontWeight: 900, fontStyle: 'italic',
-          fontSize: 'clamp(3.5rem, 14vw, 9rem)',
-          textTransform: 'uppercase',
-          letterSpacing: '-0.05em',
-          lineHeight: 0.88,
-          marginBottom: '2.5rem',
-        }}>
-          {brandName}
-        </h1>
+        {wordmark ? (
+          <div style={{ marginBottom: '2.5rem' }}>
+            <img
+              src={wordmark}
+              alt={brandName}
+              style={{
+                display: 'block',
+                maxHeight: 'min(170px, 18vw)',
+                maxWidth: '100%',
+                width: 'auto',
+                objectFit: 'contain',
+                filter: 'brightness(0) invert(1)',
+              }}
+            />
+          </div>
+        ) : (
+          <h1 style={{
+            fontWeight: 900, fontStyle: 'italic',
+            fontSize: 'clamp(3.5rem, 14vw, 9rem)',
+            textTransform: 'uppercase',
+            letterSpacing: '-0.05em',
+            lineHeight: 0.88,
+            marginBottom: '2.5rem',
+          }}>
+            {brandName}
+          </h1>
+        )}
 
         {/* Tagline */}
         <p style={{

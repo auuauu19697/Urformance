@@ -29,7 +29,7 @@ const STEP = {
 // ─── Header ─────────────────────────────────────────────────────────────────
 function Header({ step, onCartClick, onLogoClick }) {
   const { itemCount } = useCart()
-  const { brandName, brandSlogan } = useTheme()
+  const { brandName, brandSlogan, wordmark } = useTheme()
   const hideCart = step === STEP.SUCCESS || step === STEP.LANDING || step === STEP.WAITLIST || step === STEP.WAITLIST_SUCCESS
 
   return (
@@ -37,13 +37,22 @@ function Header({ step, onCartClick, onLogoClick }) {
       style={{ background: 'var(--color-surface)', borderColor: 'var(--color-border)' }}
     >
       <div>
-        <h1
-          className="font-black italic text-xl uppercase tracking-tighter cursor-pointer select-none hover:opacity-80 transition-opacity"
-          onClick={onLogoClick}
-        >
-          {brandName}
-        </h1>
-        {step === STEP.LANDING && brandSlogan && (
+        {wordmark ? (
+          <img
+            src={wordmark}
+            alt={brandName}
+            className="h-8 object-contain cursor-pointer select-none hover:opacity-80 transition-opacity"
+            onClick={onLogoClick}
+          />
+        ) : (
+          <h1
+            className="font-black italic text-xl uppercase tracking-tighter cursor-pointer select-none hover:opacity-80 transition-opacity"
+            onClick={onLogoClick}
+          >
+            {brandName}
+          </h1>
+        )}
+        {step === STEP.LANDING && brandSlogan && !wordmark && (
           <p className="text-[10px] font-bold text-muted uppercase tracking-tight font-secondary">{brandSlogan}</p>
         )}
       </div>
