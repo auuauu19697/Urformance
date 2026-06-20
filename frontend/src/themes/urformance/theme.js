@@ -4,7 +4,7 @@
 const brandConfig = {
   // ── Identity ────────────────────────────────────────────────────────────────
   brandName: 'URFORMANCE',
-  brandSlogan: 'Performance Wear',
+  brandSlogan: 'Urban + Performance',
   icon: '🏃',
   pageTitle: 'Urformance — Order',
   metaDescription: 'Order Urformance performance wear online.',

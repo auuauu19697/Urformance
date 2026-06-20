@@ -1,6 +1,7 @@
 import { useTheme } from '../context/ThemeContext'
 import Hero from './landing/Hero'
 import Vision from './landing/Vision'
+import FabricTech from './landing/FabricTech'
 import Collection from './landing/Collection'
 import JoinUs from './landing/JoinUs'
 import Footer from './landing/Footer'
@@ -20,7 +21,8 @@ export default function LandingPage({ onWaitlistClick, onPreorderClick }) {
         onPreorderClick={onPreorderClick}
       />
       <Vision landing={landing} />
-      <Collection landing={landing} products={products} />
+      <FabricTech landing={landing} />
+      {/* <Collection landing={landing} products={products} /> */}
       <JoinUs
         landing={landing}
         features={features}
