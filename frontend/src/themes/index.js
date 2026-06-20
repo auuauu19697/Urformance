@@ -4,13 +4,14 @@
 
 import urformanceTheme    from './urformance/theme.js'
 import urformanceProducts from './urformance/products.js'
+import urformanceLanding  from './urformance/landing.json'
 import muJerseyTheme      from './mu-jersey/theme.js'
 import muJerseyProducts   from './mu-jersey/products.js'
 import kuteeClubTheme     from './kutee-club/theme.js'
 import kuteeClubProducts  from './kutee-club/products.js'
 
 const themes = {
-  'urformance': { ...urformanceTheme, products: urformanceProducts },
+  'urformance': { ...urformanceTheme, products: urformanceProducts, landing: urformanceLanding },
   'mu-jersey':  { ...muJerseyTheme,   products: muJerseyProducts   },
   'kutee-club': { ...kuteeClubTheme,  products: kuteeClubProducts  },
 }

@@ -1,0 +1,32 @@
+{
+  "hero": {
+    "tagline": "Apparel engineered for athletes who refuse to compromise. Every piece built to move with you, not against you."
+  },
+  "vision": {
+    "heading": "Form Follows\nFunction",
+    "body": "We started URFORMANCE because we couldn't find performance wear that actually performed — without sacrificing how it looked. So we built it ourselves.",
+    "pillars": [
+      {
+        "num": "01",
+        "title": "Built for Movement",
+        "body": "Four-way stretch, moisture-wicking fabric engineered for full range of motion. No restrictions, no excuses."
+      },
+      {
+        "num": "02",
+        "title": "Minimal by Design",
+        "body": "No logos, no noise. Clean lines that work as hard in the gym as they do on the street."
+      },
+      {
+        "num": "03",
+        "title": "Intentional Drops",
+        "body": "We don't mass-produce. Each collection is limited, considered, and crafted to last beyond the season."
+      }
+    ]
+  },
+  "collection": {
+    "description": "First drop launching soon. Join the waitlist to be notified before anyone else."
+  },
+  "joinUs": {
+    "body": "Join our waitlist and get early access to drops, behind-the-scenes updates, and exclusive pre-order windows before we go public."
+  }
+}
