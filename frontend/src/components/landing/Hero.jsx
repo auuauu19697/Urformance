@@ -75,7 +75,7 @@ export default function Hero({ brandName, icon, brandSlogan, landing, features, 
             <button
               onClick={onWaitlistClick}
               style={{
-                background: '#fff', color: '#000',
+                background: 'var(--color-accent)', color: 'var(--color-accent-fg)',
                 border: 'none', borderRadius: '3px',
                 padding: '0.9rem 2rem',
                 fontWeight: 900, fontSize: '0.75rem',
