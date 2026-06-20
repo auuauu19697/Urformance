@@ -157,7 +157,7 @@ function ProductCard({ product, index }) {
 }
 
 // ─── Main LandingPage ─────────────────────────────────────────────────────────
-export default function LandingPage({ onWishlistClick, onPreorderClick }) {
+export default function LandingPage({ onWaitlistClick, onPreorderClick }) {
   const { brandName, icon, brandSlogan, closedText, features, products } = useTheme()
   const isImagePath = typeof icon === 'string' && (icon.startsWith('/') || icon.startsWith('http'))
 
@@ -222,9 +222,9 @@ export default function LandingPage({ onWishlistClick, onPreorderClick }) {
 
           {/* CTAs */}
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', alignItems: 'center' }}>
-            {features?.wishlist && (
+            {features?.waitlist && (
               <button
-                onClick={onWishlistClick}
+                onClick={onWaitlistClick}
                 style={{
                   background: '#fff', color: '#000',
                   border: 'none', borderRadius: '3px',
@@ -236,7 +236,7 @@ export default function LandingPage({ onWishlistClick, onPreorderClick }) {
                 onMouseEnter={e => e.currentTarget.style.opacity = '0.85'}
                 onMouseLeave={e => e.currentTarget.style.opacity = '1'}
               >
-                Join Wishlist →
+                Join Waitlist →
               </button>
             )}
             {features?.ordering
@@ -351,7 +351,7 @@ export default function LandingPage({ onWishlistClick, onPreorderClick }) {
               fontSize: '0.8rem', fontWeight: 700, color: 'var(--color-muted)',
               maxWidth: '30ch', lineHeight: 1.6, textAlign: 'right',
             }}>
-              First drop launching soon. Join the wishlist to be notified before anyone else.
+              First drop launching soon. Join the waitlist to be notified before anyone else.
             </p>
           </div>
 
@@ -389,12 +389,12 @@ export default function LandingPage({ onWishlistClick, onPreorderClick }) {
               fontSize: '1rem', fontWeight: 600, lineHeight: 1.65,
               color: 'rgba(255,255,255,0.5)', marginBottom: '2.5rem',
             }}>
-              Join our wishlist and get early access to drops, behind-the-scenes updates, and exclusive pre-order windows before we go public.
+              Join our waitlist and get early access to drops, behind-the-scenes updates, and exclusive pre-order windows before we go public.
             </p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', alignItems: 'center' }}>
-              {features?.wishlist && (
+              {features?.waitlist && (
                 <button
-                  onClick={onWishlistClick}
+                  onClick={onWaitlistClick}
                   style={{
                     background: 'var(--color-accent)', color: 'var(--color-accent-fg)',
                     border: 'none', borderRadius: 'var(--radius-button)',
@@ -406,7 +406,7 @@ export default function LandingPage({ onWishlistClick, onPreorderClick }) {
                   onMouseEnter={e => e.currentTarget.style.opacity = '0.85'}
                   onMouseLeave={e => e.currentTarget.style.opacity = '1'}
                 >
-                  Join the Wishlist →
+                  Join the Waitlist →
                 </button>
               )}
               {closedText?.instagram && (

@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import { submitWishlist } from '../services/wishlistApi'
+import { submitWaitlist } from '../services/waitlistApi'
 import { useTheme } from '../context/ThemeContext'
 
-export default function WishlistForm({ onSuccess }) {
-  const { wishlistText } = useTheme()
+export default function WaitlistForm({ onSuccess }) {
+  const { waitlistText } = useTheme()
   const [formData, setFormData] = useState({
     fullName: '',
     age: '',
@@ -31,7 +31,7 @@ export default function WishlistForm({ onSuccess }) {
     }
 
     try {
-      await submitWishlist(payload)
+      await submitWaitlist(payload)
       onSuccess()
     } catch (err) {
       // Clean up class-validator nested errors for display if needed
@@ -49,10 +49,10 @@ export default function WishlistForm({ onSuccess }) {
     <div className="pt-2">
       <div className="mb-6">
         <h2 className="text-3xl font-black italic uppercase leading-none">
-          {wishlistText?.heading || 'Join Wishlist'}
+          {waitlistText?.heading || 'Join Waitlist'}
         </h2>
         <p className="text-muted font-bold text-sm mt-2">
-          {wishlistText?.body || 'Sign up to be notified for the next collection.'}
+          {waitlistText?.body || 'Sign up to be notified for the next collection.'}
         </p>
       </div>
 
@@ -146,7 +146,7 @@ export default function WishlistForm({ onSuccess }) {
           disabled={isSubmitting}
           className="btn-primary w-full py-5 font-black text-lg shadow-2xl uppercase italic tracking-wider disabled:opacity-50 mt-4"
         >
-          {isSubmitting ? 'Submitting...' : (wishlistText?.heading || 'Join Wishlist')}
+          {isSubmitting ? 'Submitting...' : (waitlistText?.heading || 'Join Waitlist')}
         </button>
       </form>
     </div>

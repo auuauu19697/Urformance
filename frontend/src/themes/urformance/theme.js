@@ -25,14 +25,14 @@ const brandConfig = {
   features: {
     landingPage: true,
     ordering: false,
-    wishlist: true,
+    waitlist: true,
   },
 
-  wishlistText: {
-    heading: 'Join Wishlist',
+  waitlistText: {
+    heading: 'Join Waitlist',
     body: 'Sign up to be notified when the next collection drops.',
     successHeading: "You're on the list",
-    successBody: "Thank you for joining the URFORMANCE wishlist. We'll notify you when the pre-order opens!",
+    successBody: "Thank you for joining the URFORMANCE waitlist. We'll notify you when the pre-order opens!",
   },
 
   // ── Design tokens (injected as CSS custom properties) ───────────────────────

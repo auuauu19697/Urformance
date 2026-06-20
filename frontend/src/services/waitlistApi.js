@@ -1,7 +1,7 @@
 import { API_URL, API_KEY } from '../config'
 
-export async function submitWishlist(data) {
-  const res = await fetch(`${API_URL}/api/wishlist`, {
+export async function submitWaitlist(data) {
+  const res = await fetch(`${API_URL}/api/waitlist`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

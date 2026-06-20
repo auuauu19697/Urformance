@@ -26,7 +26,7 @@ const brandConfig = {
   features: {
     landingPage: false,
     ordering: true,
-    wishlist: false,
+    waitlist: false,
   },
 
   // ── Design tokens ───────────────────────────────────────────────────────────

@@ -7,7 +7,7 @@ import { OrdersModule } from './orders/orders.module';
 import { SheetsModule } from './sheets/sheets.module';
 import { DriveModule } from './drive/drive.module';
 import { AdminModule } from './admin/admin.module';
-import { WishlistModule } from './wishlist/wishlist.module';
+import { WaitlistModule } from './waitlist/waitlist.module';
 
 @Module({
   imports: [
@@ -20,7 +20,7 @@ import { WishlistModule } from './wishlist/wishlist.module';
     DriveModule,
     OrdersModule,
     AdminModule,
-    WishlistModule,
+    WaitlistModule,
   ],
   providers: [
     // Apply API key guard globally to every route
