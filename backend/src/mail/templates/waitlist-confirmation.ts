@@ -61,7 +61,8 @@ export function buildWaitlistConfirmationHtml(
             <h2 style="margin:0 0 8px; font-size:20px; color:#111;">You're on the list! 🎉</h2>
             <p style="color:#666; margin:0 0 24px; font-size:14px; line-height: 1.6;">
               Hi <strong>${dto.fullName}</strong>,<br/><br/>
-              Thank you for joining the waitlist for the upcoming <strong>${brandName}</strong> drop. We have successfully registered your interest!
+              Thank you for joining the waitlist for the upcoming <strong>${brandName}</strong> drop. We have successfully registered your interest!<br/><br/>
+              As a special thank you for signing up early, you've unlocked a <strong>20% discount</strong> on your first order. We will send your 20% discount details as soon as the collection drops.
             </p>
 
             <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">

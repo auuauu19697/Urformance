@@ -1,6 +1,6 @@
 {
   "hero": {
-    "tagline": "An outfit you can wear from the morning loop to late night with confidence. One outfit. One continuous day.",
+    "tagline": "An outfit you can wear from the morning loop to late night with confidence. One outfit. One continuous day. Join the waitlist for a 20% discount.",
     "image": "/urformance/mood2.png"
   },
   "vision": {
@@ -56,6 +56,6 @@
     "description": "First drop launching soon. Join the waitlist to be notified before anyone else."
   },
   "joinUs": {
-    "body": "Join our waitlist and get early access to drops, behind-the-scenes updates, and exclusive pre-order windows before we go public."
+    "body": "Join our waitlist to get a 20% discount, early access to drops, behind-the-scenes updates, and exclusive pre-order windows before we go public."
   }
 }
