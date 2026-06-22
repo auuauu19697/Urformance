@@ -32,7 +32,7 @@ export default function Cart({ onBack, onCheckout }) {
             <div key={index} className="card flex justify-between items-start p-5 shadow-sm">
               <div className="flex-1">
                 <p className="font-black text-sm uppercase italic tracking-tight">{item.model}</p>
-                <p className="text-xs font-bold mt-1 uppercase text-muted">
+                <p className="text-xs font-bold mt-1 uppercase text-muted font-secondary">
                   {item.unitPrice.toLocaleString()}.- / unit · {item.color} · {item.size}
                 </p>
                 <p className="text-xs font-black mt-1.5 uppercase italic tracking-widest">Qty: {item.qty}</p>
@@ -77,10 +77,10 @@ export default function Cart({ onBack, onCheckout }) {
       {!isEmpty && (
         <>
           <div className="card p-6 space-y-3 shadow-sm mb-8">
-            <div className="flex justify-between font-bold text-base text-muted">
+            <div className="flex justify-between font-bold text-base text-muted font-secondary">
               <span>Subtotal</span><span>{subtotal.toLocaleString()}.-</span>
             </div>
-            <div className="flex justify-between font-bold text-base">
+            <div className="flex justify-between font-bold text-base font-secondary">
               <span className="text-muted flex items-center gap-1">
                 Shipping
                 <button
@@ -132,7 +132,7 @@ export default function Cart({ onBack, onCheckout }) {
               </button>
             </div>
 
-            <div className="space-y-3 text-sm font-bold text-muted mb-6">
+            <div className="space-y-3 text-sm font-bold text-muted mb-6 font-secondary">
               <div className="flex justify-between items-center border-b pb-2 border-gray-100">
                 <span>1 - 5 pieces</span>
                 <span className="font-black text-base" style={{ color: 'var(--color-primary)' }}>30 THB</span>

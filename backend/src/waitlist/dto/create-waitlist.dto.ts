@@ -1,7 +1,7 @@
-import { IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 import { Type } from 'class-transformer';
 
-export class CreateWishlistDto {
+export class CreateWaitlistDto {
   @IsString()
   @IsNotEmpty()
   fullName: string;
@@ -25,4 +25,8 @@ export class CreateWishlistDto {
   @IsString()
   @IsOptional()
   note?: string;
+
+  @IsBoolean()
+  @IsNotEmpty()
+  consentGiven: boolean;
 }

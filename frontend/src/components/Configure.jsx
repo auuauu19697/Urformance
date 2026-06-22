@@ -93,7 +93,7 @@ export default function Configure({ product, onBack, onDone }) {
 
           {/* Pricing tiers table */}
           <div className="card mt-4 p-4 shadow-sm">
-            <p className="text-[11px] font-black uppercase tracking-wider text-muted mb-3">
+            <p className="text-[11px] font-black uppercase tracking-wider text-muted mb-3 font-secondary">
               🏷 Bulk Pricing — Buy More, Save More
             </p>
             <div className="space-y-2">
@@ -122,13 +122,13 @@ export default function Configure({ product, onBack, onDone }) {
 
             {/* Oversize surcharge note */}
             {showOversize && (
-              <p className="text-[11px] font-bold mt-3 px-1" style={{ color: 'var(--color-primary)' }}>
+              <p className="text-[11px] font-bold mt-3 px-1 font-secondary" style={{ color: 'var(--color-primary)' }}>
                 📐 {product.oversizeFrom} and above +{product.oversizeSurcharge} THB / pc
               </p>
             )}
 
             {existingQty > 0 && (
-              <p className="text-[11px] font-bold text-muted mt-2 px-1">
+              <p className="text-[11px] font-bold text-muted mt-2 px-1 font-secondary">
                 Already in cart: {existingQty} pcs · Adding {qty} more = {previewTotalQty} total
               </p>
             )}
@@ -203,7 +203,7 @@ export default function Configure({ product, onBack, onDone }) {
           })}
         </div>
         {showOversize && (
-          <p className="text-[11px] font-bold text-muted mt-2 ml-1">
+          <p className="text-[11px] font-bold text-muted mt-2 ml-1 font-secondary">
             📐 {product.oversizeFrom}+ sizes include +{product.oversizeSurcharge} THB surcharge per piece
           </p>
         )}

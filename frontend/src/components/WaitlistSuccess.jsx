@@ -1,7 +1,7 @@
 import { useTheme } from '../context/ThemeContext'
 
-export default function WishlistSuccess() {
-  const { brandName, closedText, wishlistText } = useTheme()
+export default function WaitlistSuccess() {
+  const { brandName, closedText, waitlistText } = useTheme()
   return (
     <div className="flex flex-col items-center pt-2 pb-4 text-center space-y-6">
       <div className="w-20 h-20 bg-black text-white rounded-full flex items-center justify-center">
@@ -12,10 +12,10 @@ export default function WishlistSuccess() {
       
       <div>
         <h2 className="text-3xl font-black italic uppercase leading-none mb-3">
-          {wishlistText?.successHeading || "You're on the list"}
+          {waitlistText?.successHeading || "You're on the list"}
         </h2>
-        <p className="text-muted font-bold max-w-xs mx-auto">
-          {wishlistText?.successBody || `Thank you for joining the ${brandName} wishlist. We'll notify you when the pre-order opens!`}
+        <p className="text-muted font-bold max-w-xs mx-auto font-secondary">
+          {waitlistText?.successBody || `Thank you for joining the ${brandName} waitlist. We'll notify you when the pre-order opens!`}
         </p>
       </div>
 

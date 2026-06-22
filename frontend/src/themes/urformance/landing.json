@@ -1,0 +1,61 @@
+{
+  "hero": {
+    "tagline": "An outfit you can wear from the morning loop to late night with confidence. One outfit. One continuous day. Join the waitlist for a 20% discount.",
+    "image": "/urformance/mood2.png"
+  },
+  "vision": {
+    "heading": "From\nMorning till\nNight Out",
+    "body": "We build All-day activewear in contemporary urban design with performance fabric technology that satisfies Active-lifestyle issues to create new norm of Urbanwear",
+    "image": "/urformance/mood1.png",
+    "pillars": [
+      {
+        "num": "01",
+        "title": "Built for Movement",
+        "body": "Four-way stretch, moisture-wicking fabric engineered for full range of motion. No restrictions, no excuses."
+      },
+      {
+        "num": "02",
+        "title": "Minimal by Design",
+        "body": "No logos, no noise. Clean lines that work as hard in the gym as they do on the street."
+      },
+      {
+        "num": "03",
+        "title": "Intentional Drops",
+        "body": "We don't mass-produce. Each collection is limited, considered, and crafted to last beyond the season."
+      }
+    ]
+  },
+  "fabricTech": {
+    "heading": "Fabric\nTechnology",
+    "body": "We own our fabric. Engineered from the ground up — not sourced, not borrowed. Built to move with you from sunrise to city night.",
+    "image": "/urformance/fabric.png",
+    "features": [
+      {
+        "id": "01",
+        "title": "Moisture Control",
+        "body": "Wicks sweat away in seconds. Stay dry through every rep, sprint, and commute."
+      },
+      {
+        "id": "02",
+        "title": "4-Way Stretch",
+        "body": "Full range of motion in every direction. Your movement defines the fabric — not the other way around."
+      },
+      {
+        "id": "03",
+        "title": "Thermal Regulation",
+        "body": "Adaptive comfort for every environment. Light enough for a run, structured enough for the street."
+      },
+      {
+        "id": "04",
+        "title": "Lasting Form",
+        "body": "Premium weave that holds its shape and softness across hundreds of washes. Built to outlast seasons."
+      }
+    ]
+  },
+  "collection": {
+    "description": "First drop launching soon. Join the waitlist to be notified before anyone else."
+  },
+  "joinUs": {
+    "body": "Join our waitlist to get a 20% discount, early access to drops, behind-the-scenes updates, and exclusive pre-order windows before we go public."
+  }
+}

@@ -10,8 +10,8 @@ import Success from './components/Success'
 import Consent from './components/Consent'
 import PreorderClosed from './components/PreorderClosed'
 import LandingPage from './components/LandingPage'
-import WishlistForm from './components/WishlistForm'
-import WishlistSuccess from './components/WishlistSuccess'
+import WaitlistForm from './components/WaitlistForm'
+import WaitlistSuccess from './components/WaitlistSuccess'
 
 // ─── Steps ──────────────────────────────────────────────────────────────────
 const STEP = {
@@ -22,29 +22,38 @@ const STEP = {
   CART: 'cart',
   CHECKOUT: 'checkout',
   SUCCESS: 'success',
-  WISHLIST: 'wishlist',
-  WISHLIST_SUCCESS: 'wishlist_success',
+  WAITLIST: 'waitlist',
+  WAITLIST_SUCCESS: 'waitlist_success',
 }
 
 // ─── Header ─────────────────────────────────────────────────────────────────
 function Header({ step, onCartClick, onLogoClick }) {
   const { itemCount } = useCart()
-  const { brandName, brandSlogan } = useTheme()
-  const hideCart = step === STEP.SUCCESS || step === STEP.LANDING || step === STEP.WISHLIST || step === STEP.WISHLIST_SUCCESS
+  const { brandName, brandSlogan, wordmark } = useTheme()
+  const hideCart = step === STEP.SUCCESS || step === STEP.LANDING || step === STEP.WAITLIST || step === STEP.WAITLIST_SUCCESS
 
   return (
     <header className="sticky top-0 z-50 border-b px-5 py-4 flex justify-between items-center"
       style={{ background: 'var(--color-surface)', borderColor: 'var(--color-border)' }}
     >
       <div>
-        <h1
-          className="font-black italic text-xl uppercase tracking-tighter cursor-pointer select-none hover:opacity-80 transition-opacity"
-          onClick={onLogoClick}
-        >
-          {brandName}
-        </h1>
-        {step === STEP.LANDING && brandSlogan && (
-          <p className="text-[10px] font-bold text-muted uppercase tracking-tight">{brandSlogan}</p>
+        {wordmark ? (
+          <img
+            src={wordmark}
+            alt={brandName}
+            className="h-8 object-contain cursor-pointer select-none hover:opacity-80 transition-opacity"
+            onClick={onLogoClick}
+          />
+        ) : (
+          <h1
+            className="font-black italic text-xl uppercase tracking-tighter cursor-pointer select-none hover:opacity-80 transition-opacity"
+            onClick={onLogoClick}
+          >
+            {brandName}
+          </h1>
+        )}
+        {step === STEP.LANDING && brandSlogan && !wordmark && (
+          <p className="text-[10px] font-bold text-muted uppercase tracking-tight font-secondary">{brandSlogan}</p>
         )}
       </div>
       {!hideCart && (
@@ -60,9 +69,9 @@ function Header({ step, onCartClick, onLogoClick }) {
           )}
         </button>
       )}
-      {(step === STEP.WISHLIST || step === STEP.WISHLIST_SUCCESS) && (
+      {(step === STEP.WAITLIST || step === STEP.WAITLIST_SUCCESS) && (
         <div>
-          <span className="text-xs font-black italic uppercase px-2 py-1 bg-black text-white rounded-full">Wishlist</span>
+          <span className="text-xs font-black italic uppercase px-2 py-1 bg-black text-white rounded-full">Waitlist</span>
         </div>
       )}
     </header>
@@ -73,7 +82,7 @@ function Header({ step, onCartClick, onLogoClick }) {
 const STEP_ORDER = [STEP.CATALOG, STEP.CONFIGURE, STEP.CART, STEP.CHECKOUT, STEP.SUCCESS]
 
 function Steps({ current }) {
-  if (current === STEP.SUCCESS || current === STEP.CONSENT || current === STEP.LANDING || current === STEP.WISHLIST || current === STEP.WISHLIST_SUCCESS) return null
+  if (current === STEP.SUCCESS || current === STEP.CONSENT || current === STEP.LANDING || current === STEP.WAITLIST || current === STEP.WAITLIST_SUCCESS) return null
   const labels = ['Browse', 'Select', 'Cart', 'Pay']
   const idx = STEP_ORDER.indexOf(current)
   return (
@@ -98,6 +107,33 @@ function OrderApp() {
   const [selectedProduct, setSelected] = useState(null)
   const [successData, setSuccessData] = useState(null)
   const { dispatch } = useCart()
+
+  // Initialize history state on mount
+  useEffect(() => {
+    if (!window.history.state || window.history.state.step === undefined) {
+      window.history.replaceState({ step: initialStep }, '')
+    }
+  }, [initialStep])
+
+  // Sync state to history when step changes
+  useEffect(() => {
+    if (window.history.state && window.history.state.step !== step) {
+      window.history.pushState({ step }, '')
+    }
+  }, [step])
+
+  // Listen to popstate (browser back/forward)
+  useEffect(() => {
+    const handlePopState = (event) => {
+      if (event.state && event.state.step !== undefined) {
+        setStep(event.state.step)
+      } else {
+        setStep(initialStep)
+      }
+    }
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [initialStep])
 
   function handleProductSelect(product) {
     setSelected(product)
@@ -142,15 +178,15 @@ function OrderApp() {
       <main className={(step === STEP.LANDING || step === STEP.CONSENT) ? '' : 'max-w-sm mx-auto px-5 pb-16'}>
         {step === STEP.LANDING && (
           <LandingPage
-            onWishlistClick={() => { setStep(STEP.WISHLIST); window.scrollTo(0, 0) }}
+            onWaitlistClick={() => { setStep(STEP.WAITLIST); window.scrollTo(0, 0) }}
             onPreorderClick={() => { setStep(STEP.CONSENT); window.scrollTo(0, 0) }}
           />
         )}
-        {step === STEP.WISHLIST && (
-          <WishlistForm onSuccess={() => { setStep(STEP.WISHLIST_SUCCESS); window.scrollTo(0, 0) }} />
+        {step === STEP.WAITLIST && (
+          <WaitlistForm onSuccess={() => { setStep(STEP.WAITLIST_SUCCESS); window.scrollTo(0, 0) }} />
         )}
-        {step === STEP.WISHLIST_SUCCESS && (
-          <WishlistSuccess />
+        {step === STEP.WAITLIST_SUCCESS && (
+          <WaitlistSuccess />
         )}
         {step === STEP.CONSENT && (
           <Consent onAccept={() => { setStep(STEP.CATALOG); window.scrollTo(0, 0) }} />

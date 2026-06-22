@@ -10,23 +10,19 @@ const brandConfig = {
   pageTitle: 'Kutee Club — Order',
   metaDescription: 'Order Ku Club official apparel online.',
 
-  // ── Typography ──────────────────────────────────────────────────────────────
-  googleFont: null,          // Manrope loaded via index.html; Catalogue is local
-  googleFontWeights: null,
-  // Font role tokens (injected as CSS vars)
-  fonts: {
-    brand:       "'Catalogue'",
-    secondary:   "'Manrope'",
-    thai:        "'Akiv Grotesk Thai'",
-    decorative:  "'Apple Garamond'",
-    script:      "'Brush Script MT'",
-  },
-
   // ── Features ────────────────────────────────────────────────────────────────
   features: {
     landingPage: false,
     ordering: true,
-    wishlist: false,
+    waitlist: false,
+  },
+
+  waitlistText: {
+    heading: 'Join Waitlist',
+    body: 'Sign up to be notified when the next collection drops.',
+    successHeading: "You're on the list",
+    successBody: "Thank you for joining the KUTEE CLUB waitlist. We'll notify you when the pre-order opens!",
+    consentText: "I agree that KUTEE CLUB may store and use the information I provided — including my name, age, email, phone, and Instagram handle — to notify me about Kutee Club pre-orders, collection launches, and exclusive member updates. My information will not be sold or shared with third parties.",
   },
 
   // ── Design tokens ───────────────────────────────────────────────────────────

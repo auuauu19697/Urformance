@@ -2,7 +2,7 @@ import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common
 import { ConfigService } from '@nestjs/config';
 import { google } from 'googleapis';
 import { CreateOrderDto } from '../orders/dto/create-order.dto';
-import { CreateWishlistDto } from 'src/wishlist/dto/create-wishlist.dto';
+import { CreateWaitlistDto } from '../waitlist/dto/create-waitlist.dto';
 
 @Injectable()
 export class SheetsService {
@@ -182,12 +182,12 @@ export class SheetsService {
     }
   }
 
-  async appendWishlist(
-    dto: CreateWishlistDto,
+  async appendWaitlist(
+    dto: CreateWaitlistDto,
   ): Promise<void> {
     const sheets = this.getSheetsClient();
     const spreadsheetId = this.config.get<string>('google.sheetId');
-    const wishlistTab = this.config.get<string>('google.wishlistSheet');
+    const waitlistTab = this.config.get<string>('google.waitlistSheet');
 
     const row = [
       new Date().toISOString(),
@@ -197,18 +197,19 @@ export class SheetsService {
       dto.phone,
       dto.instagram,
       dto.note ?? '',
+      dto.consentGiven ? new Date().toISOString() : '',
     ];
 
     try {
       await sheets.spreadsheets.values.append({
         spreadsheetId,
-        range: `${wishlistTab}!A:G`,
+        range: `${waitlistTab}!A:H`,
         valueInputOption: 'USER_ENTERED',
         insertDataOption: 'INSERT_ROWS',
         requestBody: { values: [row] },
       });
     } catch (err: any) {
-      this.logger.error('Google Sheets error (Wishlist):', err?.message);
+      this.logger.error('Google Sheets error (Waitlist):', err?.message);
       throw new InternalServerErrorException('Failed to write to Google Sheets.');
     }
   }

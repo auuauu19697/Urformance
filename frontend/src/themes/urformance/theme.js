@@ -4,72 +4,62 @@
 const brandConfig = {
   // ── Identity ────────────────────────────────────────────────────────────────
   brandName: 'URFORMANCE',
-  brandSlogan: 'Performance Wear',
-  icon: '🏃',
-  pageTitle: 'Urformance — Order',
+  brandSlogan: 'Urban + Performance',
+  icon: '/urformance/icons/urformance-synbol.svg',
+  wordmark: '/urformance/icons/urformance-word.svg',
+  pageTitle: 'URFORMANCE — Urban + Performance',
   metaDescription: 'Order Urformance performance wear online.',
-
-  // ── Typography ──────────────────────────────────────────────────────────────
-  googleFont: null,          // Manrope loaded via index.html; Catalogue is local
-  googleFontWeights: null,
-  // Font role tokens (injected as CSS vars)
-  fonts: {
-    brand:       "'Catalogue'",
-    secondary:   "'Manrope'",
-    thai:        "'Akiv Grotesk Thai'",
-    decorative:  "'Apple Garamond'",
-    script:      "'Brush Script MT'",
-  },
 
   // ── Features ────────────────────────────────────────────────────────────────
   features: {
     landingPage: true,
     ordering: false,
-    wishlist: true,
+    waitlist: true,
   },
 
-  wishlistText: {
-    heading: 'Join Wishlist',
-    body: 'Sign up to be notified when the next collection drops.',
+  waitlistText: {
+    heading: 'Join Waitlist',
+    body: 'Sign up to get a 20% discount and be notified when the next collection drops.',
     successHeading: "You're on the list",
-    successBody: "Thank you for joining the URFORMANCE wishlist. We'll notify you when the pre-order opens!",
+    successBody: "Thank you for joining the URFORMANCE waitlist. We'll send your 20% discount and notify you when the new collection drops!",
+    consentText: "I agree that URFORMANCE may store and use the information I provided — including my name, age, email, phone, and Instagram handle — to notify me about pre-orders, new collection drops, and exclusive updates. My information will not be sold or shared with third parties.",
   },
 
   // ── Design tokens (injected as CSS custom properties) ───────────────────────
   tokens: {
     // Primary palette
-    colorPrimary:   '#2B2521',   // Brick — CTAs, dark hero, headings
+    colorPrimary: '#2B2521',   // Brick — CTAs, dark hero, headings
     colorPrimaryFg: '#FCFCFC',   // Cloud — text on Brick
-    colorAccent:    '#FFF87B',   // Sunbeam — highlights & tags
-    colorAccentFg:  '#2B2521',   // Brick — text on Sunbeam
-    colorBg:        '#FCFCFC',   // Cloud — page background
-    colorSurface:   '#FFFFFF',   // White — card surfaces
-    colorBorder:    '#E0D9D0',   // Warm light border
-    colorMuted:     '#8E8172',   // Tan — muted text
+    colorAccent: '#FFF87B',   // Sunbeam — highlights & tags
+    colorAccentFg: '#2B2521',   // Brick — text on Sunbeam
+    colorBg: '#FCFCFC',   // Cloud — page background
+    colorSurface: '#FFFFFF',   // White — card surfaces
+    colorBorder: '#E0D9D0',   // Warm light border
+    colorMuted: '#8E8172',   // Tan — muted text
 
     // Secondary palette (accessible as CSS vars e.g. var(--color-sky))
-    colorSky:       '#C8E0E8',
-    colorMint:      '#C9FFB0',
-    colorApricot:   '#FF885F',
-    colorForest:    '#456344',
+    colorSky: '#C8E0E8',
+    colorMint: '#C9FFB0',
+    colorApricot: '#FF885F',
+    colorForest: '#456344',
 
     // Shape & typography
-    radiusCard:   '4px',
+    radiusCard: '4px',
     radiusButton: '3px',
-    radiusInput:  '3px',
-    fontBrand:      "'Catalogue'",
-    fontSecondary:  "'Manrope'",
-    fontThai:       "'Akiv Grotesk Thai'",
+    radiusInput: '3px',
+    fontBrand: "'Catalogue'",
+    fontSecondary: "'Manrope'",
+    fontThai: "'Akiv Grotesk Thai'",
     fontDecorative: "'Apple Garamond'",
-    fontScript:     "'Brush Script MT'",
+    fontScript: "'Brush Script MT'",
     fontSizeBase: '1.1rem',
   },
 
   closedText: {
     heading: 'Pre-order Has Closed',
     body: 'Thank you for your interest! The pre-order period has ended.\nStay tuned for the next collection and follow us on Instagram for updates.',
-    instagram: '@urformance',   // ← your actual IG handle
-    instagramUrl: 'https://www.instagram.com/urformance',
+    instagram: '@urformance.bkk',   // ← your actual IG handle
+    instagramUrl: 'https://www.instagram.com/urformance.bkk',
   },
 
   // ── Payment ─────────────────────────────────────────────────────────────────
