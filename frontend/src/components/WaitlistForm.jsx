@@ -10,7 +10,6 @@ export default function WaitlistForm({ onSuccess }) {
     email: '',
     phone: '',
     instagram: '',
-    note: '',
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState(null)
@@ -139,17 +138,6 @@ export default function WaitlistForm({ onSuccess }) {
           />
         </div>
 
-        <div className="space-y-1">
-          <label className="step-label">Note (Optional)</label>
-          <textarea
-            name="note"
-            rows="3"
-            value={formData.note}
-            onChange={handleChange}
-            className="input-field font-bold resize-none"
-            placeholder="Anything you'd like to tell us?"
-          />
-        </div>
 
         <div className="pt-2">
           <label className="flex items-start gap-3 cursor-pointer group select-none">

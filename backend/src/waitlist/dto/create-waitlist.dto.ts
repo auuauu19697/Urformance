@@ -22,9 +22,6 @@ export class CreateWaitlistDto {
   @IsNotEmpty()
   instagram: string;
 
-  @IsString()
-  @IsOptional()
-  note?: string;
 
   @IsBoolean()
   @IsNotEmpty()

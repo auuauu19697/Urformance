@@ -196,7 +196,6 @@ export class SheetsService {
       dto.email,
       dto.phone,
       dto.instagram,
-      dto.note ?? '',
       dto.consentGiven ? new Date().toISOString() : '',
     ];
 
