@@ -38,7 +38,11 @@ export default function WaitlistForm({ onSuccess }) {
 
     try {
       await submitWaitlist(payload)
-      onSuccess()
+      if (waitlistText?.lineOaUrl) {
+        window.location.href = waitlistText.lineOaUrl
+      } else {
+        onSuccess()
+      }
     } catch (err) {
       // Clean up class-validator nested errors for display if needed
       let msg = err.message
