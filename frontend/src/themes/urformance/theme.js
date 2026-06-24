@@ -59,8 +59,8 @@ const brandConfig = {
   closedText: {
     heading: 'Pre-order Has Closed',
     body: 'Thank you for your interest! The pre-order period has ended.\nStay tuned for the next collection and follow us on Instagram for updates.',
-    instagram: '@urformance.bkk',   // ← your actual IG handle
-    instagramUrl: 'https://www.instagram.com/urformance.bkk',
+    instagram: '@urformance.studio',   // ← your actual IG handle
+    instagramUrl: 'https://www.instagram.com/urformance.studio',
   },
 
   // ── Payment ─────────────────────────────────────────────────────────────────
