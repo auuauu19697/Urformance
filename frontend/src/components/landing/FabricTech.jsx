@@ -1,21 +1,80 @@
 import { useState, useEffect } from 'react'
 
-// ─── Fabric Tech Section ──────────────────────────────────────────────────────
-// Dark full-bleed section showcasing proprietary fabric technology features
-// Desktop : photo (left, wide) with diagonal "/" slash | text & features (right, narrow)
-// Mobile  : photo (top, full-width) with diagonal bottom slash | text & features (below)
+// ─── Icon components ──────────────────────────────────────────────────────────
+function IconDroplet({ color = '#fff', size = 20 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill={color} xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 2C12 2 5 10.4 5 15a7 7 0 0014 0C19 10.4 12 2 12 2z"/>
+    </svg>
+  )
+}
+
+function IconLeaf({ color = '#fff', size = 20 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill={color} xmlns="http://www.w3.org/2000/svg">
+      <path d="M17,8C8,10 5.9,16.17 3.82,21.34L5.71,22L6.66,19.7C7.14,19.87 7.64,20 8,20C19,20 22,3 22,3C21,5 14,5.25 9,6.25C4,7.25 2,11.5 2,13.5C2,15.5 3.75,17.25 3.75,17.25C7,8 17,8 17,8Z"/>
+    </svg>
+  )
+}
+
+function IconShield({ color = '#fff', size = 20 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill={color} xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5L12 1zm-1 14l-3-3 1.41-1.41L11 12.17l4.59-4.58L17 9l-6 6z"/>
+    </svg>
+  )
+}
+
+function IconCamera({ color = '#fff', size = 20 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill={color} xmlns="http://www.w3.org/2000/svg">
+      <circle cx="12" cy="12" r="3.2"/>
+      <path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/>
+    </svg>
+  )
+}
+
+function FeatureIcon({ icon, iconColor, size = 'normal' }) {
+  const bg = iconColor || '#2B2521'
+  const isLight = iconColor === '#FF885F' || iconColor === '#FFF87B'
+  const svgSize = size === 'large' ? 28 : 20
+  const iconEl = (() => {
+    switch (icon) {
+      case 'droplet': return <IconDroplet color="#fff" size={svgSize} />
+      case 'leaf':    return <IconLeaf    color="#fff" size={svgSize} />
+      case 'shield':  return <IconShield  color="#fff" size={svgSize} />
+      case 'camera':
+      case 'fashion': return <IconCamera  color="#fff" size={svgSize} />
+      default:        return <IconDroplet color="#fff" size={svgSize} />
+    }
+  })()
+  const circleSize = size === 'large' ? '56px' : '40px'
+  return (
+    <div style={{
+      width: circleSize, height: circleSize, borderRadius: '50%',
+      background: bg,
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      flexShrink: 0,
+    }}>
+      {iconEl}
+    </div>
+  )
+}
+
+// ─── Default features ─────────────────────────────────────────────────────────
 const DEFAULT_FEATURES = [
-  { id: '01', title: 'Moisture Control',    body: 'Wicks sweat away in seconds. Stay dry through every rep, sprint, and commute.' },
-  { id: '02', title: '4-Way Stretch',       body: 'Full range of motion in every direction. Your movement defines the fabric — not the other way around.' },
-  { id: '03', title: 'Thermal Regulation',  body: 'Adaptive comfort for every environment. Light enough for a run, structured enough for the street.' },
-  { id: '04', title: 'Lasting Form',        body: 'Premium weave that holds its shape and softness across hundreds of washes. Built to outlast seasons.' },
+  { icon: 'droplet', iconColor: '#2B2521', title: 'Dual-Layer Push-Pull Moisture System',  body: 'โครงสร้างผ้า 2 ชั้น ดึงความชื้นจากผิวระเบายสู่อากาศอย่างรวดเร็ว' },
+  { icon: 'leaf',    iconColor: '#2B2521', title: 'Scent-Release Micro-Encapsulation',      body: 'แคปซูลกลิ่นหอมขนาดเล็ก ปล่อยกลิ่นเมื่อมีการเสียดสีจากการเคลื่อนไหว หายกังวลกลิ่นเหงื่อ' },
+  { icon: 'shield',  iconColor: '#FF885F', title: 'UV Protection + Anti-Bacteria Finish',   body: 'ป้องกันรังสี UV และยับยั้งกลิ่นไม่พึงประสงค์ตลอดวัน' },
+  { icon: 'camera',  iconColor: '#FF885F', title: 'Fashionable Texture and Design',         body: 'ดีไซน์เก๋ เริ่ม ตามสไตล์ Gen Z ใส่เที่ยว ใส่ทำงาน ใส่ออกกำลังกายที่ยืนในทุกกตตามกาศน์' },
 ]
 
+// ─── Main component ───────────────────────────────────────────────────────────
 export default function FabricTech({ landing }) {
   const data     = landing?.fabricTech
-  const heading  = data?.heading  || "IP Fabric\nTechnology"
-  const body     = data?.body     || "We own our fabric. Engineered from the ground up — not sourced, not borrowed."
-  const image    = data?.image    || "/urformance/fabric.png"
+  const heading  = data?.heading  || 'Our Fabric\nTechnology'
+  const body     = data?.body     || 'We own our fabric that engineered for all-day activities.'
+  const image    = data?.image    || '/urformance/fabric.png'
   const features = data?.features || DEFAULT_FEATURES
 
   const [isMobile, setIsMobile] = useState(false)
@@ -27,7 +86,7 @@ export default function FabricTech({ landing }) {
     return () => mq.removeEventListener('change', handler)
   }, [])
 
-  // ─── Photo / placeholder ────────────────────────────────────────────────────
+  // ─── Photo ────────────────────────────────────────────────────────────────
   const Photo = ({ style = {} }) => image ? (
     <img
       src={image}
@@ -37,121 +96,83 @@ export default function FabricTech({ landing }) {
   ) : (
     <div style={{
       width: '100%', height: '100%',
-      background: 'linear-gradient(160deg, var(--color-primary) 0%, #3d3530 55%, #1a1512 100%)',
-      display: 'flex', flexDirection: 'column',
-      alignItems: 'center', justifyContent: 'center',
-      gap: '0.75rem', position: 'relative', overflow: 'hidden',
+      background: '#e0ddd8',
       ...style,
-    }}>
-      <div style={{
-        position: 'absolute', inset: 0, pointerEvents: 'none',
-        backgroundImage: 'repeating-linear-gradient(45deg, rgba(255,248,123,0.04) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 36px)',
-      }} />
-      <span style={{ fontSize: '4rem', opacity: 0.1 }}>📸</span>
-      <span style={{
-        color: 'rgba(255,255,255,0.18)', fontWeight: 900,
-        fontSize: '0.55rem', letterSpacing: '0.25em',
-        textTransform: 'uppercase', zIndex: 1,
-      }}>
-        Photo Coming Soon
-      </span>
-    </div>
+    }} />
   )
 
-  // ─── Text / features column ──────────────────────────────────────────────────
+  // ─── Text column ─────────────────────────────────────────────────────────
   const TextContent = () => (
     <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-      {/* IP badge */}
-      <div style={{
-        display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
-        background: 'var(--color-accent)', color: 'var(--color-accent-fg)',
-        padding: '0.3rem 0.85rem', borderRadius: '2px',
-        fontWeight: 900, fontStyle: 'italic',
-        fontSize: '0.55rem', letterSpacing: '0.2em', textTransform: 'uppercase',
-        marginBottom: '1.5rem',
-        alignSelf: 'flex-start',
-      }}>
-        ⚡ Proprietary IP
-      </div>
 
+      {/* Heading */}
       <h2 style={{
         fontWeight: 900, fontStyle: 'italic',
-        fontSize: 'clamp(2.6rem, 5vw, 4.5rem)',
+        fontSize: isMobile ? 'clamp(2.4rem, 10vw, 3.5rem)' : 'clamp(2.8rem, 4.5vw, 4.5rem)',
         textTransform: 'uppercase',
-        letterSpacing: '-0.04em', lineHeight: 0.92,
+        letterSpacing: '-0.02em', lineHeight: 0.95,
         margin: 0,
         marginBottom: '1.5rem',
+        color: '#fff',
       }}>
         {heading.split('\n').map((line, idx, arr) => (
-          <span key={idx}>
-            {line}{idx < arr.length - 1 && <br />}
-          </span>
+          <span key={idx}>{line}{idx < arr.length - 1 && <br />}</span>
         ))}
       </h2>
 
+      {/* Body */}
       <p style={{
-        fontSize: '0.95rem', fontWeight: 600, lineHeight: 1.7,
+        fontSize: '0.9rem', fontWeight: 500, lineHeight: 1.75,
         fontFamily: 'var(--font-secondary)',
-        color: 'rgba(255,255,255,0.5)',
-        maxWidth: '42ch',
-        marginBottom: '3rem',
+        color: 'rgba(255,255,255,0.6)',
+        maxWidth: '46ch',
+        marginBottom: '2.5rem',
+        margin: '0 0 2.5rem',
       }}>
         {body}
       </p>
 
-      {/* Features list */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
-        gap: '2rem 1.5rem',
-      }}>
-        {features.map((feat, idx) => (
-          <div key={feat.id || idx} style={{
-            borderTop: '1px solid rgba(255,255,255,0.1)',
-            paddingTop: '1.25rem',
-            display: 'grid',
-            gridTemplateColumns: 'auto 1fr',
-            gap: '1.25rem',
-          }}>
-            {/* Number */}
-            <span style={{
-              fontWeight: 900, fontStyle: 'italic',
-              fontSize: '0.65rem', letterSpacing: '0.2em',
-              textTransform: 'uppercase',
-              color: 'var(--color-accent)',
-              marginTop: '0.2rem',
+      {/* Features list — single column, icon left */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
+        {features.map((feat, idx) => {
+          const isLarge = idx < 2
+          return (
+            <div key={idx} style={{
+              display: 'grid',
+              gridTemplateColumns: isLarge ? '56px 1fr' : '40px 1fr',
+              gap: '1.25rem',
+              alignItems: 'flex-start',
             }}>
-              {feat.id || String(idx + 1).padStart(2, '0')}
-            </span>
-
-            <div>
-              {/* Title */}
-              <h3 style={{
-                fontWeight: 900,
-                fontSize: '0.9rem', textTransform: 'uppercase',
-                letterSpacing: '0.05em', lineHeight: 1.2,
-                marginBottom: '0.5rem', color: '#fff',
-              }}>
-                {feat.title}
-              </h3>
-
-              {/* Body */}
-              <p style={{
-                fontSize: '0.83rem', fontWeight: 600, lineHeight: 1.65,
-                fontFamily: 'var(--font-secondary)',
-                color: 'rgba(255,255,255,0.45)',
-                margin: 0,
-              }}>
-                {feat.body}
-              </p>
+              <FeatureIcon icon={feat.icon} iconColor={feat.iconColor} size={isLarge ? 'large' : 'normal'} />
+              <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', minHeight: isLarge ? '56px' : '40px' }}>
+                <h3 style={{
+                  fontWeight: 800,
+                  fontSize: '0.85rem',
+                  letterSpacing: '0.01em',
+                  lineHeight: 1.3,
+                  margin: '0 0 0.3rem',
+                  color: '#fff',
+                  fontFamily: 'var(--font-secondary)',
+                }}>
+                  {feat.title}
+                </h3>
+                <p style={{
+                  fontSize: '0.8rem', fontWeight: 500, lineHeight: 1.6,
+                  fontFamily: 'var(--font-thai, var(--font-secondary))',
+                  color: 'rgba(255,255,255,0.5)',
+                  margin: 0,
+                }}>
+                  {feat.body}
+                </p>
+              </div>
             </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
     </div>
   )
 
-  // ─── Mobile layout ──────────────────────────────────────────────────────────
+  // ─── Mobile layout ────────────────────────────────────────────────────────
   if (isMobile) {
     return (
       <section style={{
@@ -164,7 +185,7 @@ export default function FabricTech({ landing }) {
           clipPath: 'polygon(0 0, 100% 0, 100% 90%, 0 100%)',
           marginBottom: '-2.5rem',
         }}>
-          <Photo style={{ aspectRatio: '1 / 1', minHeight: '320px' }} />
+          <Photo style={{ aspectRatio: '4 / 3', minHeight: '260px' }} />
         </div>
         <div style={{ padding: '5rem 1.75rem 4rem' }}>
           <TextContent />
@@ -173,7 +194,7 @@ export default function FabricTech({ landing }) {
     )
   }
 
-  // ─── Desktop layout: wide photo left | narrow text right ───────────────────
+  // ─── Desktop layout ───────────────────────────────────────────────────────
   return (
     <section style={{
       background: 'var(--color-primary)',
@@ -181,34 +202,27 @@ export default function FabricTech({ landing }) {
       position: 'relative',
       overflow: 'hidden',
     }}>
-      {/* Subtle diagonal texture */}
-      <div style={{
-        position: 'absolute', inset: 0, pointerEvents: 'none',
-        backgroundImage: 'repeating-linear-gradient(135deg, rgba(255,248,123,0.025) 0px, transparent 1px, transparent 48px)',
-      }} />
-
       <div style={{
         display: 'grid',
-        gridTemplateColumns: '1.2fr 1fr',
-        minHeight: '90vh',
+        gridTemplateColumns: '1.1fr 1fr',
+        minHeight: '85vh',
         position: 'relative',
         zIndex: 1,
       }}>
-        {/* Left column: Photo with matching slanted "/" slash */}
+        {/* Left: photo with diagonal slash */}
         <div style={{
           position: 'relative',
-          clipPath: 'polygon(0% 0%, 100% 0%, 80% 100%, 0% 100%)',
-          marginRight: '-5rem',
-          background: '#1d1916',
+          clipPath: 'polygon(0% 0%, 100% 0%, 82% 100%, 0% 100%)',
+          marginRight: '-4rem',
         }}>
           <Photo />
         </div>
 
-        {/* Right column: TextContent */}
+        {/* Right: text content */}
         <div style={{
           position: 'relative',
           zIndex: 2,
-          padding: '6rem 6rem 6rem 4rem',
+          padding: '5rem 5rem 5rem 5rem',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',

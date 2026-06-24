@@ -26,29 +26,33 @@
     ]
   },
   "fabricTech": {
-    "heading": "Fabric\nTechnology",
-    "body": "We own our fabric. Engineered from the ground up — not sourced, not borrowed. Built to move with you from sunrise to city night.",
+    "heading": "Our Fabric\nTechnology",
+    "body": "We own our fabric that engineered for all-day activities — A outfit you can wear from the morning loop to late night with confidence, One outfit. One continuous day.",
     "image": "/urformance/fabric.png",
     "features": [
       {
-        "id": "01",
-        "title": "Moisture Control",
-        "body": "Wicks sweat away in seconds. Stay dry through every rep, sprint, and commute."
+        "icon": "droplet",
+        "iconColor": "#2B2521",
+        "title": "Dual-Layer Push-Pull Moisture System",
+        "body": "โครงสร้างผ้า 2 ชั้น ดึงความชื้นจากผิวระเบายสู่อากาศอย่างรวดเร็ว"
       },
       {
-        "id": "02",
-        "title": "4-Way Stretch",
-        "body": "Full range of motion in every direction. Your movement defines the fabric — not the other way around."
+        "icon": "leaf",
+        "iconColor": "#2B2521",
+        "title": "Scent-Release Micro-Encapsulation",
+        "body": "แคปซูลกลิ่นหอมขนาดเล็ก ปล่อยกลิ่นเมื่อมีการเสียดสีจากการเคลื่อนไหว หายกังวลกลิ่นเหงื่อ"
       },
       {
-        "id": "03",
-        "title": "Thermal Regulation",
-        "body": "Adaptive comfort for every environment. Light enough for a run, structured enough for the street."
+        "icon": "shield",
+        "iconColor": "#FF885F",
+        "title": "UV Protection + Anti-Bacteria Finish",
+        "body": "ป้องกันรังสี UV และยับยั้งกลิ่นไม่พึงประสงค์ตลอดวัน"
       },
       {
-        "id": "04",
-        "title": "Lasting Form",
-        "body": "Premium weave that holds its shape and softness across hundreds of washes. Built to outlast seasons."
+        "icon": "camera",
+        "iconColor": "#FF885F",
+        "title": "Fashionable Texture and Design",
+        "body": "ดีไซน์เก๋ เริ่ม ตามสไตล์ Gen Z ใส่เที่ยว ใส่ทำงาน ใส่ออกกำลังกายที่ยืนใในทุกกตตามกาศน์"
       }
     ]
   },
