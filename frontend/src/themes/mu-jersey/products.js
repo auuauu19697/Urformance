@@ -2,7 +2,7 @@
 
 const preorderPeriod = {
   startTime: '2026-06-18T16:00:00+07:00',
-  endTime: '2026-06-25T23:59:59+07:00',
+  endTime: '2026-07-03T23:59:59+07:00',
 }
 
 const products = [
